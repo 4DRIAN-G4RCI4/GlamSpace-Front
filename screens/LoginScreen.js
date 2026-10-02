@@ -16,11 +16,9 @@
  *    adicional (sin bloquear la cuenta, tal como pide la HU).
  *
  * NOTA DE INTEGRACIÓN:
- * Esto valida contra la lista de usuarios guardada en AsyncStorage por las
- * pantallas de registro (misma base de datos de prueba). Para conectarlo al
- * API real, reemplazar iniciarSesion() por un fetch() a
- * POST /api/usuarios/login — la API ya regresa 401 con mensaje genérico
- * cuando el correo o la contraseña no coinciden, igual que aquí.
+ * Ya conectado al API real (POST /api/usuarios/login) usando
+ * EXPO_PUBLIC_API_URL. La sesión activa se sigue guardando localmente en
+ * AsyncStorage (eso es independiente de la base de datos real).
  */
 
 import React, { useEffect, useState } from "react";
@@ -37,37 +35,34 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
 const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const LLAVE_USUARIOS = "glamspaces_usuarios";
 const LLAVE_SESION = "glamspaces_sesion";
 const INTENTOS_PARA_ADVERTENCIA = 3;
 
-async function obtenerUsuarios() {
-  try {
-    const data = await AsyncStorage.getItem(LLAVE_USUARIOS);
-    return data ? JSON.parse(data) : [];
-  } catch (e) {
-    return [];
-  }
-}
-
 async function iniciarSesion(correo, password) {
-  const usuarios = await obtenerUsuarios();
-  const correoNormalizado = correo.trim().toLowerCase();
+  const resp = await fetch(`${API_URL}/usuarios/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      correo: correo.trim(),
+      password,
+    }),
+  });
 
-  const usuario = usuarios.find(
-    (u) => u.correo.toLowerCase() === correoNormalizado && u.password === password
-  );
-
-  if (!usuario) {
+  if (!resp.ok) {
+    // La API regresa 401 genérico tanto si falla el correo como la contraseña.
     throw new Error("credenciales_invalidas");
   }
 
+  const usuario = await resp.json();
+
   const sesion = {
-    nombre: usuario.nombre,
+    nombre: usuario.nombreCompleto,
     correo: usuario.correo,
-    tipo_cuenta: usuario.tipo_cuenta,
-    nombre_salon: usuario.nombre_salon || null,
+    tipo_cuenta: usuario.tipoCuenta,
+    nombre_salon: usuario.nombreSalon || null,
   };
 
   await AsyncStorage.setItem(LLAVE_SESION, JSON.stringify(sesion));
