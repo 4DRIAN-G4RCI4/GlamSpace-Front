@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "GlamSpaces",
+    "slug": "glamspaces-registro-cliente",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#f4ecf7",
+    "web": {
+      "bundler": "metro",
+      "name": "GlamSpaces",
+      "shortName": "GlamSpaces",
+      "themeColor": "#6b2a7a",
+      "backgroundColor": "#f4ecf7",
+      "display": "standalone"
+    }
+  }
+}

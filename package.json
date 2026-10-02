@@ -1,0 +1,21 @@
+{
+  "name": "glamspaces-registro-cliente",
+  "version": "1.0.0",
+  "description": "HU-02 Registro de cliente (Sprint 1) - GlamSpaces, pantalla React Native / Expo",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "expo": "~51.0.0",
+    "react": "18.2.0",
+    "react-native": "0.74.5",
+    "react-dom": "18.2.0",
+    "react-native-web": "~0.19.10",
+    "@expo/metro-runtime": "~3.2.1",
+    "@react-native-async-storage/async-storage": "1.23.1"
+  }
+}
