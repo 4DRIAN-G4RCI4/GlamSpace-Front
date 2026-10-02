@@ -10,11 +10,8 @@
  *  - La cuenta creada queda marcada como tipo "administrador".
  *
  * NOTA DE INTEGRACIÓN:
- * Igual que en el registro de cliente, mientras el API real de cuentas no
- * esté conectado, esto guarda en AsyncStorage como base de datos de prueba.
- * Reemplazar guardarUsuario() por un fetch() al mismo endpoint
- * POST /api/usuarios/registro (mandando tipoCuenta: "administrador" y
- * nombreSalon) conecta esta pantalla al API real sin tocar el resto.
+ * Ya conectado al API real (POST /api/usuarios/registro) usando
+ * EXPO_PUBLIC_API_URL, mandando tipoCuenta: "administrador" y nombreSalon.
  */
 
 import React, { useState } from "react";
@@ -29,34 +26,32 @@ import {
   Platform,
   ActivityIndicator,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const LONGITUD_MIN_PASSWORD = 8;
-const LLAVE_STORAGE = "glamspaces_usuarios";
-
-async function obtenerUsuarios() {
-  try {
-    const data = await AsyncStorage.getItem(LLAVE_STORAGE);
-    return data ? JSON.parse(data) : [];
-  } catch (e) {
-    return [];
-  }
-}
 
 async function guardarUsuario(usuario) {
-  const usuarios = await obtenerUsuarios();
+  const resp = await fetch(`${API_URL}/usuarios/registro`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      nombreCompleto: usuario.nombre,
+      correo: usuario.correo,
+      password: usuario.password,
+      tipoCuenta: "administrador",
+      nombreSalon: usuario.nombre_salon,
+    }),
+  });
 
-  const yaExiste = usuarios.some(
-    (u) => u.correo.toLowerCase() === usuario.correo.toLowerCase()
-  );
-  if (yaExiste) {
+  if (resp.status === 409) {
     throw new Error("correo_duplicado");
   }
-
-  usuarios.push(usuario);
-  await AsyncStorage.setItem(LLAVE_STORAGE, JSON.stringify(usuarios));
-  return usuario;
+  if (!resp.ok) {
+    throw new Error("error_registro");
+  }
+  return resp.json();
 }
 
 export default function RegistroAdministradorScreen({ navigation }) {

@@ -8,23 +8,8 @@
  *  - La cuenta creada queda marcada como tipo "cliente".
  *
  * NOTA DE INTEGRACIÓN:
- * El API real de cuentas (crear/consultar usuarios) es otra historia del
- * equipo (capa API, responsable Alexis). Mientras ese endpoint no esté
- * listo, este formulario guarda el registro en AsyncStorage como una base
- * de datos de prueba, para poder demostrar el flujo completo del Sprint 1.
- *
- * Para conectarlo al API real, solo hay que reemplazar guardarUsuario()
- * por una llamada fetch(), por ejemplo:
- *
- *   async function guardarUsuario(usuario) {
- *     const resp = await fetch("https://api.glamspaces.com/cuentas", {
- *       method: "POST",
- *       headers: { "Content-Type": "application/json" },
- *       body: JSON.stringify(usuario),
- *     });
- *     if (!resp.ok) throw new Error("No se pudo crear la cuenta");
- *     return resp.json();
- *   }
+ * Ya conectado al API real (POST /api/usuarios/registro) usando
+ * EXPO_PUBLIC_API_URL.
  */
 
 import React, { useState } from "react";
@@ -39,35 +24,32 @@ import {
   Platform,
   ActivityIndicator,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const LONGITUD_MIN_PASSWORD = 8;
-const LLAVE_STORAGE = "glamspaces_usuarios";
-
-async function obtenerUsuarios() {
-  try {
-    const data = await AsyncStorage.getItem(LLAVE_STORAGE);
-    return data ? JSON.parse(data) : [];
-  } catch (e) {
-    return [];
-  }
-}
 
 async function guardarUsuario(usuario) {
-  // Mock de base de datos mientras el API (capa aparte del equipo) no está listo.
-  const usuarios = await obtenerUsuarios();
+  const resp = await fetch(`${API_URL}/usuarios/registro`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      nombreCompleto: usuario.nombre,
+      correo: usuario.correo,
+      password: usuario.password,
+      tipoCuenta: "cliente",
+      nombreSalon: null,
+    }),
+  });
 
-  const yaExiste = usuarios.some(
-    (u) => u.correo.toLowerCase() === usuario.correo.toLowerCase()
-  );
-  if (yaExiste) {
+  if (resp.status === 409) {
     throw new Error("correo_duplicado");
   }
-
-  usuarios.push(usuario);
-  await AsyncStorage.setItem(LLAVE_STORAGE, JSON.stringify(usuarios));
-  return usuario;
+  if (!resp.ok) {
+    throw new Error("error_registro");
+  }
+  return resp.json();
 }
 
 export default function RegistroClienteScreen({ navigation }) {
@@ -125,8 +107,6 @@ export default function RegistroClienteScreen({ navigation }) {
       nombre: nombre.trim(),
       correo: correo.trim(),
       password, // en un entorno real nunca se guarda en texto plano
-      tipo_cuenta: "cliente",
-      fecha_registro: new Date().toISOString(),
     };
 
     setEnviando(true);
