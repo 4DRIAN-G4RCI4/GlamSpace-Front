@@ -1,25 +1,30 @@
 /**
- * GlamSpaces · App de prueba para las 3 pantallas del Sprint 1
+ * GlamSpaces · App de prueba con las pantallas del Sprint 1 y Sprint 2
  *
- * Este archivo es solo para poder correr y ver las 3 pantallas (HU-02,
- * HU-03, HU-04) en un solo lugar, sin instalar una librería de navegación.
- * Es un "router" manual: cada pantalla recibe un objeto `navigation` con
- * un método `navigate(nombre)` que cambia cuál pantalla se muestra.
+ * Es un "router" manual (sin librería de navegación): cada pantalla recibe un
+ * objeto `navigation` con un método `navigate(nombre)` que cambia cuál
+ * pantalla se muestra. Cuando se integre React Navigation, este archivo se
+ * reemplaza por el stack real y las pantallas no cambian.
  *
- * Cuando se integre con la navegación real del proyecto (React Navigation,
- * por ejemplo), este App.js se reemplaza por el stack de Auth del equipo.
+ * Pantallas:
+ *   Login                  HU-04 (Sprint 1)
+ *   RegistroCliente        HU-02 (Sprint 1)
+ *   RegistroAdministrador  HU-03 (Sprint 1)
+ *   PublicarSalon          HU-07 (Sprint 2)
  */
 
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
-import RegistroClienteScreen from "./screens/RegistroClienteScreen";
-import RegistroAdministradorScreen from "./screens/RegistroAdministradorScreen";
-import LoginScreen from "./screens/LoginScreen";
+import LoginScreen from "./screens/Login/LoginScreen";
+import RegistroClienteScreen from "./screens/RegistroCliente/RegistroClienteScreen";
+import RegistroAdministradorScreen from "./screens/RegistroAdministrador/RegistroAdministradorScreen";
+import PublicarSalonScreen from "./screens/PublicarSalon/PublicarSalonScreen";
 
 const PANTALLAS = {
+  Login: LoginScreen,
   RegistroCliente: RegistroClienteScreen,
   RegistroAdministrador: RegistroAdministradorScreen,
-  Login: LoginScreen,
+  PublicarSalon: PublicarSalonScreen,
 };
 
 export default function App() {
