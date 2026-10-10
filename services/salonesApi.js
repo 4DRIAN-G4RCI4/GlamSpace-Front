@@ -4,21 +4,21 @@
  * Es el ÚNICO archivo que sabe cómo se llaman los endpoints de salones y qué
  * forma tienen sus JSON.
  *
- * Flujo de publicación (la API no publica al crear):
- *   1. POST /api/salones                 → crea el salón como "no_publicado"
- *   2. POST /api/salones/{id}/paquetes   → uno por paquete
- *   3. PUT  /api/salones/{id}            → estado "publicado" (exige ≥ 1 paquete)
+ * Flujo de publicación (la API no publica al crear). Todos son POST:
+ *   1. /api/salones/crear       → crea el salón como "no_publicado"
+ *   2. /api/paquetes/crear      → uno por paquete (salonId en el body)
+ *   3. /api/salones/actualizar  → estado "publicado" (exige ≥ 1 paquete)
  *
  * Mientras no hay JWT, el adminId (el `id` que regresa el login) va en el body.
- * El PUT REEMPLAZA todo: siempre hay que mandar todos los campos, o se borran.
+ * "actualizar" REEMPLAZA todo: siempre hay que mandar todos los campos, o se borran.
  */
 
-import { postJson, putJson } from "./api";
+import { postJson } from "./api";
 
 const RUTAS = {
-  salones: "/salones",
-  salon: (salonId) => `/salones/${salonId}`,
-  paquetes: (salonId) => `/salones/${salonId}/paquetes`,
+  crearSalon: "/salones/crear",
+  actualizarSalon: "/salones/actualizar",
+  crearPaquete: "/paquetes/crear",
 };
 
 function armarSalon(salon) {
@@ -31,8 +31,9 @@ function armarSalon(salon) {
   };
 }
 
-function armarPaquete(adminId, paquete) {
+function armarPaquete(salonId, adminId, paquete) {
   return {
+    salonId,
     adminId,
     nombrePaquete: paquete.nombre,
     descripcion: paquete.descripcion,
@@ -40,17 +41,17 @@ function armarPaquete(adminId, paquete) {
   };
 }
 
-// 201 → { id, adminId, nombre, zona, capacidad, descripcion, estado, paquetes, fotos, ... }
+// → { id, adminId, nombre, zona, capacidad, descripcion, estado, paquetes, fotos, ... }
 export function crearSalon(salon) {
-  return postJson(RUTAS.salones, armarSalon(salon));
+  return postJson(RUTAS.crearSalon, armarSalon(salon));
 }
 
-// 201 → { id, salonId, nombrePaquete, descripcion, precio }
+// → { id, salonId, nombrePaquete, descripcion, precio }
 export function crearPaquete(salonId, adminId, paquete) {
-  return postJson(RUTAS.paquetes(salonId), armarPaquete(adminId, paquete));
+  return postJson(RUTAS.crearPaquete, armarPaquete(salonId, adminId, paquete));
 }
 
-// 200 → el salón completo. 400 si no tiene paquetes (el salón no se modifica).
+// → el salón completo. Error 2003 si no tiene paquetes (el salón no se modifica).
 export function publicarSalon(salonId, salon) {
-  return putJson(RUTAS.salon(salonId), { ...armarSalon(salon), estado: "publicado" });
+  return postJson(RUTAS.actualizarSalon, { id: salonId, ...armarSalon(salon), estado: "publicado" });
 }
