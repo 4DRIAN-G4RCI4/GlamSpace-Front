@@ -13,13 +13,33 @@
  * "actualizar" REEMPLAZA todo: siempre hay que mandar todos los campos, o se borran.
  */
 
-import { postJson } from "./api";
+import { postJson, postPaginado } from "./api";
 
 const RUTAS = {
   crearSalon: "/salones/crear",
   actualizarSalon: "/salones/actualizar",
+  obtenerSalon: "/salones/obtener",
+  buscarSalones: "/salones/buscar",
   crearPaquete: "/paquetes/crear",
 };
+
+// HU-09 · Búsqueda pública (solo salones publicados). Todos los filtros son opcionales.
+// → { datos: [{ id, nombre, zona, capacidad, precioDesde, fotoPrincipal }],
+//     pagina, tamanoPagina, totalRegistros, totalPaginas, mensaje }
+export function buscarSalones({ zona, capacidadMinima, precioMaximo, pagina = 1, tamanoPagina = 10 }) {
+  return postPaginado(RUTAS.buscarSalones, {
+    zona: zona || null,
+    capacidadMinima: capacidadMinima || null,
+    precioMaximo: precioMaximo || null,
+    pagina,
+    tamanoPagina,
+  });
+}
+
+// → { id, nombre, zona, capacidad, descripcion, estado, paquetes: [...], fotos: ["url", ...] }
+export function obtenerSalon(salonId) {
+  return postJson(RUTAS.obtenerSalon, { id: salonId });
+}
 
 function armarSalon(salon) {
   return {
