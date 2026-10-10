@@ -44,6 +44,7 @@ export default function LoginScreen({ navigation }) {
         sesion={f.sesion}
         onCerrarSesion={f.manejarCerrarSesion}
         onPublicarSalon={() => navigation && navigation.navigate("PublicarSalon")}
+        onBuscarSalones={() => navigation && navigation.navigate("BusquedaSalones")}
       />
     );
   }
@@ -120,6 +121,11 @@ export default function LoginScreen({ navigation }) {
             <Text style={[estilos.enlaceCambio, estilos.enlaceLogin]}>
               ¿Tienes un salón?{" "}
               <Text style={estilos.enlaceResaltado}>Regístrate como administrador</Text>
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation && navigation.navigate("BusquedaSalones")}>
+            <Text style={[estilos.enlaceCambio, estilos.enlaceLogin]}>
+              <Text style={estilos.enlaceResaltado}>← Ver salones sin iniciar sesión</Text>
             </Text>
           </TouchableOpacity>
         </View>
