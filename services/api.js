@@ -4,23 +4,26 @@
  * La URL viene de la variable de entorno EXPO_PUBLIC_API_URL (archivo .env en
  * local, secret de GitHub Actions en producción). Nunca va escrita en el código.
  *
- * Formato de errores de la API:
- *   - Reglas de negocio (400 / 403): { "mensaje": "texto en español" }
- *   - 404 y JSON con tipo incorrecto: formato estándar de ASP.NET (inglés, sin "mensaje")
+ * Formato de la API (Sprint 2.5 del backend): TODAS las respuestas, éxito o error, son
+ *   { "codigo": 0, "mensaje": "...", "datos": { ... }, "exito": true }
+ * y los listados agregan { pagina, tamanoPagina, totalRegistros, totalPaginas }.
+ * Todos los endpoints son POST.
  */
 
 export const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export class ApiError extends Error {
-  constructor(tipo, estado, mensaje) {
+  constructor(tipo, estado, mensaje, codigo) {
     super(tipo);
     this.tipo = tipo; // "config" | "red" | "http"
     this.estado = estado || null;
     this.mensaje = mensaje || null; // mensaje de negocio en español, si la API lo mandó
+    this.codigo = codigo || null; // número del catálogo de errores de la API (ej. 2003)
   }
 }
 
-async function enviarJson(metodo, ruta, cuerpo) {
+// Regresa la respuesta COMPLETA de la API ({ codigo, mensaje, datos, ... }).
+async function enviar(ruta, cuerpo) {
   if (!API_URL) {
     throw new ApiError("config");
   }
@@ -28,7 +31,7 @@ async function enviarJson(metodo, ruta, cuerpo) {
   let resp;
   try {
     resp = await fetch(`${API_URL}${ruta}`, {
-      method: metodo,
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cuerpo),
     });
@@ -36,30 +39,29 @@ async function enviarJson(metodo, ruta, cuerpo) {
     throw new ApiError("red");
   }
 
-  if (!resp.ok) {
-    let mensaje = null;
-    try {
-      const data = await resp.json();
-      mensaje = data.mensaje || data.message || null;
-    } catch (e) {
-      // la respuesta de error no traía JSON; no pasa nada
-    }
-    throw new ApiError("http", resp.status, mensaje);
-  }
-
+  let data = null;
   try {
-    return await resp.json();
+    data = await resp.json();
   } catch (e) {
-    return {};
+    // la respuesta no traía JSON; no pasa nada
   }
+
+  if (!resp.ok || (data && data.exito === false)) {
+    throw new ApiError("http", resp.status, data && data.mensaje, data && data.codigo);
+  }
+  return data || {};
 }
 
-export function postJson(ruta, cuerpo) {
-  return enviarJson("POST", ruta, cuerpo);
+// Para operaciones normales: regresa solo lo que viene en "datos".
+export async function postJson(ruta, cuerpo) {
+  const respuesta = await enviar(ruta, cuerpo);
+  return respuesta.datos;
 }
 
-export function putJson(ruta, cuerpo) {
-  return enviarJson("PUT", ruta, cuerpo);
+// Para listados: regresa { datos, pagina, tamanoPagina, totalRegistros, totalPaginas, mensaje }.
+export async function postPaginado(ruta, cuerpo) {
+  const { datos, pagina, tamanoPagina, totalRegistros, totalPaginas, mensaje } = await enviar(ruta, cuerpo);
+  return { datos: datos || [], pagina, tamanoPagina, totalRegistros, totalPaginas, mensaje };
 }
 
 // Mensaje para el usuario según el tipo de fallo.
