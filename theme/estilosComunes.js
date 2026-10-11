@@ -84,5 +84,5 @@ export const comunes = StyleSheet.create({
 
   enlaceCambio: { textAlign: "center", fontSize: 12.5, color: COLORES.muted, marginTop: 20 },
   enlaceResaltado: { color: COLORES.morado, fontWeight: "700" },
-  pie: { fontSize: 11, color: COLORES.muted, opacity: 0.7, marginTop: 18 },
+  pie: { fontSize: 11, color: COLORES.muted, marginTop: 18 }, // sin opacidad: debe pasar contraste AA
 });

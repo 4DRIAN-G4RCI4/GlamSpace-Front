@@ -20,4 +20,7 @@ export const estilos = StyleSheet.create({
   },
   logoTexto: { color: COLORES.dorado, fontWeight: "700", fontSize: 18 },
   nombreMarca: { fontWeight: "700", fontSize: 20, color: COLORES.moradoOscuro },
+  logoClaro: { backgroundColor: COLORES.dorado },
+  logoTextoClaro: { color: COLORES.moradoOscuro },
+  nombreMarcaClaro: { color: "#fff" },
 });

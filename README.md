@@ -110,6 +110,22 @@ tiene **Buscar salones** y el login tiene **Ver salones sin iniciar sesión**.
 Regla de negocio: los filtros activos se ven rellenos y con su valor. También se probó la
 validación de los chips (precio negativo), "Quitar filtros" y volver de la pantalla de detalle.
 
+### Diseño y accesibilidad
+
+- **Franja de encabezado** morado oscuro con acento dorado; resultados sobre el fondo lila.
+- **Sugerencias rápidas** en cada filtro (Tula, 100+, Hasta $10,000...): un toque aplica el
+  filtro sin escribir. También se puede escribir un valor y pulsar **Aplicar**.
+- **Cuadrícula responsiva**: 1 columna en celular, 2 en tablet (≥ 700 px), 3 en escritorio (≥ 1024 px).
+- **Carga con esqueletos** (`components/Esqueleto.js`) en lugar de un spinner, en la búsqueda y en el detalle.
+- **Foto de respaldo** (`components/FotoSalon.js`): si el salón no tiene foto o la URL no carga,
+  muestra su inicial en lugar de un recuadro vacío.
+- **Detalle**: botón "Volver" arriba, datos en pastillas, "precio desde" destacado y el paquete
+  más económico marcado.
+- **Escalas** de espaciado y esquinas en `theme/espaciado.js` (sin números sueltos).
+- **Accesibilidad (WCAG 2.1 AA)**: revisado con axe-core sin problemas en búsqueda y detalle.
+  Etiquetas para lectores de pantalla en tarjetas, chips y campos; foco visible al navegar con
+  teclado; el color `muted` y el pie de página se oscurecieron para cumplir contraste 4.5:1.
+
 ## Pendiente
 
 - **Fotos:** la HU-07 las pide, pero la API de HU-06 todavía no las recibe al crear ni
