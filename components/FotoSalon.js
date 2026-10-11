@@ -27,6 +27,6 @@ export default function FotoSalon({ uri, nombre, style, tamanoInicial = 48 }) {
 }
 
 const estilos = StyleSheet.create({
-  vacia: { alignItems: "center", justifyContent: "center", backgroundColor: COLORES.moradoOscuro },
-  inicial: { color: COLORES.dorado, fontWeight: "700" },
+  vacia: { alignItems: "center", justifyContent: "center", backgroundColor: COLORES.esqueleto },
+  inicial: { color: COLORES.morado, fontWeight: "700" },
 });
