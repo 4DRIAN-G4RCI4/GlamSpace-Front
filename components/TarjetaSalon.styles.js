@@ -14,8 +14,6 @@ export const estilos = StyleSheet.create({
     elevation: 3,
   },
   foto: { width: "100%", height: 160, backgroundColor: COLORES.moradoClaro },
-  fotoVacia: { alignItems: "center", justifyContent: "center", backgroundColor: COLORES.moradoOscuro },
-  fotoVaciaTexto: { color: COLORES.dorado, fontSize: 48, fontWeight: "700" },
   cuerpo: { padding: 14 },
   nombre: { fontSize: 16.5, fontWeight: "700", color: COLORES.texto },
   zona: { fontSize: 12.5, color: COLORES.muted, marginTop: 3 },

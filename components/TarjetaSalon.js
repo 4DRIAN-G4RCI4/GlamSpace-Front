@@ -4,7 +4,8 @@
  */
 
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import FotoSalon from "./FotoSalon";
 import { formatearPrecio } from "../utils/formato";
 import { estilos } from "./TarjetaSalon.styles";
 
@@ -17,13 +18,7 @@ export default function TarjetaSalon({ salon, onPress }) {
       accessibilityRole="button"
       accessibilityLabel={`${salon.nombre}, ${salon.capacidad} personas, desde ${formatearPrecio(salon.precioDesde)}`}
     >
-      {salon.fotoPrincipal ? (
-        <Image source={{ uri: salon.fotoPrincipal }} style={estilos.foto} resizeMode="cover" />
-      ) : (
-        <View style={[estilos.foto, estilos.fotoVacia]}>
-          <Text style={estilos.fotoVaciaTexto}>{salon.nombre.charAt(0).toUpperCase()}</Text>
-        </View>
-      )}
+      <FotoSalon uri={salon.fotoPrincipal} nombre={salon.nombre} style={estilos.foto} />
 
       <View style={estilos.cuerpo}>
         <Text style={estilos.nombre} numberOfLines={1}>

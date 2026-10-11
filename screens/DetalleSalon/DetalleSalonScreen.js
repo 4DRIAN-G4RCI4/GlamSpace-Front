@@ -11,8 +11,9 @@
  */
 
 import React from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import Marca from "../../components/Marca";
+import FotoSalon from "../../components/FotoSalon";
 import { COLORES } from "../../theme/colores";
 import { formatearPrecio } from "../../utils/formato";
 import useDetalleSalon from "./useDetalleSalon";
@@ -57,13 +58,7 @@ export default function DetalleSalonScreen({ navigation, route }) {
       <Marca />
 
       <View style={[estilos.tarjeta, estilos.tarjetaSinRelleno]}>
-        {foto ? (
-          <Image source={{ uri: foto }} style={estilos.foto} resizeMode="cover" />
-        ) : (
-          <View style={[estilos.foto, estilos.fotoVacia]}>
-            <Text style={estilos.fotoVaciaTexto}>{salon.nombre.charAt(0).toUpperCase()}</Text>
-          </View>
-        )}
+        <FotoSalon uri={foto} nombre={salon.nombre} style={estilos.foto} tamanoInicial={64} />
 
         <View style={estilos.cuerpo}>
           <Text style={estilos.titulo}>{salon.nombre}</Text>

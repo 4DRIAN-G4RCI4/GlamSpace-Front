@@ -11,8 +11,6 @@ export const estilos = {
   ...StyleSheet.create({
     tarjetaSinRelleno: { padding: 0, overflow: "hidden" }, // se usa junto con `tarjeta`
     foto: { width: "100%", height: 220, backgroundColor: COLORES.moradoClaro },
-    fotoVacia: { alignItems: "center", justifyContent: "center", backgroundColor: COLORES.moradoOscuro },
-    fotoVaciaTexto: { color: COLORES.dorado, fontSize: 64, fontWeight: "700" },
     cuerpo: { padding: 22 },
 
     dato: { fontSize: 14, color: COLORES.texto, marginBottom: 6 },
