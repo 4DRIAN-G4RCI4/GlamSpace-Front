@@ -101,21 +101,25 @@ export default function useBusquedaSalones() {
     setErrorChip(null);
   }
 
-  function aplicarChip() {
-    const mensajeError = VALIDADORES[chipAbierto](borradorChip);
+  function aplicarValor(texto) {
+    const mensajeError = VALIDADORES[chipAbierto](texto);
     if (mensajeError) {
       setErrorChip(mensajeError);
       return;
     }
     if (chipAbierto === "zona") {
-      const zona = borradorChip.trim();
+      const zona = texto.trim();
       setTextoBusqueda(zona); // la barra y el chip muestran lo mismo
       setFiltros((previos) => ({ ...previos, zona }));
     } else {
-      setFiltros((previos) => ({ ...previos, [chipAbierto]: aNumero(borradorChip) }));
+      setFiltros((previos) => ({ ...previos, [chipAbierto]: aNumero(texto) }));
     }
     cerrarChip();
   }
+
+  // "Aplicar" con lo escrito, o un toque en una sugerencia rápida.
+  const aplicarChip = () => aplicarValor(borradorChip);
+  const aplicarSugerencia = (valor) => aplicarValor(String(valor));
 
   // ---- Quitar filtros ----
 
@@ -148,6 +152,7 @@ export default function useBusquedaSalones() {
     abrirChip,
     cerrarChip,
     aplicarChip,
+    aplicarSugerencia,
     quitarFiltro,
     quitarTodos,
     // resultados
