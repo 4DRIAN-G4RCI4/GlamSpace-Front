@@ -8,10 +8,11 @@ export const COLORES = {
   moradoClaro: "#f4ecf7",
   dorado: "#d4af37",
   texto: "#2b1830",
-  muted: "#7a6a80",
+  muted: "#6b5a72", // contraste ≥ 4.5:1 sobre moradoClaro y blanco (WCAG AA)
   error: "#c0392b",
   ok: "#2e7d32",
   borde: "#e4d9e8",
   fondoInput: "#fdfcfe",
-  placeholder: "#b7a7bd",
+  placeholder: "#9a8aa0",
+  esqueleto: "#e9dfee", // bloques de carga
 };
