@@ -36,7 +36,7 @@ export default function useDisponibilidad(salonId) {
   }
 
   useEffect(() => {
-    if (salonId) cargar();
+    if (salonId) void cargar();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [salonId, mes.anio, mes.mes]);
 

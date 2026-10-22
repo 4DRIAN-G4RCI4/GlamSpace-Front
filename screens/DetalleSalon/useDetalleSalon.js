@@ -30,7 +30,7 @@ export default function useDetalleSalon(salonId) {
   }
 
   useEffect(() => {
-    cargar();
+    void cargar();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [salonId]);
 
