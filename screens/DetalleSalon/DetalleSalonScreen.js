@@ -1,13 +1,16 @@
 /**
- * GlamSpaces · Detalle de un salón (Sprint 3)
+ * GlamSpaces · Detalle de un salón y calendario de disponibilidad (Sprint 4 · HU-13)
  *
- * Destino de las tarjetas de la búsqueda (HU-10, criterio 4). Muestra foto, datos
- * del salón, "precio desde" y sus paquetes. La pantalla completa de detalle
- * (galería, reservar, etc.) queda para su propia historia.
+ * Destino de las tarjetas de la búsqueda (HU-10). Muestra la galería de fotos, datos
+ * del salón, sus paquetes y el calendario del mes con las fechas ocupadas (HU-12).
+ * Al confirmar una fecha disponible lleva a la solicitud de reservación con esa fecha.
  *
- *   - DetalleSalonScreen.js   → pantalla (JSX)   [este archivo]
- *   - DetalleSalon.styles.js  → estilos
- *   - useDetalleSalon.js      → lógica / estado
+ *   - DetalleSalonScreen.js        → pantalla (JSX)   [este archivo]
+ *   - CalendarioDisponibilidad.js  → calendario del mes (JSX)
+ *   - DetalleSalon.styles.js       → estilos
+ *   - useDetalleSalon.js           → lógica / estado del salón y la galería
+ *   - useDisponibilidad.js         → lógica / estado del calendario
+ *   - detalleSalon.validaciones.js → reglas para elegir la fecha
  */
 
 import React from "react";
@@ -15,8 +18,10 @@ import { View, Text, Pressable, ScrollView } from "react-native";
 import FotoSalon from "../../components/FotoSalon";
 import { Bloque } from "../../components/Esqueleto";
 import { formatearPrecio } from "../../utils/formato";
+import { formatearFechaLarga } from "../../utils/fechas";
 import { ESPACIO } from "../../theme/espaciado";
 import useDetalleSalon from "./useDetalleSalon";
+import CalendarioDisponibilidad from "./CalendarioDisponibilidad";
 import { estilos } from "./DetalleSalon.styles";
 
 function BarraSuperior({ onVolver }) {
@@ -51,6 +56,34 @@ function DetalleEsqueleto() {
   );
 }
 
+// Foto grande + miniaturas para cambiarla (solo si hay más de una).
+function Galeria({ fotos, activa, onElegir, nombre }) {
+  return (
+    <View>
+      <FotoSalon uri={fotos[activa]} nombre={nombre} style={estilos.foto} tamanoInicial={72} />
+      {fotos.length > 1 ? (
+        <ScrollView horizontal contentContainerStyle={estilos.miniaturas} showsHorizontalScrollIndicator={false}>
+          {fotos.map((uri, i) => (
+            <Pressable
+              key={uri + i}
+              onPress={() => onElegir(i)}
+              accessibilityRole="button"
+              accessibilityLabel={`Ver foto ${i + 1} de ${fotos.length}`}
+              accessibilityState={{ selected: i === activa }}
+              style={({ hovered, focused }) => [
+                estilos.miniatura,
+                (i === activa || hovered || focused) && estilos.miniaturaActiva,
+              ]}
+            >
+              <FotoSalon uri={uri} nombre={nombre} style={estilos.miniaturaFoto} tamanoInicial={20} />
+            </Pressable>
+          ))}
+        </ScrollView>
+      ) : null}
+    </View>
+  );
+}
+
 function Paquete({ paquete, masBarato }) {
   return (
     <View style={[estilos.paquete, masBarato && estilos.paqueteMasBarato]}>
@@ -60,6 +93,26 @@ function Paquete({ paquete, masBarato }) {
       </View>
       {paquete.descripcion ? <Text style={estilos.paqueteDescripcion}>{paquete.descripcion}</Text> : null}
       {masBarato ? <Text style={estilos.etiquetaBarato}>★ El más económico</Text> : null}
+    </View>
+  );
+}
+
+// Criterio 3: confirma la fecha elegida y pasa a la solicitud con la fecha precargada.
+function ConfirmarFecha({ fecha, onConfirmar }) {
+  return (
+    <View style={estilos.confirmar}>
+      <Text style={estilos.confirmarTexto}>
+        {fecha ? `Fecha elegida: ${formatearFechaLarga(fecha)}` : "Elige una fecha disponible en el calendario."}
+      </Text>
+      <Pressable
+        onPress={onConfirmar}
+        disabled={!fecha}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: !fecha }}
+        style={[estilos.boton, !fecha && estilos.botonDeshabilitado]}
+      >
+        <Text style={estilos.botonTexto}>Solicitar reservación</Text>
+      </Pressable>
     </View>
   );
 }
@@ -83,10 +136,14 @@ export default function DetalleSalonScreen({ navigation, route }) {
       </View>
     );
   } else {
-    const { salon, paquetes } = f;
+    const { salon, paquetes, calendario } = f;
+    const solicitar = () =>
+      navigation &&
+      navigation.navigate("SolicitudReservacion", { salonId, nombreSalon: salon.nombre, paquetes, fecha: calendario.fechaElegida });
+
     contenido = (
       <View style={estilos.tarjetaDetalle}>
-        <FotoSalon uri={salon.fotos && salon.fotos[0]} nombre={salon.nombre} style={estilos.foto} tamanoInicial={72} />
+        <Galeria fotos={f.fotos} activa={f.fotoActiva} onElegir={f.setFotoActiva} nombre={salon.nombre} />
 
         <View style={estilos.cuerpo}>
           <Text style={estilos.nombre} accessibilityRole="header">
@@ -116,6 +173,12 @@ export default function DetalleSalonScreen({ navigation, route }) {
           {paquetes.map((p, i) => (
             <Paquete key={p.id} paquete={p} masBarato={i === 0 && paquetes.length > 1} />
           ))}
+
+          <Text style={estilos.tituloSeccion} accessibilityRole="header">
+            Disponibilidad
+          </Text>
+          <CalendarioDisponibilidad c={calendario} />
+          <ConfirmarFecha fecha={calendario.fechaElegida} onConfirmar={solicitar} />
         </View>
       </View>
     );
@@ -125,7 +188,7 @@ export default function DetalleSalonScreen({ navigation, route }) {
     <ScrollView contentContainerStyle={estilos.pantalla}>
       <BarraSuperior onVolver={volver} />
       <View style={estilos.contenido}>{contenido}</View>
-      <Text style={estilos.pie}>Detalle del salón · Sprint 3 · GlamSpaces</Text>
+      <Text style={estilos.pie}>Detalle del salón · GlamSpaces</Text>
     </ScrollView>
   );
 }
