@@ -18,10 +18,11 @@ utils/
   validadores.js                    Correo, URL, número, longitud mínima de contraseña
   validarCuenta.js                  Reglas comunes de cliente y administrador
   formato.js                        Formato de precios ($8,500)
+  fechas.js                         Fechas del calendario ("yyyy-MM-dd", semanas del mes, fecha larga)
 services/                           Todo lo que habla con la API o el dispositivo
   api.js                              URL base (EXPO_PUBLIC_API_URL), postJson, postPaginado, mensajes de error
   usuariosApi.js                      Registro y login (HU-02, HU-03, HU-04)
-  salonesApi.js                       Crear/publicar salón y paquetes (HU-07), buscar (HU-10) y detalle
+  salonesApi.js                       Crear/publicar salón y paquetes (HU-07), buscar (HU-10), detalle y disponibilidad (HU-13)
   sesionStorage.js                    Sesión activa en el dispositivo
 screens/                            Una carpeta por pantalla, cada una dividida en 4 partes
   <Pantalla>/<Pantalla>Screen.js      Módulo visual (solo JSX)
@@ -29,7 +30,8 @@ screens/                            Una carpeta por pantalla, cada una dividida 
   <Pantalla>/use<Pantalla>.js         Lógica: estado y acciones (el "script")
   <Pantalla>/<pantalla>.validaciones.js  Reglas de validación
   BusquedaSalones/                  HU-10 · pantalla de inicio
-  DetalleSalon/                     Detalle básico de un salón (destino de las tarjetas)
+  DetalleSalon/                     HU-13 · detalle, galería y calendario de disponibilidad
+  SolicitudReservacion/             Destino de HU-13 con la fecha precargada
   Login/                            HU-04 (+ PanelSesion.js)
   RegistroCliente/                  HU-02
   RegistroAdministrador/            HU-03
@@ -126,10 +128,44 @@ validación de los chips (precio negativo), "Quitar filtros" y volver de la pant
   Etiquetas para lectores de pantalla en tarjetas, chips y campos; foco visible al navegar con
   teclado; el color `muted` y el pie de página se oscurecieron para cumplir contraste 4.5:1.
 
+## Sprint 4 — Detalle y calendario de disponibilidad (HU-13)
+
+`screens/DetalleSalon/` ahora es la pantalla completa del salón. Consume
+`POST /api/salones/obtener` (detalle) y `POST /api/salones/disponibilidad` (HU-12 del backend),
+que regresa las fechas ocupadas de un mes: `{ salonId, anio, mes, fechasOcupadas: ["2026-11-14"] }`.
+
+- **Galería**: foto grande y miniaturas para cambiarla (solo si el salón tiene más de una).
+- **Paquetes** del más barato al más caro, igual que antes.
+- **Calendario mensual** (`CalendarioDisponibilidad.js` + `useDisponibilidad.js`): abre en el mes
+  actual, no deja ir a meses pasados y consulta la API cada vez que se cambia de mes.
+  Cada día se ve como disponible, **ocupado** (rosa y tachado), pasado (gris) o **tu fecha** (morado).
+  Si la consulta falla, muestra el error con **Reintentar** y no deja elegir fechas.
+- **Solicitar reservación**: se habilita al elegir una fecha y lleva a
+  `screens/SolicitudReservacion/` con la fecha precargada ("Cambiar" regresa al calendario).
+
+Regla de negocio (`detalleSalon.validaciones.js`): solo se eligen fechas futuras (a partir de
+mañana) que no estén ocupadas. Las fechas se manejan como texto `yyyy-MM-dd` con la hora local
+(`utils/fechas.js`), así no se corren un día por la zona horaria.
+
+### Criterios de aceptación (probados de punta a punta en Chrome contra la API de Azure)
+
+Salón `[Prueba] Jardín Encanto`: noviembre 2026 tiene confirmadas el 14 y el 21 y una pendiente el 28.
+
+| # | Caso | Resultado |
+|---|---|---|
+| 1 | Entrar al detalle del salón | Muestra fotos, paquetes y el calendario del mes actual |
+| 2 | Ver noviembre 2026 | El 14 y el 21 se ven ocupados; el 28 (pendiente) se ve disponible |
+| 3 | Elegir el 20 y pulsar **Solicitar reservación** | Abre la solicitud con "viernes 20 de noviembre de 2026" |
+| 4 | Tocar el 14 (ocupado) | Avisa "Esa fecha ya está reservada" y el botón sigue deshabilitado |
+
+Accesibilidad: cada día tiene su etiqueta para lector de pantalla ("14 de noviembre, ocupado"),
+los ocupados no dependen solo del color (van tachados) y el aviso se anuncia al aparecer.
+
 ## Pendiente
 
 - **Fotos:** la HU-07 las pide, pero la API de HU-06 todavía no las recibe al crear ni
   al actualizar (solo las devuelve en el detalle). El formulario no las incluye hasta que
   exista el endpoint.
-- **Detalle del salón completo** (galería, reservar): la pantalla actual es básica, solo para
-  que las tarjetas de búsqueda tengan a dónde llevar.
+- **Enviar la solicitud de reservación:** la pantalla ya recibe la fecha y el paquete, pero el
+  botón **Enviar** queda deshabilitado hasta que la API tenga el endpoint para crear reservaciones
+  (la tabla `Reservaciones` ya existe, HU-11).
