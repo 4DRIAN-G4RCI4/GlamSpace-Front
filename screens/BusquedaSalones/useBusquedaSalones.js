@@ -70,7 +70,7 @@ export default function useBusquedaSalones() {
   }
 
   useEffect(() => {
-    consultar(1);
+    void consultar(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtros]);
 

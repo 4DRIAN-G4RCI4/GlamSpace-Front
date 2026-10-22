@@ -130,7 +130,7 @@ export default function LoginScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <Text style={estilos.pie}>HU-04 · Inicio y cierre de sesión · Sprint 1 · GlamSpaces</Text>
+        <Text style={estilos.pie}>Inicio y cierre de sesión · GlamSpaces</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );

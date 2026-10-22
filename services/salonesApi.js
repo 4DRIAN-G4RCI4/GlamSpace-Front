@@ -20,6 +20,7 @@ const RUTAS = {
   actualizarSalon: "/salones/actualizar",
   obtenerSalon: "/salones/obtener",
   buscarSalones: "/salones/buscar",
+  disponibilidad: "/salones/disponibilidad",
   crearPaquete: "/paquetes/crear",
 };
 
@@ -39,6 +40,13 @@ export function buscarSalones({ zona, capacidadMinima, precioMaximo, pagina = 1,
 // → { id, nombre, zona, capacidad, descripcion, estado, paquetes: [...], fotos: ["url", ...] }
 export function obtenerSalon(salonId) {
   return postJson(RUTAS.obtenerSalon, { id: salonId });
+}
+
+// HU-12 · Fechas ocupadas del salón en un mes (1 a 12). Solo cuentan las reservaciones
+// confirmadas; un mes sin ocupadas regresa la lista vacía (no es error).
+// → { salonId, anio, mes, fechasOcupadas: ["2026-11-14", ...] }
+export function obtenerDisponibilidad(salonId, anio, mes) {
+  return postJson(RUTAS.disponibilidad, { salonId, anio, mes });
 }
 
 function armarSalon(salon) {

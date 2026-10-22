@@ -138,7 +138,7 @@ export default function RegistroAdministradorScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <Text style={estilos.pie}>HU-03 · Registro de administrador · Sprint 1 · GlamSpaces</Text>
+        <Text style={estilos.pie}>Registro de administrador · GlamSpaces</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );

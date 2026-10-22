@@ -28,6 +28,5 @@ export const estilos = {
       marginBottom: 16,
     },
     infoLinea: { fontSize: 13, color: COLORES.texto, marginBottom: 4 },
-    notaPanel: { fontSize: 12.5, color: COLORES.muted, lineHeight: 18, marginBottom: 6 },
   }),
 };

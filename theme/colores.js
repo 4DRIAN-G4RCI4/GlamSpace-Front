@@ -15,4 +15,6 @@ export const COLORES = {
   fondoInput: "#fdfcfe",
   placeholder: "#9a8aa0",
   esqueleto: "#e9dfee", // bloques de carga
+  ocupadoFondo: "#fbe4e1", // fecha reservada en el calendario (HU-13)
+  ocupadoTexto: "#9b2a1e", // contraste ≥ 4.5:1 sobre ocupadoFondo
 };

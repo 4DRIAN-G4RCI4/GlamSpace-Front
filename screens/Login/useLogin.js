@@ -39,7 +39,7 @@ export default function useLogin() {
 
   useEffect(() => {
     // Si ya había una sesión activa, al reabrir la app se mantiene.
-    (async () => {
+    void (async () => {
       const sesionGuardada = await obtenerSesionActiva();
       setSesion(sesionGuardada);
       setCargandoSesion(false);
