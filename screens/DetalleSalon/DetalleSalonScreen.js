@@ -188,7 +188,7 @@ export default function DetalleSalonScreen({ navigation, route }) {
     <ScrollView contentContainerStyle={estilos.pantalla}>
       <BarraSuperior onVolver={volver} />
       <View style={estilos.contenido}>{contenido}</View>
-      <Text style={estilos.pie}>Detalle del salón · Sprint 4 · GlamSpaces</Text>
+      <Text style={estilos.pie}>Detalle del salón · GlamSpaces</Text>
     </ScrollView>
   );
 }

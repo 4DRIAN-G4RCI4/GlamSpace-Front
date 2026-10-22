@@ -65,10 +65,9 @@ export default function SolicitudReservacionScreen({ navigation, route }) {
           <Pressable disabled accessibilityRole="button" accessibilityState={{ disabled: true }} style={[estilos.boton, estilos.botonDeshabilitado]}>
             <Text style={estilos.botonTexto}>Enviar solicitud</Text>
           </Pressable>
-          <Text style={estilos.enlaceCambio}>El envío se habilita cuando la API tenga el endpoint de reservaciones.</Text>
         </View>
       </View>
-      <Text style={estilos.pie}>Solicitud de reservación · Sprint 4 · GlamSpaces</Text>
+      <Text style={estilos.pie}>Solicitud de reservación · GlamSpaces</Text>
     </ScrollView>
   );
 }

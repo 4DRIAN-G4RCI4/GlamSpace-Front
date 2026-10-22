@@ -31,12 +31,6 @@ export default function PanelSesion({ sesion, onCerrarSesion, onPublicarSalon, o
           </Text>
         </View>
 
-        <Text style={estilos.notaPanel}>
-          {esAdministrador
-            ? "Aquí irá la lista de tus salones y solicitudes (siguientes sprints)."
-            : "Aquí irán tus reservaciones (siguientes sprints)."}
-        </Text>
-
         {esAdministrador && onPublicarSalon ? (
           <TouchableOpacity style={estilos.boton} onPress={onPublicarSalon} activeOpacity={0.85}>
             <Text style={estilos.botonTexto}>Publicar mi salón</Text>
@@ -58,7 +52,7 @@ export default function PanelSesion({ sesion, onCerrarSesion, onPublicarSalon, o
         </TouchableOpacity>
       </View>
 
-      <Text style={estilos.pie}>HU-04 · Sesión activa · GlamSpaces</Text>
+      <Text style={estilos.pie}>Sesión activa · GlamSpaces</Text>
     </View>
   );
 }
