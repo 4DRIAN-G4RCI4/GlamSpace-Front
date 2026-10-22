@@ -217,7 +217,7 @@ export default function PublicarSalonScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <Text style={estilos.pie}>HU-07 · Publicación de salón · Sprint 2 · GlamSpaces</Text>
+        <Text style={estilos.pie}>Publicación de salón · GlamSpaces</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );

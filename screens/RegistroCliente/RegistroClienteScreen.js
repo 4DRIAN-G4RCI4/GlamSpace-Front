@@ -131,7 +131,7 @@ export default function RegistroClienteScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <Text style={estilos.pie}>HU-02 · Registro de cliente · Sprint 1 · GlamSpaces</Text>
+        <Text style={estilos.pie}>Registro de cliente · GlamSpaces</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );

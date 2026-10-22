@@ -83,5 +83,58 @@ export const estilos = {
     paquetePrecio: { fontSize: 16, fontWeight: "700", color: COLORES.morado },
     paqueteDescripcion: { fontSize: 13.5, color: COLORES.muted, marginTop: ESPACIO.xs, lineHeight: 19 },
     etiquetaBarato: { fontSize: 11, color: "#8a6d00", fontWeight: "700", marginTop: ESPACIO.sm, textTransform: "uppercase", letterSpacing: 0.5 },
+
+    // Galería (HU-13)
+    miniaturas: { gap: ESPACIO.sm, paddingHorizontal: ESPACIO.xl, paddingTop: ESPACIO.md },
+    miniatura: { borderRadius: RADIO.sm, borderWidth: 2, borderColor: "transparent", overflow: "hidden" },
+    miniaturaActiva: { borderColor: COLORES.dorado },
+    miniaturaFoto: { width: 72, height: 48 },
+
+    // Calendario de disponibilidad (HU-13)
+    calendario: { borderWidth: 1, borderColor: COLORES.borde, borderRadius: RADIO.sm, padding: ESPACIO.md },
+    calendarioEncabezado: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: ESPACIO.sm },
+    calendarioMes: { fontSize: 16, fontWeight: "700", color: COLORES.moradoOscuro },
+    calendarioError: { paddingVertical: ESPACIO.lg },
+    botonMes: {
+      width: 36,
+      height: 36,
+      borderRadius: RADIO.pill,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: COLORES.moradoClaro,
+    },
+    botonMesFoco: { borderWidth: 2, borderColor: COLORES.dorado },
+    botonMesTexto: { fontSize: 20, fontWeight: "700", color: COLORES.morado, lineHeight: 22 },
+
+    semana: { flexDirection: "row" },
+    celda: { width: "14.2857%", height: 46, alignItems: "center", justifyContent: "center" },
+    diaSemana: { fontSize: 12, fontWeight: "700", color: COLORES.muted },
+    dia: {
+      width: 40,
+      height: 40,
+      maxWidth: "100%",
+      borderRadius: RADIO.pill,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    dia_disponible: { backgroundColor: "#fff", borderWidth: 1, borderColor: COLORES.borde },
+    dia_ocupado: { backgroundColor: COLORES.ocupadoFondo },
+    dia_pasado: {},
+    dia_elegido: { backgroundColor: COLORES.morado },
+    diaHoy: { borderWidth: 1.5, borderColor: COLORES.dorado },
+    diaFoco: { borderColor: COLORES.morado, borderWidth: 2 },
+    diaTexto: { fontSize: 14, fontWeight: "600" },
+    diaTexto_disponible: { color: COLORES.texto },
+    diaTexto_ocupado: { color: COLORES.ocupadoTexto, textDecorationLine: "line-through" },
+    diaTexto_pasado: { color: COLORES.placeholder },
+    diaTexto_elegido: { color: "#fff", fontWeight: "700" },
+
+    leyenda: { flexDirection: "row", flexWrap: "wrap", gap: ESPACIO.lg, marginTop: ESPACIO.md, justifyContent: "center" },
+    leyendaItem: { flexDirection: "row", alignItems: "center" },
+    leyendaMuestra: { width: 14, height: 14, borderRadius: RADIO.pill, marginRight: ESPACIO.xs + 2 },
+    leyendaTexto: { fontSize: 12.5, color: COLORES.muted },
+
+    confirmar: { marginTop: ESPACIO.lg },
+    confirmarTexto: { fontSize: 14.5, color: COLORES.texto, fontWeight: "600", textAlign: "center" },
   }),
 };
