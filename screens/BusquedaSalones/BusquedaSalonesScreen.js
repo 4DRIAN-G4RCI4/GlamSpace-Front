@@ -58,7 +58,7 @@ export default function BusquedaSalonesScreen({ navigation }) {
         <ResultadosSalones f={f} onAbrirSalon={(salonId) => ir("DetalleSalon", { salonId })} />
       </View>
 
-      <Text style={estilos.pie}>HU-10 · Búsqueda de salones · Sprint 3 · GlamSpaces</Text>
+      <Text style={estilos.pie}>Búsqueda de salones · GlamSpaces</Text>
     </ScrollView>
   );
 }
