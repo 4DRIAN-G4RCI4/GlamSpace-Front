@@ -44,7 +44,7 @@ export default function usePublicarSalon() {
   const [progreso, setProgreso] = useState(PROGRESO_INICIAL);
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const sesionGuardada = await obtenerSesionActiva();
       setSesion(sesionGuardada);
       if (sesionGuardada && sesionGuardada.nombre_salon) {
