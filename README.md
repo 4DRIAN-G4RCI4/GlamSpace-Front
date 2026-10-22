@@ -7,6 +7,7 @@ con `react-native-web` y se publica como sitio estático en Azure.
 
 ```
 App.js                              Router manual entre pantallas (navigate(nombre, params) + route.params)
+                                    En web usa el historial del navegador: Atrás/Adelante y recargar funcionan
 components/                         Piezas visuales reutilizables
   Campo.js · Campo.styles.js          Input con etiqueta, error, pista y mostrar/ocultar contraseña
   Marca.js · Marca.styles.js          Logo + nombre de GlamSpaces
