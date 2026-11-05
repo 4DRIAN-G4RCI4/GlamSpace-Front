@@ -13,8 +13,13 @@ export async function guardarSesion(sesion) {
 
 export async function obtenerSesionActiva() {
   try {
-    const data = await AsyncStorage.getItem(LLAVE_SESION);
-    return data ? JSON.parse(data) : null;
+    const sesion = JSON.parse(await AsyncStorage.getItem(LLAVE_SESION));
+    // Sesiones guardadas con el formato viejo de la API no traen nombre: se descartan.
+    if (!sesion || typeof sesion.nombre !== "string") {
+      await AsyncStorage.removeItem(LLAVE_SESION);
+      return null;
+    }
+    return sesion;
   } catch (e) {
     return null;
   }
