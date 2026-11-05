@@ -1,5 +1,5 @@
 /**
- * GlamSpaces · App con las pantallas de los Sprints 1 a 4
+ * GlamSpaces · App con las pantallas de los Sprints 1 a 5
  *
  * Es un "router" manual (sin librería de navegación): cada pantalla recibe un
  * objeto `navigation` con `navigate(nombre, params)` y un `route` con
@@ -9,7 +9,8 @@
  * Pantallas:
  *   BusquedaSalones        HU-10 (Sprint 3) · pantalla de inicio
  *   DetalleSalon           HU-13 (Sprint 4) · detalle y calendario de disponibilidad
- *   SolicitudReservacion   Sprint 4 · destino de HU-13 con la fecha precargada
+ *   SolicitudReservacion   HU-16 (Sprint 5) · formulario de solicitud con la fecha precargada
+ *   MisSolicitudes         HU-16 (Sprint 5) · estado de las solicitudes del cliente
  *   Login                  HU-04 (Sprint 1)
  *   RegistroCliente        HU-02 (Sprint 1)
  *   RegistroAdministrador  HU-03 (Sprint 1)
@@ -30,11 +31,13 @@ import RegistroClienteScreen from "./screens/RegistroCliente/RegistroClienteScre
 import RegistroAdministradorScreen from "./screens/RegistroAdministrador/RegistroAdministradorScreen";
 import PublicarSalonScreen from "./screens/PublicarSalon/PublicarSalonScreen";
 import SolicitudReservacionScreen from "./screens/SolicitudReservacion/SolicitudReservacionScreen";
+import MisSolicitudesScreen from "./screens/MisSolicitudes/MisSolicitudesScreen";
 
 const PANTALLAS = {
   BusquedaSalones: BusquedaSalonesScreen,
   DetalleSalon: DetalleSalonScreen,
   SolicitudReservacion: SolicitudReservacionScreen,
+  MisSolicitudes: MisSolicitudesScreen,
   Login: LoginScreen,
   RegistroCliente: RegistroClienteScreen,
   RegistroAdministrador: RegistroAdministradorScreen,

@@ -17,4 +17,11 @@ export const COLORES = {
   esqueleto: "#e9dfee", // bloques de carga
   ocupadoFondo: "#fbe4e1", // fecha reservada en el calendario (HU-13)
   ocupadoTexto: "#9b2a1e", // contraste ≥ 4.5:1 sobre ocupadoFondo
+  // Estado de una solicitud (HU-16). Cada texto tiene contraste ≥ 4.5:1 sobre su fondo.
+  pendienteFondo: "#fff4d6",
+  pendienteTexto: "#7a5200",
+  confirmadaFondo: "#e3f3e4",
+  confirmadaTexto: "#1f5f23",
+  rechazadaFondo: "#fbe4e1",
+  rechazadaTexto: "#9b2a1e",
 };
