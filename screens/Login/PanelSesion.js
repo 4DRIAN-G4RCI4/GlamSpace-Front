@@ -8,7 +8,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import Marca from "../../components/Marca";
 import { estilos } from "./Login.styles";
 
-export default function PanelSesion({ sesion, onCerrarSesion, onPublicarSalon, onBuscarSalones }) {
+export default function PanelSesion({ sesion, onCerrarSesion, onPublicarSalon, onBuscarSalones, onMisSolicitudes }) {
   const esAdministrador = sesion.tipo_cuenta === "administrador";
 
   return (
@@ -40,6 +40,12 @@ export default function PanelSesion({ sesion, onCerrarSesion, onPublicarSalon, o
         {!esAdministrador && onBuscarSalones ? (
           <TouchableOpacity style={estilos.boton} onPress={onBuscarSalones} activeOpacity={0.85}>
             <Text style={estilos.botonTexto}>Buscar salones</Text>
+          </TouchableOpacity>
+        ) : null}
+
+        {!esAdministrador && onMisSolicitudes ? (
+          <TouchableOpacity style={estilos.botonSecundario} onPress={onMisSolicitudes} activeOpacity={0.85}>
+            <Text style={estilos.botonSecundarioTexto}>Mis solicitudes</Text>
           </TouchableOpacity>
         ) : null}
 

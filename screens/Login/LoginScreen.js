@@ -11,7 +11,7 @@
  *   - ../../services/usuariosApi.js → llamada a la API
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -27,8 +27,18 @@ import PanelSesion from "./PanelSesion";
 import useLogin from "./useLogin";
 import { estilos } from "./Login.styles";
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation, route }) {
   const f = useLogin();
+
+  // Si otra pantalla mandó aquí para iniciar sesión (ej. la solicitud de reservación),
+  // al entrar se regresa a ella con sus mismos datos.
+  const volverA = route && route.params ? route.params.volverA : null;
+  useEffect(() => {
+    if (f.sesion && volverA && navigation) {
+      navigation.navigate(volverA.nombre, volverA.params);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [f.sesion]);
 
   if (f.cargandoSesion) {
     return (
@@ -45,6 +55,7 @@ export default function LoginScreen({ navigation }) {
         onCerrarSesion={f.manejarCerrarSesion}
         onPublicarSalon={() => navigation && navigation.navigate("PublicarSalon")}
         onBuscarSalones={() => navigation && navigation.navigate("BusquedaSalones")}
+        onMisSolicitudes={() => navigation && navigation.navigate("MisSolicitudes")}
       />
     );
   }
