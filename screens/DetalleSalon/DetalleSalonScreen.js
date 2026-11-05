@@ -139,7 +139,13 @@ export default function DetalleSalonScreen({ navigation, route }) {
     const { salon, paquetes, calendario } = f;
     const solicitar = () =>
       navigation &&
-      navigation.navigate("SolicitudReservacion", { salonId, nombreSalon: salon.nombre, paquetes, fecha: calendario.fechaElegida });
+      navigation.navigate("SolicitudReservacion", {
+        salonId,
+        nombreSalon: salon.nombre,
+        capacidad: salon.capacidad,
+        paquetes,
+        fecha: calendario.fechaElegida,
+      });
 
     contenido = (
       <View style={estilos.tarjetaDetalle}>

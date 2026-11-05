@@ -12,6 +12,7 @@ components/                         Piezas visuales reutilizables
   Campo.js · Campo.styles.js          Input con etiqueta, error, pista y mostrar/ocultar contraseña
   Marca.js · Marca.styles.js          Logo + nombre de GlamSpaces
   TarjetaSalon.js · .styles.js        Tarjeta de un resultado de búsqueda (HU-10)
+  TarjetaSolicitud.js · .styles.js    Resumen de una solicitud con su estado (HU-16)
 theme/
   colores.js                        Paleta única
   estilosComunes.js                 Estilos que se repiten (tarjeta, botones, mensajes...)
@@ -24,6 +25,7 @@ services/                           Todo lo que habla con la API o el dispositiv
   api.js                              URL base (EXPO_PUBLIC_API_URL), postJson, postPaginado, mensajes de error
   usuariosApi.js                      Registro y login (HU-02, HU-03, HU-04)
   salonesApi.js                       Crear/publicar salón y paquetes (HU-07), buscar (HU-10), detalle y disponibilidad (HU-13)
+  solicitudesApi.js                   Crear, consultar y listar solicitudes de reservación (HU-16)
   sesionStorage.js                    Sesión activa en el dispositivo
 screens/                            Una carpeta por pantalla, cada una dividida en 4 partes
   <Pantalla>/<Pantalla>Screen.js      Módulo visual (solo JSX)
@@ -32,7 +34,8 @@ screens/                            Una carpeta por pantalla, cada una dividida 
   <Pantalla>/<pantalla>.validaciones.js  Reglas de validación
   BusquedaSalones/                  HU-10 · pantalla de inicio
   DetalleSalon/                     HU-13 · detalle, galería y calendario de disponibilidad
-  SolicitudReservacion/             Destino de HU-13 con la fecha precargada
+  SolicitudReservacion/             HU-16 · formulario de solicitud con la fecha precargada
+  MisSolicitudes/                   HU-16 · estado de las solicitudes del cliente
   Login/                            HU-04 (+ PanelSesion.js)
   RegistroCliente/                  HU-02
   RegistroAdministrador/            HU-03
@@ -162,11 +165,62 @@ Salón `[Prueba] Jardín Encanto`: noviembre 2026 tiene confirmadas el 14 y el 2
 Accesibilidad: cada día tiene su etiqueta para lector de pantalla ("14 de noviembre, ocupado"),
 los ocupados no dependen solo del color (van tachados) y el aviso se anuncia al aparecer.
 
+## Sprint 5 — Formulario de solicitud de reservación (HU-16)
+
+Consume los endpoints de la HU-15 del backend (`services/solicitudesApi.js`), todos POST:
+
+| Endpoint | Body | Uso |
+|---|---|---|
+| `/api/solicitudes/crear` | `{ clienteId, salonId, paqueteId?, fechaEvento, tipoEvento, numeroInvitados, telefonoContacto, comentarios? }` | Enviar la solicitud |
+| `/api/solicitudes/obtener` | `{ id, clienteId }` | "Actualizar estado" de una solicitud |
+| `/api/solicitudes/listar` | `{ clienteId, pagina, tamanoPagina }` | "Mis solicitudes" |
+
+- **Formulario** (`screens/SolicitudReservacion/`): llega desde el calendario del detalle con la fecha
+  precargada ("Cambiar" regresa al calendario). Pide tipo de evento (con sugerencias de un toque),
+  número de invitados (muestra la capacidad del salón), paquete opcional, teléfono y comentarios.
+  El nombre se toma de la sesión, porque la API lo lee de la cuenta del cliente.
+- **Sesión**: solo un cliente puede enviar. Sin sesión, el formulario pide **Iniciar sesión** y, al entrar,
+  regresa al formulario con la misma fecha (`volverA` en los parámetros del login). A un administrador
+  le explica que necesita una cuenta de cliente.
+- **Confirmación**: al enviarse muestra "¡Solicitud enviada!" con el resumen y el estado **Pendiente**.
+- **Mis solicitudes** (`screens/MisSolicitudes/`): lista del cliente con el estado de cada una
+  (pendiente, confirmada o rechazada, cada uno con su color), "Actualizar estado" por solicitud y
+  "Ver más" para paginar. Se entra desde el panel del cliente y desde la confirmación.
+
+Reglas (`solicitudReservacion.validaciones.js`): fecha, tipo de evento, invitados (entero > 0 y hasta
+la capacidad del salón), nombre y teléfono (10 a 15 dígitos) son obligatorios; comentarios hasta 500
+caracteres. Si algo falta, se marca cada campo y un aviso dice qué revisar, sin llamar a la API.
+
+Errores de la API que se tratan aparte:
+- **4002** (la fecha ya no está disponible) y **1001** de fecha pasada: muestra el mensaje y el botón
+  **Elegir otra fecha**, que regresa al calendario.
+- **4004** (ya hay una solicitud pendiente para ese salón y fecha): muestra el mensaje y **Ver mis solicitudes**.
+- Los demás se muestran tal cual llegan de la API.
+
+**Limitación conocida:** mientras no haya JWT, el `clienteId` viaja en el body (lo toma de la sesión
+guardada). Hoy alguien podría mandar el `clienteId` de otro cliente; se corrige cuando la API tome el
+cliente del token.
+
+### Criterios de aceptación (probados en Chrome)
+
+Los salones y el calendario se probaron contra la API de Azure. Los 3 endpoints de solicitudes se
+simularon en el navegador con el contrato de la HU-15 (mismos campos y códigos), para no crear
+datos en producción.
+
+| # | Caso | Resultado |
+|---|---|---|
+| 1 | Completar el formulario y enviarlo | Manda el body del contrato y muestra "¡Solicitud enviada!" con estado Pendiente |
+| 2 | Enviar con tipo de evento, invitados y teléfono vacíos | Marca los 3 campos y avisa "Revisa: tipo de evento, número de invitados y teléfono." sin llamar a la API |
+| 3 | La API responde 4002 al enviar | Muestra "La fecha ya no está disponible." y el botón **Elegir otra fecha** |
+| 4 | Abrir "Mis solicitudes" y pulsar "Actualizar estado" | Muestra cada solicitud como Pendiente, Confirmada o Rechazada y consulta `/obtener` |
+
+También se probó: invitados por encima de la capacidad, el regreso al formulario después de iniciar
+sesión y que no haya errores de JavaScript.
+
 ## Pendiente
 
 - **Fotos:** la HU-07 las pide, pero la API de HU-06 todavía no las recibe al crear ni
   al actualizar (solo las devuelve en el detalle). El formulario no las incluye hasta que
   exista el endpoint.
-- **Enviar la solicitud de reservación:** la pantalla ya recibe la fecha y el paquete, pero el
-  botón **Enviar** queda deshabilitado hasta que la API tenga el endpoint para crear reservaciones
-  (la tabla `Reservaciones` ya existe, HU-11).
+- **Probar la HU-16 contra la API real** con una cuenta de cliente de prueba (los criterios 1, 3 y 4
+  se probaron con la API simulada).
