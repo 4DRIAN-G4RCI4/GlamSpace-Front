@@ -21,6 +21,7 @@ const RUTAS = {
   obtenerSalon: "/salones/obtener",
   buscarSalones: "/salones/buscar",
   disponibilidad: "/salones/disponibilidad",
+  listarSalones: "/salones/listar",
   crearPaquete: "/paquetes/crear",
 };
 
@@ -42,11 +43,18 @@ export function obtenerSalon(salonId) {
   return postJson(RUTAS.obtenerSalon, { id: salonId });
 }
 
-// HU-12 · Fechas ocupadas del salón en un mes (1 a 12). Solo cuentan las reservaciones
-// confirmadas; un mes sin ocupadas regresa la lista vacía (no es error).
+// HU-12 · Fechas ocupadas del salón en un mes (1 a 12). Desde la HU-17 cuentan las reservaciones
+// confirmadas Y las solicitudes confirmadas; un mes sin ocupadas regresa la lista vacía (no es error).
 // → { salonId, anio, mes, fechasOcupadas: ["2026-11-14", ...] }
 export function obtenerDisponibilidad(salonId, anio, mes) {
   return postJson(RUTAS.disponibilidad, { salonId, anio, mes });
+}
+
+// HU-19 · Salones del administrador (publicados o no) para su panel.
+// → [{ id, nombre, zona, capacidad, estado, totalPaquetes }]
+export async function listarSalonesDeAdmin(adminId) {
+  const r = await postPaginado(RUTAS.listarSalones, { adminId, pagina: 1, tamanoPagina: 100 });
+  return r.datos;
 }
 
 function armarSalon(salon) {
