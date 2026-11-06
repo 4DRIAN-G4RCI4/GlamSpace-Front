@@ -44,9 +44,22 @@ export function sumarMeses({ anio, mes }, paso) {
   return { anio: Math.floor(total / 12), mes: (total % 12) + 1 };
 }
 
+// La semana del panel de administrador (diseño PWA) empieza en domingo.
+export const DIAS_SEMANA_DESDE_DOMINGO = [
+  { corto: "D", largo: "domingo" },
+  { corto: "L", largo: "lunes" },
+  { corto: "M", largo: "martes" },
+  { corto: "M", largo: "miércoles" },
+  { corto: "J", largo: "jueves" },
+  { corto: "V", largo: "viernes" },
+  { corto: "S", largo: "sábado" },
+];
+
 // Semanas del mes para pintar la cuadrícula: arreglos de 7 días (número o null en los huecos).
-export function semanasDelMes(anio, mes) {
-  const huecosAlInicio = (new Date(anio, mes - 1, 1).getDay() + 6) % 7; // lunes = 0
+// Por defecto la semana empieza en lunes; con { desdeDomingo: true }, en domingo.
+export function semanasDelMes(anio, mes, { desdeDomingo = false } = {}) {
+  const diaSemana = new Date(anio, mes - 1, 1).getDay(); // domingo = 0
+  const huecosAlInicio = desdeDomingo ? diaSemana : (diaSemana + 6) % 7; // lunes = 0
   const diasEnMes = new Date(anio, mes, 0).getDate();
 
   const celdas = Array(huecosAlInicio).fill(null);
@@ -56,6 +69,16 @@ export function semanasDelMes(anio, mes) {
   const semanas = [];
   for (let i = 0; i < celdas.length; i += 7) semanas.push(celdas.slice(i, i + 7));
   return semanas;
+}
+
+const DIAS_CORTOS = ["Dom", "Lun", "Mar", "Miér", "Jue", "Vie", "Sáb"];
+const MESES_CORTOS = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+
+// "2026-09-11" → "Vie 11 sep 2026"   ·   con { conAnio: false } → "Vie 11 sep"
+export function formatearFechaCorta(clave, { conAnio = true } = {}) {
+  const [anio, mes, dia] = clave.split("-").map(Number);
+  const texto = `${DIAS_CORTOS[new Date(anio, mes - 1, dia).getDay()]} ${dia} ${MESES_CORTOS[mes - 1]}`;
+  return conAnio ? `${texto} ${anio}` : texto;
 }
 
 // "2026-11-14" → "sábado 14 de noviembre de 2026"

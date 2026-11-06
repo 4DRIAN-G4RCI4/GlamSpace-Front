@@ -36,6 +36,7 @@ screens/                            Una carpeta por pantalla, cada una dividida 
   DetalleSalon/                     HU-13 · detalle, galería y calendario de disponibilidad
   SolicitudReservacion/             HU-16 · formulario de solicitud con la fecha precargada
   MisSolicitudes/                   HU-16 · estado de las solicitudes del cliente
+  PanelAdministrador/               HU-19 · solicitudes del salón (aceptar / rechazar) y calendario
   Login/                            HU-04 (+ PanelSesion.js)
   RegistroCliente/                  HU-02
   RegistroAdministrador/            HU-03
@@ -217,10 +218,50 @@ datos en producción.
 También se probó: invitados por encima de la capacidad, el regreso al formulario después de iniciar
 sesión y que no haya errores de JavaScript.
 
+## Sprint 6 — Panel de administrador de solicitudes (HU-19)
+
+El administrador ve las solicitudes **pendientes** de su salón ordenadas por fecha del evento y las
+**acepta o rechaza**. El calendario del salón se actualiza después de cada acción.
+
+**Diseño:** sigue el Figma "PROYECTO--PWA" del equipo (Admin 02 · Panel de solicitudes, escritorio y
+móvil, y Admin 04 · Calendario de disponibilidad): barra lateral oscura, color vino `#6b2942`,
+Playfair Display para títulos e Inter para el texto. Los tokens están en `theme/disenoPwa.js` y las
+fuentes se cargan en web con `theme/fuentesWeb.js`. Los íconos (logo y flechas) están en `assets/admin/`.
+En pantallas de menos de 1024 px se usa la versión móvil: encabezado con pestañas.
+
+| Pieza | Dónde |
+|---|---|
+| Pantalla | `screens/PanelAdministrador/` (pantalla, estilos, `usePanelAdministrador`, `useCalendarioAdmin`, reglas puras en `panelAdministrador.logica.js`) |
+| Endpoints (HU-18) | `services/solicitudesApi.js`: `listarSolicitudesDeSalon`, `aceptarSolicitud`, `rechazarSolicitud` |
+| Salones del admin | `services/salonesApi.js`: `listarSalonesDeAdmin` (`POST /api/salones/listar`) |
+| Acceso | Iniciar sesión como administrador → **Panel de solicitudes** |
+
+**Cómo funciona**
+
+- **Aceptar y rechazar** piden confirmación dentro de la tarjeta. Al aceptar, el mensaje avisa cuántas
+  pendientes del mismo día se rechazarán solas (HU-17).
+- Si la API responde con error, el mensaje aparece en la tarjeta y la solicitud **no** se quita (criterio 4).
+- Solo se ven las solicitudes del salón del administrador en sesión: la API responde `2002` si no es su salón.
+- Si el administrador tiene varios salones, aparece un selector arriba.
+- Las tarjetas de cifras (pendientes, aceptadas e ingresos del mes) y el historial reciente se calculan
+  con las mismas solicitudes.
+
+**Criterios verificados** con el front y la API locales sobre LocalDB, con un navegador automatizado (9 de 9):
+
+| # | Caso | Resultado |
+|---|---|---|
+| 1 | Abrir el panel con 4 pendientes | Se listan por fecha del evento: 5, 12, 12 y 19 de diciembre |
+| 2 | Aceptar una solicitud | Sale de pendientes, la otra del mismo día se rechaza sola y el calendario marca el día como **Reservado** |
+| 3 | Rechazar una solicitud | Sale de pendientes y el día sigue **Disponible** |
+| 4 | La API responde `4006` al aceptar | Muestra "La solicitud ya fue atendida." y la tarjeta se queda |
+
+También se revisó: móvil a 390 px sin scroll horizontal, títulos en Playfair Display y que no haya errores de JavaScript.
+
 ## Pendiente
 
 - **Fotos:** la HU-07 las pide, pero la API de HU-06 todavía no las recibe al crear ni
   al actualizar (solo las devuelve en el detalle). El formulario no las incluye hasta que
   exista el endpoint.
+- **Mi salón** (HU-19) abre por ahora la pantalla de Publicar salón; falta una pantalla para editar el salón.
 - **Probar la HU-16 contra la API real** con una cuenta de cliente de prueba (los criterios 1, 3 y 4
   se probaron con la API simulada).
