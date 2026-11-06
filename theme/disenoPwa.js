@@ -33,6 +33,23 @@ export const FUENTE = {
   texto: "Inter",
 };
 
+// Pone la fuente del diseño a cada estilo con texto que no la tenga: Playfair a los títulos (las
+// claves de `titulos`, o texto de 20 px o más en negritas) e Inter al resto.
+// Uso: StyleSheet.create(conFuentes({ ... }, ["titulo"]))
+export function conFuentes(estilos, titulos = []) {
+  const resultado = {};
+  for (const [clave, estilo] of Object.entries(estilos)) {
+    const conTexto = estilo && typeof estilo === "object" && estilo.fontSize !== undefined && !estilo.fontFamily;
+    if (!conTexto) {
+      resultado[clave] = estilo;
+      continue;
+    }
+    const esTitulo = titulos.includes(clave) || (estilo.fontSize >= 20 && Number(estilo.fontWeight) >= 700);
+    resultado[clave] = { ...estilo, fontFamily: esTitulo ? FUENTE.titulo : FUENTE.texto };
+  }
+  return resultado;
+}
+
 // Medidas del diseño de escritorio (1440 px) y del móvil (390 px).
 export const MEDIDA = {
   barraLateral: 260,

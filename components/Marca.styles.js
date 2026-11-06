@@ -1,26 +1,9 @@
 import { StyleSheet } from "react-native";
-import { COLORES } from "../theme/colores";
+import { FUENTE, PWA } from "../theme/disenoPwa";
 
 export const estilos = StyleSheet.create({
-  marca: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    paddingTop: 48,
-    paddingBottom: 16,
-  },
-  logo: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: COLORES.moradoOscuro,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 8,
-  },
-  logoTexto: { color: COLORES.dorado, fontWeight: "700", fontSize: 18 },
-  nombreMarca: { fontWeight: "700", fontSize: 20, color: COLORES.moradoOscuro },
-  logoClaro: { backgroundColor: COLORES.dorado },
-  logoTextoClaro: { color: COLORES.moradoOscuro },
-  nombreMarcaClaro: { color: "#fff" },
+  marca: { paddingTop: 48, paddingBottom: 20, alignItems: "center" },
+  marcaCompacta: { paddingTop: 0, paddingBottom: 0 },
+  nombreMarca: { fontFamily: FUENTE.titulo, fontSize: 20, fontWeight: "700", letterSpacing: 2, color: PWA.vino },
+  nombreMarcaClaro: { color: PWA.crema, fontWeight: "400" },
 });
