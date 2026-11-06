@@ -23,7 +23,7 @@ export const PWA = {
   pendienteTexto: "#b8860b", // Hot Toddy · también el borde de "solicitud pendiente"
   confirmadaFondo: "#dceee1", // Harp
   confirmadaTexto: "#4c7a5d", // Como
-  rechazadaFondo: "#f6e3e6", // No está en Figma: tono claro de Stiletto para la etiqueta "Rechazada"
+  rechazadaFondo: "#f6dadd", // We Peep · etiqueta "Rechazada"
   sombra: "rgba(43,31,36,0.05)",
 };
 
