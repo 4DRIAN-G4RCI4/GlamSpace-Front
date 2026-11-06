@@ -57,6 +57,7 @@ export default function LoginScreen({ navigation, route }) {
         onBuscarSalones={() => navigation && navigation.navigate("BusquedaSalones")}
         onMisSolicitudes={() => navigation && navigation.navigate("MisSolicitudes")}
         onPanelSolicitudes={() => navigation && navigation.navigate("PanelAdministrador")}
+        onPerfil={() => navigation && navigation.navigate("Perfil")}
       />
     );
   }
