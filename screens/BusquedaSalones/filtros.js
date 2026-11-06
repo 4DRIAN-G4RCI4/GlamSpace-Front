@@ -8,7 +8,6 @@ import { formatearPrecio } from "../../utils/formato";
 export const FILTROS = [
   {
     nombre: "zona",
-    icono: "📍",
     inactivo: "Zona",
     activo: (v) => v,
     pregunta: "¿En qué zona es tu evento?",
@@ -23,7 +22,6 @@ export const FILTROS = [
   },
   {
     nombre: "capacidadMinima",
-    icono: "👪",
     inactivo: "Capacidad",
     activo: (v) => `${v}+ personas`,
     pregunta: "¿Cuántos invitados tendrás como mínimo?",
@@ -33,7 +31,6 @@ export const FILTROS = [
   },
   {
     nombre: "precioMaximo",
-    icono: "💲",
     inactivo: "Precio",
     activo: (v) => `Hasta ${formatearPrecio(v)}`,
     pregunta: "¿Cuál es tu presupuesto máximo (MXN)?",

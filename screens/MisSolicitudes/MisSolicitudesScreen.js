@@ -148,7 +148,6 @@ export default function MisSolicitudesScreen({ navigation }) {
         <Text style={estilos.subtitulo}>Consulta si cada salón confirmó o rechazó tu solicitud.</Text>
         {contenido}
       </View>
-      <Text style={estilos.pie}>Mis solicitudes · GlamSpaces</Text>
     </ScrollView>
   );
 }
