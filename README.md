@@ -320,6 +320,21 @@ Evidencias en `docs/evidencias-pwa/HU-21.md`.
 - Las fotos de otros dominios se guardan como respuestas "opaque". El SW no ve si eran un error, pero las revalida en cada visita.
 - La caché local guarda solo la primera página de cada búsqueda. "Cargar más" necesita red.
 
+### HU-22 · Modo sin conexión del panel del administrador
+
+- **Servicios con respaldo:** `listarSalonesDeAdminConRespaldo`, `listarSolicitudesDeSalonConRespaldo` y `obtenerDisponibilidadConRespaldo` regresan `{ datos, desactualizado, guardadoEn }`.
+  - Con conexión, piden a la API y guardan la respuesta.
+  - Si la red falla (`ApiError` tipo `"red"`) o `navigator.onLine` es `false`, regresan lo último guardado marcado como desactualizado.
+  - Las llaves van por admin y por salón, mes o estado: `glamspaces_cache:<adminId>:solicitudes:<salonId>:<estado>`.
+  - Los errores de negocio o HTTP no se tapan con la caché.
+  - Las versiones originales (y la pantalla del cliente) no cambiaron.
+- **Banner:** sin conexión, el panel muestra "Modo sin conexión · mostrando la última información guardada (actualizado: <fecha y hora>)", con `aria-live`.
+- **Acciones:** "Aceptar" y "Rechazar" se deshabilitan y el banner explica por qué.
+- **Sin nada guardado:** si un salón o un mes no tiene datos guardados, aparece "sin datos guardados".
+- **Reconexión:** `utils/useConexion.js` escucha `online`/`offline`; al volver la conexión, el panel y el calendario se recargan solos.
+- **Privacidad:** cerrar sesión borra toda la caché. Nunca se guardan contraseñas ni tokens.
+- **Evidencias:** `docs/evidencias-pwa/HU-22.md`.
+
 ## Pendiente
 
 - **Fotos:** la HU-07 las pide, pero la API de HU-06 todavía no las recibe al crear ni
