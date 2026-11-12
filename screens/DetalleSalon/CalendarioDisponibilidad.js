@@ -4,12 +4,13 @@
  *
  * Cada día es disponible, ocupado (reservación confirmada), pasado o el elegido.
  * Los ocupados y pasados se pueden tocar, pero solo muestran el aviso (criterio 4).
+ * Lo usan el detalle del salón y el paso "1. Elige la fecha" de la reserva (Cliente 04).
  */
 
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { Bloque } from "../../components/Esqueleto";
-import { DIAS_SEMANA, MESES, claveFecha, semanasDelMes } from "../../utils/fechas";
+import { DIAS_SEMANA_DESDE_DOMINGO, MESES, claveFecha, semanasDelMes } from "../../utils/fechas";
 import { estilos } from "./DetalleSalon.styles";
 
 function estadoDelDia(clave, c) {
@@ -86,7 +87,7 @@ function BotonMes({ texto, etiqueta, onPress, deshabilitado }) {
 }
 
 export default function CalendarioDisponibilidad({ c }) {
-  const semanas = semanasDelMes(c.mes.anio, c.mes.mes);
+  const semanas = semanasDelMes(c.mes.anio, c.mes.mes, { desdeDomingo: true }); // D L M M J V S, como Figma
   const nombreMes = `${MESES[c.mes.mes - 1]} ${c.mes.anio}`;
 
   let cuadricula;
@@ -124,7 +125,7 @@ export default function CalendarioDisponibilidad({ c }) {
       </View>
 
       <View style={estilos.semana}>
-        {DIAS_SEMANA.map((d) => (
+        {DIAS_SEMANA_DESDE_DOMINGO.map((d) => (
           <View key={d.largo} style={estilos.celda}>
             <Text style={estilos.diaSemana} accessibilityLabel={d.largo}>
               {d.corto}

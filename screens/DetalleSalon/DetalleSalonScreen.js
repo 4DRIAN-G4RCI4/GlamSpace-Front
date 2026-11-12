@@ -1,199 +1,216 @@
 /**
- * GlamSpaces · Detalle de un salón y calendario de disponibilidad (Sprint 4 · HU-13)
+ * GlamSpaces · Detalle de un salón (HU-13, diseño Figma PROYECTO--PWA)
  *
- * Destino de las tarjetas de la búsqueda (HU-10). Muestra la galería de fotos, datos
- * del salón, sus paquetes y el calendario del mes con las fechas ocupadas (HU-12).
- * Al confirmar una fecha disponible lleva a la solicitud de reservación con esa fecha.
+ * Escritorio (≥ 1024 px), dos columnas:
+ *   - Izquierda: galería, nombre, ubicación, chips, pestañas Información / Paquetes /
+ *     Disponibilidad (llevan a cada sección), descripción, paquetes seleccionables y calendario.
+ *   - Derecha: tarjeta fija con "Desde $X", Fecha, Paquete, Invitados y "Solicitar reservación".
+ * Móvil y tablet: una columna con la galería arriba y una barra fija abajo con "Desde $X" y el botón.
+ * Lo elegido aquí llega ya llenado a la reserva (Cliente 04).
  *
  *   - DetalleSalonScreen.js        → pantalla (JSX)   [este archivo]
- *   - CalendarioDisponibilidad.js  → calendario del mes (JSX)
+ *   - GaleriaDetalle.js            → foto grande + miniaturas
+ *   - TarjetaReserva.js            → tarjeta fija y barra móvil
+ *   - CalendarioDisponibilidad.js  → calendario del mes
  *   - DetalleSalon.styles.js       → estilos
- *   - useDetalleSalon.js           → lógica / estado del salón y la galería
+ *   - useDetalleSalon.js           → lógica / estado del salón, la galería y lo elegido
  *   - useDisponibilidad.js         → lógica / estado del calendario
  *   - detalleSalon.validaciones.js → reglas para elegir la fecha
  */
 
-import React from "react";
-import { View, Text, Pressable, ScrollView } from "react-native";
-import FotoSalon from "../../components/FotoSalon";
+import React, { useRef, useState } from "react";
+import { View, Text, Pressable, ScrollView, useWindowDimensions } from "react-native";
+import EncabezadoCliente from "../../components/EncabezadoCliente";
 import { Bloque } from "../../components/Esqueleto";
 import { formatearPrecio } from "../../utils/formato";
-import { formatearFechaLarga } from "../../utils/fechas";
+import { MEDIDA } from "../../theme/disenoPwa";
 import { ESPACIO } from "../../theme/espaciado";
 import useDetalleSalon from "./useDetalleSalon";
+import GaleriaDetalle from "./GaleriaDetalle";
+import TarjetaReserva, { BarraReservaMovil } from "./TarjetaReserva";
 import CalendarioDisponibilidad from "./CalendarioDisponibilidad";
 import { estilos } from "./DetalleSalon.styles";
 
-function BarraSuperior({ onVolver }) {
-  return (
-    <View style={estilos.barraSuperior}>
-      <View style={estilos.barraContenido}>
-        <Pressable
-          onPress={onVolver}
-          accessibilityRole="button"
-          accessibilityLabel="Volver a la búsqueda"
-          style={({ hovered, focused }) => [estilos.botonVolver, (hovered || focused) && estilos.botonVolverFoco]}
-        >
-          <Text style={estilos.botonVolverTexto}>← Volver a la búsqueda</Text>
-        </Pressable>
-      </View>
-    </View>
-  );
-}
+const PESTANAS = [
+  { clave: "informacion", texto: "Información" },
+  { clave: "paquetes", texto: "Paquetes" },
+  { clave: "disponibilidad", texto: "Disponibilidad" },
+];
 
 function DetalleEsqueleto() {
   return (
-    <View style={estilos.tarjetaDetalle} accessibilityLabel="Cargando salón">
-      <Bloque style={[estilos.foto, { borderRadius: 0 }]} />
-      <View style={estilos.cuerpo}>
-        <Bloque style={{ height: 24, width: "60%" }} />
-        <Bloque style={{ height: 14, width: "40%", marginTop: ESPACIO.md }} />
-        <Bloque style={{ height: 28, width: "35%", marginTop: ESPACIO.xl }} />
-        <Bloque style={{ height: 64, marginTop: ESPACIO.xl }} />
-        <Bloque style={{ height: 64, marginTop: ESPACIO.md }} />
-      </View>
+    <View accessibilityLabel="Cargando salón" aria-busy>
+      <Bloque style={estilos.fotoGrande} />
+      <Bloque style={{ height: 28, width: "55%", marginTop: ESPACIO.xl }} />
+      <Bloque style={{ height: 14, width: "35%", marginTop: ESPACIO.md }} />
+      <Bloque style={{ height: 64, marginTop: ESPACIO.xl }} />
+      <Bloque style={{ height: 64, marginTop: ESPACIO.md }} />
     </View>
   );
 }
 
-// Foto grande + miniaturas para cambiarla (solo si hay más de una).
-function Galeria({ fotos, activa, onElegir, nombre }) {
+function Pestanas({ activa, onElegir }) {
   return (
-    <View>
-      <FotoSalon uri={fotos[activa]} nombre={nombre} style={estilos.foto} tamanoInicial={72} />
-      {fotos.length > 1 ? (
-        <ScrollView horizontal contentContainerStyle={estilos.miniaturas} showsHorizontalScrollIndicator={false}>
-          {fotos.map((uri, i) => (
-            <Pressable
-              key={uri + i}
-              onPress={() => onElegir(i)}
-              accessibilityRole="button"
-              accessibilityLabel={`Ver foto ${i + 1} de ${fotos.length}`}
-              accessibilityState={{ selected: i === activa }}
-              style={({ hovered, focused }) => [
-                estilos.miniatura,
-                (i === activa || hovered || focused) && estilos.miniaturaActiva,
-              ]}
-            >
-              <FotoSalon uri={uri} nombre={nombre} style={estilos.miniaturaFoto} tamanoInicial={20} />
-            </Pressable>
-          ))}
-        </ScrollView>
-      ) : null}
+    <View style={estilos.pestanas} accessibilityRole="tablist">
+      {PESTANAS.map((p) => {
+        const elegida = p.clave === activa;
+        return (
+          <Pressable
+            key={p.clave}
+            onPress={() => onElegir(p.clave)}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: elegida }}
+            style={({ hovered, focused }) => [estilos.pestana, elegida && estilos.pestanaActiva, (hovered || focused) && estilos.pestanaFoco]}
+          >
+            <Text style={[estilos.pestanaTexto, elegida && estilos.pestanaTextoActiva]}>{p.texto}</Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
 
-function Paquete({ paquete, masBarato }) {
+// Paquete seleccionable (radio): el elegido se marca con borde vino, como en la maqueta.
+function TarjetaPaquete({ paquete, elegido, onPress, ancho }) {
   return (
-    <View style={[estilos.paquete, masBarato && estilos.paqueteMasBarato]}>
-      <View style={estilos.paqueteFila}>
-        <Text style={estilos.paqueteNombre}>{paquete.nombrePaquete}</Text>
-        <Text style={estilos.paquetePrecio}>{formatearPrecio(paquete.precio)}</Text>
-      </View>
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="radio"
+      accessibilityState={{ checked: elegido }}
+      aria-checked={elegido}
+      accessibilityLabel={`${paquete.nombrePaquete}, ${formatearPrecio(paquete.precio)}`}
+      style={({ hovered, focused }) => [
+        estilos.paqueteTarjeta,
+        { width: ancho },
+        elegido && estilos.paqueteElegido,
+        (hovered || focused) && estilos.paqueteFoco,
+      ]}
+    >
+      <Text style={estilos.paqueteNombre}>{paquete.nombrePaquete}</Text>
       {paquete.descripcion ? <Text style={estilos.paqueteDescripcion}>{paquete.descripcion}</Text> : null}
-      {masBarato ? <Text style={estilos.etiquetaBarato}>★ El más económico</Text> : null}
-    </View>
-  );
-}
-
-// Criterio 3: confirma la fecha elegida y pasa a la solicitud con la fecha precargada.
-function ConfirmarFecha({ fecha, onConfirmar }) {
-  return (
-    <View style={estilos.confirmar}>
-      <Text style={estilos.confirmarTexto}>
-        {fecha ? `Fecha elegida: ${formatearFechaLarga(fecha)}` : "Elige una fecha disponible en el calendario."}
-      </Text>
-      <Pressable
-        onPress={onConfirmar}
-        disabled={!fecha}
-        accessibilityRole="button"
-        accessibilityState={{ disabled: !fecha }}
-        style={[estilos.boton, !fecha && estilos.botonDeshabilitado]}
-      >
-        <Text style={estilos.botonTexto}>Solicitar reservación</Text>
-      </Pressable>
-    </View>
+      <Text style={estilos.paquetePrecio}>{formatearPrecio(paquete.precio)}</Text>
+    </Pressable>
   );
 }
 
 export default function DetalleSalonScreen({ navigation, route }) {
   const salonId = route && route.params ? route.params.salonId : null;
-  const f = useDetalleSalon(salonId);
-  const volver = () => navigation && navigation.navigate("BusquedaSalones");
+  const d = useDetalleSalon(salonId);
+  const { width } = useWindowDimensions();
+  const escritorio = width >= MEDIDA.corteEscritorio;
+  const scroll = useRef(null);
+  const posiciones = useRef({ contenido: 0 });
+  const [pestana, setPestana] = useState("informacion");
+  const ir = (pantalla, params) => navigation && navigation.navigate(pantalla, params);
 
-  let contenido;
-  if (f.cargando) {
-    contenido = <DetalleEsqueleto />;
-  } else if (f.error || !f.salon) {
-    contenido = (
-      <View style={[estilos.tarjetaDetalle, estilos.cuerpo]}>
+  const guardarPosicion = (clave) => (e) => {
+    posiciones.current[clave] = e.nativeEvent.layout.y;
+  };
+
+  // Pestañas y cajas de la tarjeta: llevan a su sección dentro de la misma página.
+  function irASeccion(clave) {
+    setPestana(clave);
+    const y = posiciones.current.contenido + (posiciones.current[clave] || 0) - ESPACIO.md;
+    if (scroll.current) scroll.current.scrollTo({ y: Math.max(y, 0), animated: true });
+  }
+
+  function solicitar() {
+    ir("SolicitudReservacion", {
+      salonId,
+      borrador: { fecha: d.fecha, paqueteId: d.paqueteId, invitados: d.invitados },
+    });
+  }
+
+  const nombre = d.salon ? d.salon.nombre : "Salón";
+  const migas = [
+    { texto: "Inicio", onPress: () => ir("BusquedaSalones") },
+    { texto: "Salones", onPress: () => ir("BusquedaSalones") },
+    { texto: nombre },
+  ];
+
+  let columnaIzquierda;
+  if (d.cargando) {
+    columnaIzquierda = <DetalleEsqueleto />;
+  } else if (d.error || !d.salon) {
+    columnaIzquierda = (
+      <View style={estilos.tarjetaError}>
         <Text style={estilos.nombre}>No se pudo abrir el salón</Text>
-        <Text style={estilos.descripcion}>{f.error || "El salón no existe."}</Text>
-        <Pressable style={estilos.boton} onPress={f.reintentar} accessibilityRole="button">
+        <Text style={estilos.descripcion}>{d.error || "El salón no existe."}</Text>
+        <Pressable style={estilos.boton} onPress={d.reintentar} accessibilityRole="button">
           <Text style={estilos.botonTexto}>Reintentar</Text>
         </Pressable>
       </View>
     );
   } else {
-    const { salon, paquetes, calendario } = f;
-    const solicitar = () =>
-      navigation &&
-      navigation.navigate("SolicitudReservacion", {
-        salonId,
-        nombreSalon: salon.nombre,
-        capacidad: salon.capacidad,
-        paquetes,
-        fecha: calendario.fechaElegida,
-      });
+    const anchoPaquete = width >= 600 ? "48.5%" : "100%";
+    columnaIzquierda = (
+      <>
+        <GaleriaDetalle fotos={d.fotos} activa={d.fotoActiva} onElegir={d.setFotoActiva} nombre={d.salon.nombre} />
 
-    contenido = (
-      <View style={estilos.tarjetaDetalle}>
-        <Galeria fotos={f.fotos} activa={f.fotoActiva} onElegir={f.setFotoActiva} nombre={salon.nombre} />
-
-        <View style={estilos.cuerpo}>
-          <Text style={estilos.nombre} accessibilityRole="header">
-            {salon.nombre}
-          </Text>
-          <View style={estilos.filaDatos}>
-            <View style={estilos.pastilla}>
-              <Text style={estilos.pastillaTexto}>{salon.zona}</Text>
-            </View>
-            <View style={estilos.pastilla}>
-              <Text style={estilos.pastillaTexto}>Hasta {salon.capacidad} personas</Text>
-            </View>
+        <Text style={estilos.nombre} accessibilityRole="header" aria-level={1}>
+          {d.salon.nombre}
+        </Text>
+        <Text style={estilos.ubicacion}>{d.salon.zona}</Text>
+        <View style={estilos.chips}>
+          <View style={estilos.chip}>
+            <Text style={estilos.chipTexto}>Hasta {d.salon.capacidad} invitados</Text>
           </View>
+        </View>
 
-          {paquetes.length > 0 ? (
-            <View style={estilos.bloquePrecio}>
-              <Text style={estilos.precioEtiqueta}>Desde</Text>
-              <Text style={estilos.precio}>{formatearPrecio(paquetes[0].precio)}</Text>
-            </View>
-          ) : null}
+        <Pestanas activa={pestana} onElegir={irASeccion} />
 
-          {salon.descripcion ? <Text style={estilos.descripcion}>{salon.descripcion}</Text> : null}
+        <View onLayout={guardarPosicion("informacion")}>
+          <Text style={estilos.descripcion}>{d.salon.descripcion || "El salón todavía no agrega una descripción."}</Text>
+        </View>
 
-          <Text style={estilos.tituloSeccion} accessibilityRole="header">
-            Paquetes ({paquetes.length})
+        <View onLayout={guardarPosicion("paquetes")}>
+          <Text style={estilos.tituloSeccion} accessibilityRole="header" aria-level={2}>
+            Paquetes disponibles
           </Text>
-          {paquetes.map((p, i) => (
-            <Paquete key={p.id} paquete={p} masBarato={i === 0 && paquetes.length > 1} />
-          ))}
+          {d.paquetes.length === 0 ? (
+            <Text style={estilos.textoSecundario}>Este salón todavía no publica paquetes.</Text>
+          ) : (
+            <View style={estilos.paquetes} accessibilityRole="radiogroup">
+              {d.paquetes.map((p) => (
+                <TarjetaPaquete key={p.id} paquete={p} elegido={p.id === d.paqueteId} onPress={() => d.elegirPaquete(p.id)} ancho={anchoPaquete} />
+              ))}
+            </View>
+          )}
+        </View>
 
-          <Text style={estilos.tituloSeccion} accessibilityRole="header">
+        <View onLayout={guardarPosicion("disponibilidad")}>
+          <Text style={estilos.tituloSeccion} accessibilityRole="header" aria-level={2}>
             Disponibilidad
           </Text>
-          <CalendarioDisponibilidad c={calendario} />
-          <ConfirmarFecha fecha={calendario.fechaElegida} onConfirmar={solicitar} />
+          <CalendarioDisponibilidad c={d.calendario} />
         </View>
-      </View>
+      </>
     );
   }
 
+  const listo = !d.cargando && !d.error && !!d.salon;
+
   return (
-    <ScrollView contentContainerStyle={estilos.pantalla}>
-      <BarraSuperior onVolver={volver} />
-      <View style={estilos.contenido}>{contenido}</View>
-    </ScrollView>
+    <View style={estilos.raiz}>
+      <ScrollView ref={scroll} style={estilos.raiz} contentContainerStyle={estilos.pantalla}>
+        <EncabezadoCliente navigation={navigation} migas={migas} volverA={{ nombre: "DetalleSalon", params: { salonId } }} />
+        <View
+          style={[estilos.contenido, escritorio && estilos.contenidoEscritorio]}
+          onLayout={(e) => {
+            posiciones.current.contenido = e.nativeEvent.layout.y;
+          }}
+        >
+          <View style={estilos.columnaIzquierda}>{columnaIzquierda}</View>
+          {escritorio && listo ? (
+            <View style={estilos.columnaDerecha}>
+              <View style={estilos.fija}>
+                <TarjetaReserva d={d} onIrA={irASeccion} onSolicitar={solicitar} />
+              </View>
+            </View>
+          ) : null}
+        </View>
+      </ScrollView>
+      {!escritorio && listo ? <BarraReservaMovil d={d} onSolicitar={solicitar} /> : null}
+    </View>
   );
 }

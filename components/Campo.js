@@ -51,7 +51,12 @@ export default function Campo({
         ) : null}
       </View>
       {pistaExtra ? <Text style={estilos.pista}>{pistaExtra}</Text> : null}
-      {error ? <Text style={estilos.error}>{error}</Text> : null}
+      {/* aria-live: el lector de pantalla anuncia el error cuando aparece */}
+      {error ? (
+        <Text style={estilos.error} accessibilityLiveRegion="polite">
+          {error}
+        </Text>
+      ) : null}
     </View>
   );
 }
