@@ -3,6 +3,7 @@
  */
 
 import { StyleSheet } from "react-native";
+import { conFuentes } from "../../theme/disenoPwa";
 import { COLORES } from "../../theme/colores";
 import { comunes } from "../../theme/estilosComunes";
 import { ESPACIO, RADIO } from "../../theme/espaciado";
@@ -11,10 +12,10 @@ const ANCHO_DETALLE = 760;
 
 export const estilos = {
   ...comunes,
-  ...StyleSheet.create({
+  ...StyleSheet.create(conFuentes({
     pantalla: { flexGrow: 1, backgroundColor: COLORES.moradoClaro, alignItems: "center", paddingBottom: ESPACIO.xxl },
 
-    barraSuperior: { width: "100%", backgroundColor: COLORES.moradoOscuro, alignItems: "center" },
+    barraSuperior: { width: "100%", backgroundColor: "#fff", borderBottomWidth: 0.8, borderBottomColor: COLORES.borde, alignItems: "center" },
     barraContenido: {
       width: "100%",
       maxWidth: ANCHO_DETALLE,
@@ -28,12 +29,12 @@ export const estilos = {
       alignItems: "center",
       paddingVertical: ESPACIO.sm,
       paddingHorizontal: ESPACIO.md,
-      borderRadius: RADIO.pill,
+      borderRadius: 9,
       borderWidth: 1,
-      borderColor: "rgba(255,255,255,0.5)",
+      borderColor: COLORES.morado,
     },
-    botonVolverFoco: { borderColor: COLORES.dorado, borderWidth: 2 },
-    botonVolverTexto: { color: "#fff", fontWeight: "600", fontSize: 14 },
+    botonVolverFoco: { borderWidth: 2 },
+    botonVolverTexto: { color: COLORES.morado, fontWeight: "600", fontSize: 13 },
 
     contenido: { width: "100%", maxWidth: ANCHO_DETALLE, paddingHorizontal: ESPACIO.lg, marginTop: ESPACIO.lg },
     tarjetaDetalle: {
@@ -136,5 +137,5 @@ export const estilos = {
 
     confirmar: { marginTop: ESPACIO.lg },
     confirmarTexto: { fontSize: 14.5, color: COLORES.texto, fontWeight: "600", textAlign: "center" },
-  }),
+  })),
 };

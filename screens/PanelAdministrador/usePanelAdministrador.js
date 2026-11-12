@@ -16,7 +16,7 @@ import { aceptarSolicitud, listarSolicitudesDeSalon, rechazarSolicitud } from ".
 import { textoDeErrorApi } from "../../services/api";
 import { obtenerSesionActiva } from "../../services/sesionStorage";
 
-export default function usePanelAdministrador() {
+export default function usePanelAdministrador(pestanaInicial = "solicitudes") {
   const [sesion, setSesion] = useState(null);
   const [cargandoSesion, setCargandoSesion] = useState(true);
 
@@ -26,7 +26,7 @@ export default function usePanelAdministrador() {
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
 
-  const [pestana, setPestana] = useState("solicitudes"); // "solicitudes" | "calendario"
+  const [pestana, setPestana] = useState(pestanaInicial); // "solicitudes" | "calendario"
   const [porConfirmar, setPorConfirmar] = useState(null); // { id, accion: "aceptar" | "rechazar" }
   const [procesandoId, setProcesandoId] = useState(null);
   const [erroresPorId, setErroresPorId] = useState({}); // { [id]: "mensaje de la API" }

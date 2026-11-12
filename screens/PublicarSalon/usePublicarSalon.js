@@ -182,6 +182,7 @@ export default function usePublicarSalon() {
 
   return {
     // sesión
+    sesion,
     cargandoSesion,
     esAdministrador,
     // datos del salón

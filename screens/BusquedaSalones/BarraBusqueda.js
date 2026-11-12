@@ -3,22 +3,20 @@
  */
 
 import React from "react";
-import { View, Text, TextInput, Pressable } from "react-native";
+import { View, Text, TextInput, Pressable, Image } from "react-native";
 import { COLORES } from "../../theme/colores";
 import { estilos } from "./BusquedaSalones.styles";
 
 export default function BarraBusqueda({ valor, onCambiar, onBuscar }) {
   return (
     <View style={estilos.barra}>
-      <Text style={estilos.barraIcono} accessibilityElementsHidden importantForAccessibility="no">
-        🔍
-      </Text>
+      <Image source={require("../../assets/cliente/icono-buscar.svg")} style={estilos.barraIcono} accessibilityElementsHidden importantForAccessibility="no" />
       <TextInput
         style={estilos.barraInput}
         value={valor}
         onChangeText={onCambiar}
         onSubmitEditing={onBuscar}
-        placeholder="¿Dónde es tu evento? Ej. Tula"
+        placeholder="¿Dónde es tu evento? Ej. Tula de Allende"
         placeholderTextColor={COLORES.placeholder}
         returnKeyType="search"
         accessibilityLabel="Buscar salones por zona"

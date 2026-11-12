@@ -17,7 +17,7 @@ export default function FotoSalon({ uri, nombre, style, tamanoInicial = 48 }) {
     return (
       <View style={[style, estilos.vacia]}>
         <Text style={[estilos.inicial, { fontSize: tamanoInicial }]}>
-          {(nombre || "?").charAt(0).toUpperCase()}
+          {((nombre || "").match(/\p{L}/u) || ["?"])[0].toUpperCase()}
         </Text>
       </View>
     );
@@ -28,5 +28,5 @@ export default function FotoSalon({ uri, nombre, style, tamanoInicial = 48 }) {
 
 const estilos = StyleSheet.create({
   vacia: { alignItems: "center", justifyContent: "center", backgroundColor: COLORES.esqueleto },
-  inicial: { color: COLORES.morado, fontWeight: "700" },
+  inicial: { color: "#8a7350", fontWeight: "700", fontFamily: "Playfair Display" }, // Shadow (Figma)
 });

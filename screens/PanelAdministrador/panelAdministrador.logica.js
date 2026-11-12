@@ -68,7 +68,7 @@ export function iniciales(nombre) {
     .slice(0, 2)
     .map((p) => p[0])
     .join("")
-    .toUpperCase() || "GS";
+    .toUpperCase() || (String(nombre || "").match(/[\p{L}\d]/u) || ["G"])[0].toUpperCase();
 }
 
 export const ETIQUETA_ESTADO = { pendiente: "Pendiente", confirmada: "Confirmada", rechazada: "Rechazada" };

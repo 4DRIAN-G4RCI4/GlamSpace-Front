@@ -3,13 +3,14 @@
  */
 
 import { StyleSheet } from "react-native";
+import { conFuentes } from "../../theme/disenoPwa";
 import { COLORES } from "../../theme/colores";
 import { comunes } from "../../theme/estilosComunes";
 import { ESPACIO, RADIO } from "../../theme/espaciado";
 
 export const estilos = {
   ...comunes,
-  ...StyleSheet.create({
+  ...StyleSheet.create(conFuentes({
     contenedor: { width: "100%", alignItems: "center", marginTop: ESPACIO.xl },
     centrado: { textAlign: "center" },
 
@@ -69,5 +70,5 @@ export const estilos = {
       overflow: "hidden",
       marginBottom: ESPACIO.md,
     },
-  }),
+  })),
 };

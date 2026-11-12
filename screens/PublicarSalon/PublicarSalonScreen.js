@@ -1,5 +1,6 @@
 /**
- * GlamSpaces · HU-07 Formulario de publicación de salón (Sprint 2)
+ * GlamSpaces · HU-07 Formulario de publicación de salón (Sprint 2) — "Mi salón" del administrador.
+ * Diseño (Sprint 6): Figma PROYECTO--PWA, Admin 05 · Publicar / editar salón, dentro de LayoutAdmin.
  * Responsable: Erick Trejo Reséndiz — capa FRONTEND (React Native / Expo)
  *
  * Esta pantalla es solo el MÓDULO VISUAL. La separación es:
@@ -19,9 +20,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  useWindowDimensions,
 } from "react-native";
 import Campo from "../../components/Campo";
 import Marca from "../../components/Marca";
+import LayoutAdmin from "../PanelAdministrador/LayoutAdmin";
+import { MEDIDA } from "../../theme/disenoPwa";
+import { COLORES } from "../../theme/colores";
 import usePublicarSalon from "./usePublicarSalon";
 import { estilos } from "./PublicarSalon.styles";
 
@@ -34,11 +39,13 @@ function formatearPrecio(valor) {
 
 export default function PublicarSalonScreen({ navigation }) {
   const f = usePublicarSalon();
+  const { width } = useWindowDimensions();
+  const escritorio = width >= MEDIDA.corteEscritorio;
 
   if (f.cargandoSesion) {
     return (
       <View style={estilos.cargandoContenedor}>
-        <ActivityIndicator color="#6b2a7a" size="large" />
+        <ActivityIndicator color={COLORES.morado} size="large" />
       </View>
     );
   }
@@ -64,21 +71,30 @@ export default function PublicarSalonScreen({ navigation }) {
     );
   }
 
+  // La navegación del panel: Solicitudes y Calendario regresan al panel en esa pestaña.
+  const irASeccion = (clave) => {
+    if (clave !== "salon" && navigation) navigation.navigate("PanelAdministrador", { pestana: clave });
+  };
+
   return (
+    <LayoutAdmin
+      seccion="salon"
+      onElegir={irASeccion}
+      nombreSalon={(f.sesion && (f.sesion.nombre_salon || f.sesion.nombre)) || ""}
+      onCuenta={() => navigation && navigation.navigate("Perfil")}
+    >
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <ScrollView contentContainerStyle={estilos.pagina} keyboardShouldPersistTaps="handled">
-        <Marca />
+      <ScrollView contentContainerStyle={escritorio ? estilos.contenidoAdmin : estilos.contenidoAdminMovil} keyboardShouldPersistTaps="handled">
+        <Text style={estilos.titulo} accessibilityRole="header">Mi salón</Text>
+        <Text style={estilos.subtitulo}>
+          Llena los datos de tu salón y agrega al menos un paquete con su precio para que los clientes puedan encontrarlo.
+        </Text>
 
-        <View style={estilos.tarjeta}>
-          <Text style={estilos.titulo}>Publica tu salón</Text>
-          <Text style={estilos.subtitulo}>
-            Llena los datos de tu salón y agrega al menos un paquete con su precio para que
-            los clientes puedan encontrarlo.
-          </Text>
-
+        <View style={escritorio ? estilos.columnas : null}>
+        <View style={[estilos.tarjeta, estilos.tarjetaAdmin, escritorio && estilos.columnaDatos]}>
           {/* ---------- Datos del salón ---------- */}
           <Text style={estilos.seccion}>Datos del salón</Text>
 
@@ -116,9 +132,11 @@ export default function PublicarSalonScreen({ navigation }) {
             multilinea
           />
 
-          <View style={estilos.separador} />
+        </View>
+
+        <View style={[estilos.tarjeta, estilos.tarjetaAdmin, escritorio && estilos.columnaPaquetes]}>
           {/* ---------- Paquetes ---------- */}
-          <Text style={estilos.seccion}>Paquetes</Text>
+          <Text style={estilos.seccion}>Paquetes y precios</Text>
 
           {f.errores.paquetes ? (
             <Text style={estilos.errorSeccion}>{f.errores.paquetes}</Text>
@@ -210,15 +228,10 @@ export default function PublicarSalonScreen({ navigation }) {
             </Text>
           ) : null}
 
-          <TouchableOpacity onPress={() => navigation && navigation.navigate("Login")}>
-            <Text style={estilos.enlaceVolver}>
-              <Text style={estilos.enlaceResaltado}>← Volver a mi panel</Text>
-            </Text>
-          </TouchableOpacity>
         </View>
-
-        <Text style={estilos.pie}>Publicación de salón · GlamSpaces</Text>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
+    </LayoutAdmin>
   );
 }

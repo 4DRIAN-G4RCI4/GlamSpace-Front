@@ -157,10 +157,10 @@ export default function DetalleSalonScreen({ navigation, route }) {
           </Text>
           <View style={estilos.filaDatos}>
             <View style={estilos.pastilla}>
-              <Text style={estilos.pastillaTexto}>📍 {salon.zona}</Text>
+              <Text style={estilos.pastillaTexto}>{salon.zona}</Text>
             </View>
             <View style={estilos.pastilla}>
-              <Text style={estilos.pastillaTexto}>👪 Hasta {salon.capacidad} personas</Text>
+              <Text style={estilos.pastillaTexto}>Hasta {salon.capacidad} personas</Text>
             </View>
           </View>
 
@@ -194,7 +194,6 @@ export default function DetalleSalonScreen({ navigation, route }) {
     <ScrollView contentContainerStyle={estilos.pantalla}>
       <BarraSuperior onVolver={volver} />
       <View style={estilos.contenido}>{contenido}</View>
-      <Text style={estilos.pie}>Detalle del salón · GlamSpaces</Text>
     </ScrollView>
   );
 }

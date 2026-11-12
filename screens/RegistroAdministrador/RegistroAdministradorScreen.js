@@ -138,7 +138,6 @@ export default function RegistroAdministradorScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <Text style={estilos.pie}>Registro de administrador · GlamSpaces</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );

@@ -1,28 +1,25 @@
 import { StyleSheet } from "react-native";
+import { conFuentes } from "../theme/disenoPwa";
 import { COLORES } from "../theme/colores";
-import { ESPACIO, RADIO } from "../theme/espaciado";
 
-export const estilos = StyleSheet.create({
+// Medidas de la tarjeta de Figma (Cliente 02 · Búsqueda): 282 × 188, foto de 133 px de alto.
+export const estilos = StyleSheet.create(conFuentes({
   tarjeta: {
     flex: 1,
     backgroundColor: "#fff",
-    borderRadius: RADIO.md,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: COLORES.borde,
     overflow: "hidden",
   },
   tarjetaResaltada: { borderColor: COLORES.morado },
-  tarjetaFoco: { borderWidth: 2, borderColor: COLORES.dorado },
+  tarjetaFoco: { borderWidth: 2, borderColor: COLORES.morado },
   tarjetaPresionada: { opacity: 0.9 },
 
-  foto: { width: "100%", aspectRatio: 16 / 9, backgroundColor: COLORES.moradoClaro },
-  cuerpo: { padding: ESPACIO.lg },
-  nombre: { fontSize: 16, fontWeight: "700", color: COLORES.texto },
-  zona: { fontSize: 13, color: COLORES.muted, marginTop: ESPACIO.xs },
-  separador: { height: 1, backgroundColor: COLORES.borde, marginVertical: ESPACIO.md },
-  filaInferior: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
-  capacidad: { fontSize: 13, color: COLORES.texto },
-  bloquePrecio: { alignItems: "flex-end" },
-  precioDesde: { fontSize: 11, color: COLORES.muted, textTransform: "uppercase", letterSpacing: 0.5 },
-  precio: { fontSize: 18, fontWeight: "700", color: COLORES.morado },
-});
+  foto: { width: "100%", aspectRatio: 282 / 133, backgroundColor: COLORES.esqueleto },
+  cuerpo: { paddingHorizontal: 16, paddingTop: 14, paddingBottom: 16, gap: 6 },
+  filaSuperior: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", gap: 10 },
+  nombre: { flex: 1, fontSize: 16.5, fontWeight: "700", color: COLORES.texto },
+  precio: { fontSize: 12.5, fontWeight: "700", color: COLORES.dorado, marginTop: 2 },
+  detalle: { fontSize: 12, color: COLORES.muted },
+}, ["nombre"]));
