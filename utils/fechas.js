@@ -81,6 +81,13 @@ export function formatearFechaCorta(clave, { conAnio = true } = {}) {
   return conAnio ? `${texto} ${anio}` : texto;
 }
 
+// Fecha y hora local de un Date → "12 nov 2026, 09:05" (HU-22: "actualizado: …")
+export function formatearFechaHora(fecha) {
+  const d = new Date(fecha);
+  const dosDigitos = (n) => String(n).padStart(2, "0");
+  return `${d.getDate()} ${MESES_CORTOS[d.getMonth()]} ${d.getFullYear()}, ${dosDigitos(d.getHours())}:${dosDigitos(d.getMinutes())}`;
+}
+
 // "2026-11-14" → "sábado 14 de noviembre de 2026"
 export function formatearFechaLarga(clave) {
   const [anio, mes, dia] = clave.split("-").map(Number);
