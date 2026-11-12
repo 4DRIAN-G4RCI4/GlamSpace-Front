@@ -13,7 +13,7 @@
  */
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { crearCacheLocal } from "./cacheLocal.nucleo";
+import { conRespaldo, crearCacheLocal } from "./cacheLocal.nucleo";
 
 export { llaveCache } from "./cacheLocal.nucleo";
 
@@ -23,3 +23,10 @@ export const guardarCache = cache.guardar;
 export const leerCache = cache.leer;
 export const borrarCache = cache.borrar;
 export const borrarCacheCompleta = cache.borrarTodo;
+
+// HU-22 · Pide a la API y guarda; sin conexión regresa lo guardado → { datos, desactualizado, guardadoEn }.
+// En Android/iOS navigator.onLine no existe: ahí decide el error "red" de la petición.
+export function conRespaldoLocal(llave, pedir) {
+  const enLinea = typeof navigator === "undefined" || navigator.onLine !== false;
+  return conRespaldo({ pedir, enLinea, leer: () => leerCache(llave), guardar: (datos) => guardarCache(llave, datos) });
+}

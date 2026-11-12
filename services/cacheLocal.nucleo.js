@@ -22,6 +22,29 @@ function esAlmacenamientoLleno(e) {
   return /quota|full|lleno|SQLITE_FULL|exceeded/i.test(texto);
 }
 
+// HU-22 · Con conexión: pide a la API y guarda. Sin conexión (navigator.onLine false o error de
+// tipo "red"): regresa lo último guardado marcado como desactualizado, con su fecha.
+// → { datos, desactualizado, guardadoEn } · sin nada guardado lanza un error "red" con sinDatosGuardados.
+export async function conRespaldo({ pedir, leer, guardar, enLinea }) {
+  if (enLinea) {
+    try {
+      const datos = await pedir();
+      await guardar(datos);
+      return { datos, desactualizado: false, guardadoEn: null };
+    } catch (e) {
+      if (!e || e.tipo !== "red") throw e; // errores de negocio o HTTP no se tapan con la caché
+    }
+  }
+  const guardado = await leer();
+  if (!guardado) {
+    const e = new Error("red");
+    e.tipo = "red";
+    e.sinDatosGuardados = true;
+    throw e;
+  }
+  return { datos: guardado.datos, desactualizado: true, guardadoEn: guardado.guardadoEn };
+}
+
 export function crearCacheLocal(almacen, ahora = () => new Date()) {
   async function llavesPropias() {
     const llaves = await almacen.getAllKeys();

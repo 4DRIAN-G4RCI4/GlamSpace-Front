@@ -15,6 +15,7 @@
  */
 
 import { postJson, postPaginado } from "./api";
+import { conRespaldoLocal, llaveCache } from "./cacheLocal";
 
 const RUTAS = {
   crear: "/solicitudes/crear",
@@ -77,6 +78,13 @@ export async function listarSolicitudes(clienteId, { pagina = 1, tamanoPagina = 
 export async function listarSolicitudesDeSalon(adminId, salonId, { estado = "pendiente", pagina = 1, tamanoPagina = 100 } = {}) {
   const r = await postPaginado(RUTAS.listarPorSalon, { adminId, salonId, estado, pagina, tamanoPagina });
   return { ...r, datos: r.datos.map(armarSolicitud) };
+}
+
+// HU-22 · Igual, pero sin conexión regresa lo último guardado (por admin, salón y estado)
+// → { datos: <lo mismo que listarSolicitudesDeSalon>, desactualizado, guardadoEn }
+export function listarSolicitudesDeSalonConRespaldo(adminId, salonId, opciones = {}) {
+  const llave = llaveCache(adminId, "solicitudes", salonId, opciones.estado || "pendiente");
+  return conRespaldoLocal(llave, () => listarSolicitudesDeSalon(adminId, salonId, opciones));
 }
 
 // Confirma la solicitud: la API bloquea la fecha y rechaza las demás pendientes de ese día (HU-17).
