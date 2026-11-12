@@ -1,0 +1,31 @@
+HU-07 (fotos): subida real de imágenes · E2E del front local (:8081) contra la API local (:5080, LocalDB) y el contenedor real de fotos.
+Solo imágenes de prueba; al final se borraron todas (contenedor en 0 antes y después).
+
+PASA  · Mi salón muestra 'Fotos del salón' con los chips 'Salón nuevo' y los salones del admin
+PASA  · Foto vieja con 404 → placeholder de la maqueta (inicial), no una imagen rota — {"inicial":true,"letra":"P","imgs":0}
+PASA  · Validación del cliente: el .jpg falso y el de más de 5 MB no se suben, con su mensaje
+PASA  · JPG, PNG y WEBP se suben al salón existente (4 de 8 con la vieja)
+PASA  · Indicador de progreso visible durante la subida
+PASA  · La API ya tiene las 3 fotos nuevas en fotosDetalle
+PASA  · Si la subida falla: mensaje claro (5000) y botón Reintentar en esa foto
+PASA  · Reintentar sube la foto (5 de 8)
+  320x640: scroll horizontal false · botón más bajo 44 px · chip más bajo 44 px · fotos por fila 2 · dentro true
+  360x740: scroll horizontal false · botón más bajo 44 px · chip más bajo 44 px · fotos por fila 2 · dentro true
+  390x844: scroll horizontal false · botón más bajo 44 px · chip más bajo 44 px · fotos por fila 2 · dentro true
+  768x1024: scroll horizontal false · botón más bajo 44 px · chip más bajo 44 px · fotos por fila 2 · dentro true
+  1024x768: scroll horizontal false · botón más bajo 44 px · chip más bajo 44 px · fotos por fila 2 · dentro true
+  1440x900: scroll horizontal false · botón más bajo 44 px · chip más bajo 44 px · fotos por fila 3 · dentro true
+  844x390: scroll horizontal false · botón más bajo 44 px · chip más bajo 44 px · fotos por fila 2 · dentro true
+PASA  · Foco visible en 'Agregar foto' — solid 2px
+PASA  · Sin conexión: aviso 'Modo sin conexión' y Agregar/Eliminar deshabilitados — {"agregar":"true","eliminar":true}
+PASA  · Eliminar pide confirmación y quita la foto vieja rota (solo el registro)
+PASA  · Eliminar una foto subida borra también el archivo (404)
+PASA  · Límite de 8: con 7, de 2 elegidas entra 1 y avisa; ya no se ofrece Agregar
+PASA  · Salón nuevo: se publica y después se suben sus 2 fotos — ¡Listo! "[Prueba] Fotos E2E 66580" ya está publicado con 1 paquete. Se subieron 2 fotos.
+PASA  · Después de publicar, la sección queda en el salón nuevo con sus 2 fotos guardadas
+PASA  · El detalle del salón muestra las fotos subidas desde su URL pública — [true,true,true]
+Limpieza: fotos que quedan en los salones 5, 6 y 6009: 0
+
+Errores de JavaScript: ninguno
+
+Resultado: 23 de 23 pasan

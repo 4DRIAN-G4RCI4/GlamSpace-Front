@@ -58,6 +58,41 @@ export async function postJson(ruta, cuerpo) {
   return respuesta.datos;
 }
 
+// HU-07 (fotos) · Envía un multipart/form-data y regresa solo "datos", igual que postJson.
+// Usa XMLHttpRequest porque fetch no informa el avance de la subida: onProgreso(0..1).
+// NO pone Content-Type: el navegador lo arma con el boundary del FormData.
+export function postFormulario(ruta, formData, { onProgreso } = {}) {
+  if (!API_URL) return Promise.reject(new ApiError("config"));
+
+  return new Promise((resolver, rechazar) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${API_URL}${ruta}`);
+    if (onProgreso && xhr.upload) {
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && e.total > 0) onProgreso(e.loaded / e.total);
+      };
+    }
+    xhr.onerror = () => rechazar(new ApiError("red"));
+    xhr.ontimeout = () => rechazar(new ApiError("red"));
+    xhr.onload = () => {
+      let data = null;
+      try {
+        data = JSON.parse(xhr.responseText);
+      } catch (e) {
+        // la respuesta no traía JSON; no pasa nada
+      }
+      const ok = xhr.status >= 200 && xhr.status < 300;
+      if (!ok || (data && data.exito === false)) {
+        rechazar(new ApiError("http", xhr.status, data && data.mensaje, data && data.codigo));
+        return;
+      }
+      if (onProgreso) onProgreso(1);
+      resolver(data ? data.datos : null);
+    };
+    xhr.send(formData);
+  });
+}
+
 // Para listados: regresa { datos, pagina, tamanoPagina, totalRegistros, totalPaginas, mensaje }.
 export async function postPaginado(ruta, cuerpo) {
   const { datos, pagina, tamanoPagina, totalRegistros, totalPaginas, mensaje } = await enviar(ruta, cuerpo);
