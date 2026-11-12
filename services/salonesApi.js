@@ -13,8 +13,9 @@
  * "actualizar" REEMPLAZA todo: siempre hay que mandar todos los campos, o se borran.
  */
 
-import { postJson, postPaginado } from "./api";
+import { postFormulario, postJson, postPaginado } from "./api";
 import { conRespaldoLocal, llaveCache } from "./cacheLocal";
+import { armarFormularioFoto } from "./fotos.logica";
 
 const RUTAS = {
   crearSalon: "/salones/crear",
@@ -24,6 +25,8 @@ const RUTAS = {
   disponibilidad: "/salones/disponibilidad",
   listarSalones: "/salones/listar",
   crearPaquete: "/paquetes/crear",
+  subirFoto: "/salones/subirFoto",
+  eliminarFoto: "/salones/eliminarFoto",
 };
 
 // HU-09 · Búsqueda pública (solo salones publicados). Todos los filtros son opcionales.
@@ -39,7 +42,8 @@ export function buscarSalones({ zona, capacidadMinima, precioMaximo, pagina = 1,
   });
 }
 
-// → { id, nombre, zona, capacidad, descripcion, estado, paquetes: [...], fotos: ["url", ...] }
+// → { id, nombre, zona, capacidad, descripcion, estado, paquetes: [...], fotos: ["url", ...],
+//     fotosDetalle: [{ fotoId, url }, ...] }   (fotosDetalle: mismas fotos con su id, HU-07 fotos)
 export function obtenerSalon(salonId) {
   return postJson(RUTAS.obtenerSalon, { id: salonId });
 }
@@ -103,4 +107,18 @@ export function crearPaquete(salonId, adminId, paquete) {
 // → el salón completo. Error 2003 si no tiene paquetes (el salón no se modifica).
 export function publicarSalon(salonId, salon) {
   return postJson(RUTAS.actualizarSalon, { id: salonId, ...armarSalon(salon), estado: "publicado" });
+}
+
+// ---------- HU-07 (fotos): subida real de imágenes ----------
+// Mientras no hay JWT, el adminId (el `id` de la sesión) va en el cuerpo, igual que en el resto.
+
+// multipart/form-data: salonId, adminId, archivo (JPG, PNG o WEBP de hasta 5 MB). onProgreso(0..1).
+// → { fotoId, url }
+export function subirFoto(adminId, salonId, archivo, onProgreso) {
+  return postFormulario(RUTAS.subirFoto, armarFormularioFoto({ salonId, adminId, archivo }), { onProgreso });
+}
+
+// → { fotoId, url } de la foto eliminada. Para fotos viejas con URL externa, la API solo borra el registro.
+export function eliminarFoto(adminId, salonId, fotoId) {
+  return postJson(RUTAS.eliminarFoto, { salonId, fotoId, adminId });
 }

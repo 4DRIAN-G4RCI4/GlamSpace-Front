@@ -16,11 +16,12 @@ import React, { useState } from "react";
 import { Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
 import { MEDIDA } from "../../theme/disenoPwa";
 import { formatearPrecio } from "../../utils/formato";
-import { fechaHoy, formatearFechaCorta, formatearFechaHora } from "../../utils/fechas";
+import { fechaHoy, formatearFechaCorta } from "../../utils/fechas";
 import usePanelAdministrador from "./usePanelAdministrador";
 import TarjetaPendiente, { EtiquetaEstado } from "./TarjetaPendiente";
 import CalendarioAdmin from "./CalendarioAdmin";
 import LayoutAdmin from "./LayoutAdmin";
+import BannerSinConexion from "./BannerSinConexion";
 import {
   estadisticas,
   historialReciente,
@@ -160,32 +161,6 @@ function Aviso({ texto, onCerrar }) {
       <Pressable onPress={onCerrar} accessibilityRole="button" accessibilityLabel="Cerrar aviso">
         <Text style={estilos.avisoCerrar}>✕</Text>
       </Pressable>
-    </View>
-  );
-}
-
-// HU-22 · Aviso de modo sin conexión. Se anuncia a lectores de pantalla sin interrumpir (aria-live).
-function BannerSinConexion({ enLinea, guardadoEn, onReintentar }) {
-  if (enLinea && !guardadoEn) return null;
-  return (
-    <View style={estilos.sinConexion} role="status" aria-live="polite">
-      <View style={estilos.sinConexionTextos}>
-        <Text style={estilos.sinConexionTitulo}>
-          {guardadoEn
-            ? `Modo sin conexión · mostrando la última información guardada (actualizado: ${formatearFechaHora(guardadoEn)})`
-            : "Modo sin conexión"}
-        </Text>
-        <Text style={estilos.sinConexionTexto}>Para aceptar o rechazar solicitudes necesitas conexión.</Text>
-      </View>
-      {enLinea ? (
-        <Pressable
-          onPress={onReintentar}
-          accessibilityRole="button"
-          style={({ hovered, focused }) => [estilos.botonCancelar, estilos.sinConexionBoton, (hovered || focused) && estilos.botonFoco]}
-        >
-          <Text style={estilos.botonCancelarTexto}>Reintentar</Text>
-        </Pressable>
-      ) : null}
     </View>
   );
 }

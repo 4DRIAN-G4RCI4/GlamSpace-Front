@@ -28,6 +28,7 @@ import LayoutAdmin from "../PanelAdministrador/LayoutAdmin";
 import { MEDIDA } from "../../theme/disenoPwa";
 import { COLORES } from "../../theme/colores";
 import usePublicarSalon from "./usePublicarSalon";
+import SeccionFotos from "./SeccionFotos";
 import { estilos } from "./PublicarSalon.styles";
 
 function formatearPrecio(valor) {
@@ -95,6 +96,9 @@ export default function PublicarSalonScreen({ navigation }) {
 
         <View style={escritorio ? estilos.columnas : null}>
         <View style={[estilos.tarjeta, estilos.tarjetaAdmin, escritorio && estilos.columnaDatos]}>
+          {/* ---------- Fotos del salón (HU-07 fotos) ---------- */}
+          <SeccionFotos fotos={f.fotos} nombreNuevo={f.nombre} movil={!escritorio} />
+
           {/* ---------- Datos del salón ---------- */}
           <Text style={estilos.seccion}>Datos del salón</Text>
 
