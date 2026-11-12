@@ -1,6 +1,7 @@
 /**
  * GlamSpaces · HU-13 · Lógica del calendario de disponibilidad del detalle.
  * Consulta POST /api/salones/disponibilidad (HU-12) por cada mes que se muestra.
+ * `fechaInicial` ("yyyy-MM-dd", opcional): fecha ya elegida; el calendario abre en su mes.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -9,13 +10,19 @@ import { textoDeErrorApi } from "../../services/api";
 import { fechaHoy, sumarMeses } from "../../utils/fechas";
 import { validarFechaEvento } from "./detalleSalon.validaciones";
 
-export default function useDisponibilidad(salonId) {
+function mesInicial(fechaInicial, hoy) {
+  if (!fechaInicial) return { anio: hoy.anio, mes: hoy.mes }; // abre en el mes actual
+  const [anio, mes] = fechaInicial.split("-").map(Number);
+  return { anio, mes };
+}
+
+export default function useDisponibilidad(salonId, fechaInicial = null) {
   const hoy = fechaHoy();
-  const [mes, setMes] = useState({ anio: hoy.anio, mes: hoy.mes }); // abre en el mes actual
+  const [mes, setMes] = useState(() => mesInicial(fechaInicial, hoy));
   const [ocupadas, setOcupadas] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
-  const [fechaElegida, setFechaElegida] = useState(null);
+  const [fechaElegida, setFechaElegida] = useState(fechaInicial);
   const [aviso, setAviso] = useState(null);
 
   // Si se cambia de mes rápido, solo cuenta la respuesta de la última consulta.

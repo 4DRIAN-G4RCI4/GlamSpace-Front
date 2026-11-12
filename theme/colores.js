@@ -9,7 +9,8 @@ export const COLORES = {
   morado: "#6b2942", // Tawny Port · acción principal
   moradoOscuro: "#2b1f24", // Thunder · títulos y fondos oscuros
   moradoClaro: "#fbf7f2", // White Linen · fondo de página
-  dorado: "#c9a15a", // Sundance · precios y acentos
+  dorado: "#c9a15a", // Sundance · precios y acentos (fondos, bordes y cifras grandes)
+  doradoTexto: "#8a6508", // Sundance oscurecido: precios en texto chico con contraste AA (4.5:1)
   texto: "#2b1f24", // Thunder
   muted: "#7c6b70", // Spicy Pink
   error: "#a63446", // Stiletto

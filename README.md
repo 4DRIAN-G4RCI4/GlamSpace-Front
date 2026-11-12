@@ -11,7 +11,9 @@ App.js                              Router manual entre pantallas (navigate(nomb
 components/                         Piezas visuales reutilizables
   Campo.js · Campo.styles.js          Input con etiqueta, error, pista y mostrar/ocultar contraseña
   Marca.js · Marca.styles.js          Logo + nombre de GlamSpaces
-  TarjetaSalon.js · .styles.js        Tarjeta de un resultado de búsqueda (HU-10)
+  TarjetaSalon.js · .styles.js        Tarjeta de un resultado de búsqueda (HU-10), con carrusel al pasar el mouse
+  useCarrusel.js · carrusel.logica.js Carrusel de la tarjeta y navegación de la galería del detalle
+  EncabezadoCliente.js · .styles.js   Barra con migas de pan del detalle y la reserva
   TarjetaSolicitud.js · .styles.js    Resumen de una solicitud con su estado (HU-16)
 theme/
   colores.js                        Paleta única
@@ -26,6 +28,7 @@ services/                           Todo lo que habla con la API o el dispositiv
   usuariosApi.js                      Registro y login (HU-02, HU-03, HU-04)
   salonesApi.js                       Crear/publicar salón y paquetes (HU-07), buscar (HU-10), detalle y disponibilidad (HU-13)
   solicitudesApi.js                   Crear, consultar y listar solicitudes de reservación (HU-16)
+  solicitudes.logica.js               Armado del envío a /solicitudes/crear y mensajes de sus errores
   sesionStorage.js                    Sesión activa en el dispositivo
 screens/                            Una carpeta por pantalla, cada una dividida en 4 partes
   <Pantalla>/<Pantalla>Screen.js      Módulo visual (solo JSX)
@@ -33,8 +36,8 @@ screens/                            Una carpeta por pantalla, cada una dividida 
   <Pantalla>/use<Pantalla>.js         Lógica: estado y acciones (el "script")
   <Pantalla>/<pantalla>.validaciones.js  Reglas de validación
   BusquedaSalones/                  HU-10 · pantalla de inicio
-  DetalleSalon/                     HU-13 · detalle, galería y calendario de disponibilidad
-  SolicitudReservacion/             HU-16 · formulario de solicitud con la fecha precargada
+  DetalleSalon/                     HU-13 · detalle en dos columnas, galería, paquetes, calendario y tarjeta fija
+  SolicitudReservacion/             HU-16 · reserva en 2 pasos (Cliente 04 elegir, Cliente 05 confirmar)
   MisSolicitudes/                   HU-16 · estado de las solicitudes del cliente
   PanelAdministrador/               HU-19 · solicitudes del salón (aceptar / rechazar) y calendario
   Login/                            HU-04 (+ PanelSesion.js)
@@ -368,9 +371,79 @@ En "Mi salón" (panel del administrador) está la sección **Fotos del salón**,
 
 **Evidencias:** `docs/evidencias-pwa/HU-07-fotos.md`.
 
+### Galería, detalle y reserva como la maqueta (mejora de HU-07 fotos y HU-16)
+
+Ajustes de pantallas que ya existían para seguir el Figma PROYECTO--PWA (detalle de escritorio,
+"Cliente 04 · Solicitar reservación" y "Cliente 05 · Confirmar datos de contacto"). No son HUs nuevas.
+
+**A. Carrusel en la tarjeta de búsqueda** (`components/TarjetaSalon.js`, `useCarrusel.js`, `carrusel.logica.js`)
+
+- Solo con mouse (`(hover: hover) and (pointer: fine)`): al pasar el mouse la foto se desliza por
+  `fotosPreview` (hasta 5, campo nuevo de buscar/listar del back). Avanza sola cada 1.5 s, con puntos
+  abajo y flechas ‹ ›. Al salir el mouse regresa a la primera.
+- Carga diferida: al pintar la lista solo se pide la foto principal; en el primer hover se pide la
+  siguiente y, al avanzar, siempre solo la que sigue.
+- Las flechas son hermanas del botón de la tarjeta (no anidadas): no abren el detalle. Con Tab, el foco
+  en la tarjeta muestra las flechas y se llega a ellas.
+- `prefers-reduced-motion`: no avanza sola, solo con flechas.
+- Sin `fotosPreview` (el back aún no lo manda) o con 0–1 foto: la tarjeta queda como antes, con
+  `fotoPrincipal` o la inicial. En táctil y sin conexión tampoco hay carrusel (no se piden fotos nuevas).
+
+**B. Detalle del salón** (`screens/DetalleSalon/`)
+
+- Escritorio (≥ 1024 px), dos columnas. Izquierda: galería (foto grande con flechas y contador, 4
+  miniaturas; la última con "+N" si hay más), nombre, zona, chip de capacidad, pestañas Información /
+  Paquetes / Disponibilidad (llevan a su sección), descripción, paquetes seleccionables y calendario.
+  Derecha: tarjeta fija (sticky) con "Desde $X", Fecha, Paquete, Invitados y "Solicitar reservación".
+- Móvil y tablet: una columna y barra fija abajo con "Desde $X" y el botón (no hay frames móviles).
+- Deslizar el dedo sobre la foto grande cambia de foto. Lo elegido (fecha, paquete, invitados) pasa
+  ya llenado a la reserva.
+
+**C. Reserva en dos pasos** (`screens/SolicitudReservacion/`)
+
+1. **Cliente 04** (`PasoElegir.js`): resumen del salón; 1. calendario (semana desde domingo, ocupados en
+   rojo; no se elige fecha pasada ni ocupada); 2. paquetes en radio (opcional si el salón no tiene);
+   3. tipo de evento, invitados, teléfono y comentarios. A la derecha (abajo en móvil) el Resumen con el
+   total estimado y "Continuar", deshabilitado hasta que todo sea válido y con el aviso "Falta completar: …".
+2. **Cliente 05** (`PasoConfirmar.js`): resumen de la solicitud, datos de contacto prellenados de la
+   sesión (nombre, teléfono, correo), términos y "Enviar solicitud".
+3. Al enviar: confirmación con el estado y el botón "Ver mis solicitudes".
+
+- Lo elegido viaja en los parámetros de la pantalla (`borrador`): se conserva con Atrás/Adelante del
+  navegador, al recargar y al iniciar sesión a la mitad (el login regresa al paso 2).
+- **Se envía solo lo que guarda la API** (`services/solicitudes.logica.js`): `clienteId` (de la sesión,
+  con el TODO hasta que haya JWT), `salonId`, `paqueteId`, `fechaEvento`, `tipoEvento`, `numeroInvitados`,
+  `telefonoContacto` (solo dígitos) y `comentarios`. **Nombre y correo se muestran y validan, pero no se
+  envían:** la API toma el nombre de la cuenta y no guarda el correo.
+- La API exige `tipoEvento` y la maqueta no lo trae: se agregó el selector "Tipo de evento" en el paso 3
+  (sugerencias de un toque o texto libre).
+- Validaciones (`solicitudReservacion.validaciones.js`), con el mensaje bajo cada campo (aria-live):
+  fecha requerida, futura y disponible; invitados entero > 0 y ≤ capacidad; teléfono de 10 dígitos;
+  comentarios ≤ 500; nombre requerido; correo con formato válido; términos aceptados.
+- Errores de la API: 4002 → "Esa fecha se acaba de ocupar" + **Elegir otra fecha**; 4004 → "Ya tienes
+  una solicitud pendiente…" + **Ver mis solicitudes**; 3001 → elegir otro paquete; 1005/4003 →
+  iniciar sesión con una cuenta de cliente; 2001 → el salón ya no está disponible; 1001 → el mensaje de
+  la API (si es de fecha, también "Elegir otra fecha").
+- Sin conexión (HU-22): "Enviar solicitud" queda deshabilitado con el aviso de modo sin conexión; no
+  se guarda ni se encola ningún POST.
+
+**Desviaciones de la maqueta:**
+
+- Amenidades, dirección detallada y los chips "Jardín al aire libre" / "Estacionamiento propio" no
+  existen en la API: se omitieron. Solo queda el chip de capacidad.
+- Las pestañas no ocultan contenido: llevan a cada sección, porque en la maqueta las tres se ven seguidas.
+- Precios en texto chico: `COLORES.doradoTexto` (#8a6508) en lugar del dorado #c9a15a, que sobre blanco
+  da 2.4:1 y no pasa AA. El dorado sigue en fondos y bordes.
+- Invitados en móvil se capturan en el paso 1 (la barra inferior solo lleva precio y botón).
+
+**Pruebas:** `node --test` (59): carrusel (índices, límites, sin fotos, precarga, "+N", deslizar),
+cada validación y sus límites, armado del envío y mapeo de errores. De punta a punta en Chrome contra la
+API **local** con LocalDB (66 comprobaciones, incluidas axe WCAG AA y 1440/1024/768/390/320 px y
+horizontal sin scroll horizontal). Detalle en `docs/evidencias-pwa/Galeria-reserva.md`.
+
 ## Pendiente
 
 - **Mi salón** (HU-19) abre por ahora la pantalla de Publicar salón; falta una pantalla para editar el salón (las fotos de un
   salón existente ya se manejan desde "Fotos del salón").
-- **Probar la HU-16 contra la API real** con una cuenta de cliente de prueba (los criterios 1, 3 y 4
-  se probaron con la API simulada).
+- **`fotosPreview` en producción:** el carrusel ya lo usa; mientras el back no lo publique, las tarjetas
+  muestran solo la foto principal.
