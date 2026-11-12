@@ -103,3 +103,19 @@ test("mosaicos de escritorio: 4 por fila de 165 px en la columna de la maqueta (
   assert.strictEqual(tamanoMosaico(0), 165);                   // antes de medir
   assert.ok(tamanoMosaico(250) * 2 + 12 <= 250);               // nunca se sale de la columna
 });
+
+import { combinarFotos } from "../../services/fotos.logica.js";
+
+test("una carga de fotos que termina tarde no borra lo que está en curso", () => {
+  const guardadas = [{ clave: "g1", fotoId: 1, estado: "guardada" }];
+  const locales = [
+    { clave: "g1", fotoId: 1, estado: "guardada" },  // ya viene de la API: no se duplica
+    { clave: "a", estado: "subiendo" },
+    { clave: "b", estado: "error" },
+    { clave: "c", estado: "pendiente" },
+    { clave: "d", fotoId: 9, estado: "guardada" },   // se guardó mientras cargaba: se conserva
+    { clave: "e", fotoId: 7, estado: "eliminando" }, // ya no está en la API: se va
+  ];
+  assert.deepStrictEqual(combinarFotos(guardadas, locales).map((f) => f.clave), ["g1", "a", "b", "c", "d"]);
+  assert.deepStrictEqual(combinarFotos(guardadas, undefined).map((f) => f.clave), ["g1"]);
+});

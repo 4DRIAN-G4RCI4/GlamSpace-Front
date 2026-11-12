@@ -15,6 +15,7 @@ import { Platform } from "react-native";
 import { eliminarFoto, listarSalonesDeAdmin, obtenerSalon, subirFoto } from "../../services/salonesApi";
 import {
   TIPOS_ACEPTADOS,
+  combinarFotos,
   cuposDisponibles,
   mensajeDeErrorFoto,
   repartirSeleccion,
@@ -89,8 +90,8 @@ export default function useFotosSalon(sesion) {
       const guardadas = (salon.fotosDetalle || []).map((f) => ({ clave: `g${f.fotoId}`, fotoId: f.fotoId, url: f.url, estado: "guardada" }));
       setFotosPorSalon((previo) => ({
         ...previo,
-        // Conserva las que fallaron al subir para poder reintentarlas.
-        [id]: [...guardadas, ...(previo[id] || []).filter((f) => f.estado === "error")],
+        // No borra lo que está en curso (subiendo, con error para reintentar, recién guardado).
+        [id]: combinarFotos(guardadas, previo[id]),
       }));
     } catch (e) {
       setErrorCarga(mensajeDeErrorFoto(e));
@@ -124,7 +125,7 @@ export default function useFotosSalon(sesion) {
 
   // Abre el selector, valida cada archivo y lo sube (salón existente) o lo deja pendiente (salón nuevo).
   async function agregar() {
-    if (!PUEDE_ELEGIR_ARCHIVOS || !enLinea) return;
+    if (!PUEDE_ELEGIR_ARCHIVOS || !enLinea || cargando) return;
     setAviso(null);
     const archivos = await elegirArchivosWeb();
     if (!archivos.length) return;
@@ -214,7 +215,8 @@ export default function useFotosSalon(sesion) {
     reintentarCarga: () => salonId !== NUEVO && cargarFotos(salonId),
     aviso,
     enLinea,
-    puedeAgregar: PUEDE_ELEGIR_ARCHIVOS && enLinea && cuposDisponibles(activas) > 0,
+    // Mientras cargan las fotos del salón no se puede agregar: el límite de 8 todavía no se conoce.
+    puedeAgregar: PUEDE_ELEGIR_ARCHIVOS && enLinea && !cargando && cuposDisponibles(activas) > 0,
     lleno: cuposDisponibles(activas) === 0,
     agregar,
     reintentar,
