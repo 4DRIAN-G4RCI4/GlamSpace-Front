@@ -42,6 +42,17 @@ export function tamanoMosaico(anchoColumna, separacion = 12, maximo = 165) {
   return Math.min(maximo, Math.floor((anchoColumna - separacion * (porFila - 1)) / porFila));
 }
 
+// Al cargar las fotos de un salón desde la API: las guardadas que regresa la API, más las que el
+// navegador tiene en curso (pendientes, subiendo o con error) y las que se acaban de guardar y la
+// API todavía no regresaba. Así una carga que termina tarde nunca borra de la pantalla una subida.
+export function combinarFotos(guardadas, locales) {
+  const ids = new Set(guardadas.map((f) => f.fotoId));
+  const enCurso = (locales || []).filter(
+    (f) => ["pendiente", "subiendo", "error"].includes(f.estado) || (f.estado === "guardada" && f.fotoId && !ids.has(f.fotoId)),
+  );
+  return [...guardadas, ...enCurso];
+}
+
 // Campos exactos que espera POST /api/salones/subirFoto (multipart/form-data).
 export function armarFormularioFoto({ salonId, adminId, archivo }) {
   const datos = new FormData();

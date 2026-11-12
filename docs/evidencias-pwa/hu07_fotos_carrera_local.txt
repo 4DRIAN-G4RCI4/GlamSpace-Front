@@ -1,0 +1,6 @@
+HU-07 (fotos) · carrera al cargar las fotos de un salón (encontrada en la prueba de producción).
+Front local (:8081) y API local (LocalDB); la respuesta de 'obtener' se retrasa 3 s para forzar la carrera.
+
+Mientras carga: "Cargando fotos…" true · Agregar deshabilitado: true
+Después de cargar: la subida aparece guardada (1 de 8) con su botón Eliminar: true
+Limpieza: foto eliminada (0 de 8)

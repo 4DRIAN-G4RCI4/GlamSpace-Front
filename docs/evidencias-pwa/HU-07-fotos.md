@@ -49,6 +49,24 @@ El proyecto todavía no tiene una pantalla de editar salón. Por eso la sección
 - Fotos por fila: 2 en móvil y tablet, y de 2 a 4 en escritorio según el ancho de la columna.
 - Capturas: `hu07_fotos_1440x900.png`, `_1024x768`, `_390x844`, `_320x640` y `_844x390`.
 
+## Hallazgo en la prueba de producción (corregido)
+
+La primera prueba en producción encontró una **carrera** al elegir un salón y subir una foto antes de que terminaran de cargar sus fotos:
+
+- La carga terminaba después y **reemplazaba la lista**.
+- La foto que se estaba subiendo desaparecía de la pantalla, aunque la API sí la guardaba.
+
+Corrección:
+
+- **Agregar** queda deshabilitado mientras cargan las fotos (el límite de 8 todavía no se conoce).
+- La carga conserva lo que está en curso: subiendo, con error o recién guardado (`combinarFotos` en `services/fotos.logica.js`, con prueba).
+
+Evidencias:
+
+- `hu07_fotos_carrera_local.txt`: con la respuesta de `obtener` retrasada 3 s, Agregar está deshabilitado mientras carga y la subida posterior aparece guardada.
+- El E2E completo se repitió: **23 de 23**.
+- Las 2 fotos que dejó la prueba en producción se borraron. El salón quedó con 0 fotos, las URLs dan 404 y el contenedor tiene 0 archivos.
+
 ## Qué NO se verificó
 
 - **Teléfono real, iOS/Safari y la app instalada.** Solo se probó en Chrome de escritorio con tamaños de móvil.
