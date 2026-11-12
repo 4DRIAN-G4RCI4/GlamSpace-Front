@@ -46,13 +46,20 @@ self.addEventListener("fetch", function (evento) {
   else evento.respondWith(redPrimero(r));
 });
 
+// Guarda una copia en la caché de la app sin hacer esperar la respuesta.
+// Si no se puede guardar (por ejemplo, almacenamiento lleno) la app sigue funcionando igual.
+function guardarCopia(llave, resp) {
+  var copia = resp.clone();
+  return caches
+    .open(CACHE_APP)
+    .then(function (c) { return c.put(llave, copia); })
+    .catch(function () { return undefined; });
+}
+
 function cachePrimero(peticion) {
   return caches.match(peticion).then(function (guardada) {
     return guardada || fetch(peticion).then(function (resp) {
-      if (resp.ok) {
-        var copia = resp.clone();
-        caches.open(CACHE_APP).then(function (c) { c.put(peticion, copia); });
-      }
+      if (resp.ok) void guardarCopia(peticion, resp);
       return resp;
     });
   });
@@ -91,10 +98,7 @@ function redPrimero(peticion) {
     return caches.match(esNavegacion ? "/" : peticion).then(function (g) { return g || Response.error(); });
   };
   var deRed = fetch(peticion).then(function (resp) {
-    if (resp.ok) {
-      var copia = resp.clone();
-      caches.open(CACHE_APP).then(function (c) { c.put(esNavegacion ? "/" : peticion, copia); });
-    }
+    if (resp.ok) void guardarCopia(esNavegacion ? "/" : peticion, resp);
     return resp;
   });
 
@@ -102,17 +106,20 @@ function redPrimero(peticion) {
     var resuelto = false;
     var usarCache = function () {
       if (resuelto) return;
-      deCache().then(function (g) {
-        if (resuelto) return;
-        if (g.type !== "error") { resuelto = true; resolver(g); }
-      });
+      deCache()
+        .then(function (g) {
+          if (resuelto) return;
+          if (g.type !== "error") { resuelto = true; resolver(g); }
+        })
+        .catch(function () { return undefined; }); // sin copia guardada: se sigue esperando a la red
     };
     var temporizador = setTimeout(usarCache, ESPERA_RED_MS);
     deRed
       .then(function (resp) { clearTimeout(temporizador); if (!resuelto) { resuelto = true; resolver(resp); } })
       .catch(function () {
         clearTimeout(temporizador);
-        deCache().then(function (g) { if (!resuelto) { resuelto = true; resolver(g); } });
+        var responder = function (g) { if (!resuelto) { resuelto = true; resolver(g); } };
+        deCache().then(responder, function () { responder(Response.error()); });
       });
   });
 }
