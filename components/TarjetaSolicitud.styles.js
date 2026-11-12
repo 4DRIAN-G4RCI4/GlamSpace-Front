@@ -1,8 +1,9 @@
 import { StyleSheet } from "react-native";
+import { conFuentes } from "../theme/disenoPwa";
 import { COLORES } from "../theme/colores";
 import { ESPACIO, RADIO } from "../theme/espaciado";
 
-export const estilos = StyleSheet.create({
+export const estilos = StyleSheet.create(conFuentes({
   tarjeta: {
     backgroundColor: "#fff",
     borderRadius: RADIO.md,
@@ -41,4 +42,4 @@ export const estilos = StyleSheet.create({
   },
   accionFoco: { borderColor: COLORES.morado },
   accionTexto: { fontSize: 13, fontWeight: "700", color: COLORES.morado },
-});
+}, ["salon"]));

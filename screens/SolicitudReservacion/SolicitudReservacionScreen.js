@@ -27,7 +27,6 @@ function Pagina({ children }) {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <ScrollView contentContainerStyle={estilos.pagina} keyboardShouldPersistTaps="handled">
         <View style={estilos.contenedor}>{children}</View>
-        <Text style={estilos.pie}>Solicitud de reservación · GlamSpaces</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );

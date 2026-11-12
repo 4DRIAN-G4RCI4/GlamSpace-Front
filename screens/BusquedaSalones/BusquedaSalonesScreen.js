@@ -14,7 +14,7 @@
  */
 
 import React from "react";
-import { View, Text, Pressable, ScrollView } from "react-native";
+import { View, Text, Pressable, ScrollView, useWindowDimensions } from "react-native";
 import Marca from "../../components/Marca";
 import BarraBusqueda from "./BarraBusqueda";
 import FiltrosChips from "./FiltrosChips";
@@ -24,33 +24,42 @@ import { estilos } from "./BusquedaSalones.styles";
 
 export default function BusquedaSalonesScreen({ navigation }) {
   const f = useBusquedaSalones();
-  const ir = (pantalla, params) => navigation && navigation.navigate(pantalla, params);
+  const angosta = useWindowDimensions().width < 520; // en móvil solo cabe "Mi cuenta"
+  const ir =(pantalla, params) => navigation && navigation.navigate(pantalla, params);
 
   return (
     <ScrollView contentContainerStyle={estilos.pantalla} keyboardShouldPersistTaps="handled">
-      <View style={estilos.franja}>
-        <View style={estilos.franjaContenido}>
-          <View style={estilos.encabezado}>
-            <Marca claro />
+      {/* Barra superior (Figma Cliente 02): marca a la izquierda, cuenta y registro a la derecha */}
+      <View style={estilos.navbar}>
+        <View style={estilos.navbarContenido}>
+          <Marca compacta />
+          <View style={estilos.navbarAcciones}>
             <Pressable
-              style={({ hovered, focused }) => [estilos.botonCuenta, (hovered || focused) && estilos.chipFoco]}
-              onPress={() => ir("Login")}
+              style={({ hovered, focused }) => [estilos.botonCuenta, (hovered || focused) && estilos.foco]}
+              onPress={() => ir("Perfil")}
               accessibilityRole="button"
             >
               <Text style={estilos.botonCuentaTexto}>Mi cuenta</Text>
             </Pressable>
+            {angosta ? null : (
+              <Pressable
+                style={({ hovered, focused }) => [estilos.botonRegistro, (hovered || focused) && { opacity: 0.85 }]}
+                onPress={() => ir("RegistroAdministrador")}
+                accessibilityRole="button"
+              >
+                <Text style={estilos.botonRegistroTexto}>Registra tu salón</Text>
+              </Pressable>
+            )}
           </View>
-
-          <Text style={estilos.tituloInicio} accessibilityRole="header">
-            Encuentra el salón <Text style={estilos.tituloAcento}>para tu evento</Text>
-          </Text>
-          <Text style={estilos.subtituloInicio}>
-            Compara salones por zona, capacidad y precio sin tener que llamar a cada uno.
-          </Text>
-
-          <BarraBusqueda valor={f.textoBusqueda} onCambiar={f.setTextoBusqueda} onBuscar={f.confirmarBusqueda} />
-          <FiltrosChips f={f} />
         </View>
+      </View>
+
+      <View style={estilos.franjaContenido}>
+        <Text style={estilos.tituloInicio} accessibilityRole="header">
+          {f.filtros.zona ? `Salones en ${f.filtros.zona}` : "Encuentra el salón para tu evento"}
+        </Text>
+        <BarraBusqueda valor={f.textoBusqueda} onCambiar={f.setTextoBusqueda} onBuscar={f.confirmarBusqueda} />
+        <FiltrosChips f={f} />
       </View>
 
       <View style={estilos.resultados}>
@@ -58,7 +67,6 @@ export default function BusquedaSalonesScreen({ navigation }) {
         <ResultadosSalones f={f} onAbrirSalon={(salonId) => ir("DetalleSalon", { salonId })} />
       </View>
 
-      <Text style={estilos.pie}>Búsqueda de salones · GlamSpaces</Text>
     </ScrollView>
   );
 }

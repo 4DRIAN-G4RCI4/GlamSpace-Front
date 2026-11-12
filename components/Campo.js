@@ -40,8 +40,13 @@ export default function Campo({
           {...propsExtra}
         />
         {conToggle ? (
-          <TouchableOpacity style={estilos.botonToggle} onPress={onToggle}>
-            <Text>{mostrarPassword ? "🙈" : "👁"}</Text>
+          <TouchableOpacity
+            style={estilos.botonToggle}
+            onPress={onToggle}
+            accessibilityRole="button"
+            accessibilityLabel={mostrarPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+          >
+            <Text style={estilos.textoToggle}>{mostrarPassword ? "Ocultar" : "Mostrar"}</Text>
           </TouchableOpacity>
         ) : null}
       </View>
