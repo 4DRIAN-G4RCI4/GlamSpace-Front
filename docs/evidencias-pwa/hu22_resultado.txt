@@ -1,0 +1,22 @@
+Caché local guardada: ["glamspaces_cache:7:disponibilidad:2:2026-11","glamspaces_cache:7:salones","glamspaces_cache:7:solicitudes:2:todas","glamspaces_cache:7:solicitudes:7:todas","glamspaces_cache:publico:busqueda:::"]
+PASA  · Con conexión se guardan salones, solicitudes y disponibilidad por admin/salón/mes/estado
+PASA  · La caché no guarda contraseñas ni tokens
+PASA  · Con conexión no hay banner y los botones están habilitados
+Banner: {"texto":"Modo sin conexión · mostrando la última información guardada (actualizado: 12 nov 2026, 00:29)\nPara aceptar o rechazar solicitudes necesitas conexión.","role":"status"}
+PASA  · Sin conexión muestra lo guardado con el banner y la fecha y hora
+PASA  · Aceptar y rechazar quedan deshabilitados con aviso — [true,true]
+  320x640: banner dentro: true · alto 104 · scroll horizontal: false · alto botones 46,46
+  360x740: banner dentro: true · alto 89 · scroll horizontal: false · alto botones 46,46
+  390x844: banner dentro: true · alto 73 · scroll horizontal: false · alto botones 46,46
+  768x1024: banner dentro: true · alto 57 · scroll horizontal: false · alto botones 46,46
+  1024x768: banner dentro: true · alto 57 · scroll horizontal: false · alto botones 38,38
+  844x390: banner dentro: true · alto 57 · scroll horizontal: false · alto botones 46,46
+PASA  · Salón sin nada guardado → mensaje de 'sin datos guardados'
+PASA  · Calendario: el mes guardado se ve y uno no consultado avisa
+PASA  · Al volver la conexión se recarga sola y quita el banner — 25 ms
+PASA  · Con conexión de nuevo, aceptar y rechazar se habilitan
+PASA  · Cerrar sesión borra toda la caché local de datos — []
+
+Errores de JavaScript: ninguno
+
+Resultado: 10 de 10 pasan

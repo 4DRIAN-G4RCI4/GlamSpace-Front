@@ -1,0 +1,33 @@
+[Slow 3G · primera visita, sin caché] resultados visibles en 10092 ms → 14 salones encontrados
+
+[Criterio 1 y 4] Service worker: activated · controla la página: true · http://localhost:8081/sw.js
+  Cache Storage "glamspaces-app-2b200f072709" (14):
+    /
+    /_expo/static/js/web/AppEntry-907e63a51624b1a06cd0dd782f398ada.js
+    /assets/assets/admin/flecha-anterior.77c6a80d5ab66a486724402b8968c4ea.svg
+    /assets/assets/admin/flecha-siguiente.a8b7f0ae903c824ea031a3f4f95fd823.svg
+    /assets/assets/admin/logo-destello.4723ca8e5bedbbab807861bafae26de7.svg
+    /assets/assets/cliente/icono-buscar.c3ba8acc15096f33d85160fe14441445.svg
+    /assets/assets/cliente/icono-perfil.7706800d0383b5c7b6d9e3c270145ee2.svg
+    /assets/assets/cliente/icono-solicitudes.e87873f64a424f5b32c3ba69eb140988.svg
+    /icons/apple-touch-icon.png
+    /icons/favicon-32.png
+    /icons/icon-192.png
+    /icons/icon-512.png
+    /icons/icon-maskable-512.png
+    /manifest.json
+  Cache Storage "glamspaces-medios" (1):
+    https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2
+  Tipos MIME: {"/sw.js":"200 application/javascript; charset=utf-8","/manifest.json":"200 application/json; charset=utf-8"}
+  Caché local de datos (AsyncStorage/localStorage): ["glamspaces_cache:publico:busqueda:::"]
+
+[Criterio 2 · Slow 3G con SW] resultados visibles en 93 ms (antes 10092 ms) → 14 salones encontrados
+  Recursos (deliveredType 'cache' = respondido por el SW):
+    AppEntry-907e63a51624b1a06cd0dd782f398ad · ? · 3 ms
+    favicon-32.png · ? · 3 ms
+    icon-192.png · ? · 4 ms
+
+[Sin conexión] la app abre: true (2614 ms) · búsqueda: 14 salones encontrados
+  Mensaje de error en pantalla: false
+
+Errores de JavaScript:      

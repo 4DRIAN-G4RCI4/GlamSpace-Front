@@ -1,0 +1,13 @@
+Manifest URL: http://localhost:8095/manifest.json
+Errores de parseo del manifest: ninguno
+name/short_name: GlamSpaces / GlamSpaces · display: kStandalone · start: http://localhost:8095/ · scope: http://localhost:8095/
+theme/background: "rgba(107,41,66,1)" "rgba(43,31,36,1)" · lang: es-MX · orientation: undefined
+Íconos: icon-192.png "192x192" undefined | icon-512.png "512x512" undefined | icon-maskable-512.png "512x512" undefined
+Errores de instalabilidad: ninguno
+HTML: {"scripts":1,"theme":"#6b2942","viewport":"width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover","lang":"es-MX","iconoOk":2}
+  /icons/icon-192.png 200 image/png
+  /icons/icon-512.png 200 image/png
+  /icons/icon-maskable-512.png 200 image/png
+  /icons/apple-touch-icon.png 200 image/png
+  /manifest.json 200 application/json
+Errores de JavaScript: ninguno

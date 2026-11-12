@@ -16,7 +16,7 @@ import React, { useState } from "react";
 import { Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
 import { MEDIDA } from "../../theme/disenoPwa";
 import { formatearPrecio } from "../../utils/formato";
-import { fechaHoy, formatearFechaCorta } from "../../utils/fechas";
+import { fechaHoy, formatearFechaCorta, formatearFechaHora } from "../../utils/fechas";
 import usePanelAdministrador from "./usePanelAdministrador";
 import TarjetaPendiente, { EtiquetaEstado } from "./TarjetaPendiente";
 import CalendarioAdmin from "./CalendarioAdmin";
@@ -135,7 +135,7 @@ function SeccionSolicitudes({ panel, movil }) {
                 porConfirmar={panel.porConfirmar}
                 conflictos={pendientesEnConflicto(panel.solicitudes, s)}
                 procesando={panel.procesandoId === s.id}
-                bloqueada={!!panel.procesandoId}
+                bloqueada={!!panel.procesandoId || !panel.puedeAtender}
                 error={panel.erroresPorId[s.id]}
                 onAceptar={() => panel.pedirConfirmacion(s.id, "aceptar")}
                 onRechazar={() => panel.pedirConfirmacion(s.id, "rechazar")}
@@ -160,6 +160,32 @@ function Aviso({ texto, onCerrar }) {
       <Pressable onPress={onCerrar} accessibilityRole="button" accessibilityLabel="Cerrar aviso">
         <Text style={estilos.avisoCerrar}>✕</Text>
       </Pressable>
+    </View>
+  );
+}
+
+// HU-22 · Aviso de modo sin conexión. Se anuncia a lectores de pantalla sin interrumpir (aria-live).
+function BannerSinConexion({ enLinea, guardadoEn, onReintentar }) {
+  if (enLinea && !guardadoEn) return null;
+  return (
+    <View style={estilos.sinConexion} role="status" aria-live="polite">
+      <View style={estilos.sinConexionTextos}>
+        <Text style={estilos.sinConexionTitulo}>
+          {guardadoEn
+            ? `Modo sin conexión · mostrando la última información guardada (actualizado: ${formatearFechaHora(guardadoEn)})`
+            : "Modo sin conexión"}
+        </Text>
+        <Text style={estilos.sinConexionTexto}>Para aceptar o rechazar solicitudes necesitas conexión.</Text>
+      </View>
+      {enLinea ? (
+        <Pressable
+          onPress={onReintentar}
+          accessibilityRole="button"
+          style={({ hovered, focused }) => [estilos.botonCancelar, estilos.sinConexionBoton, (hovered || focused) && estilos.botonFoco]}
+        >
+          <Text style={estilos.botonCancelarTexto}>Reintentar</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -237,6 +263,7 @@ export default function PanelAdministradorScreen({ navigation, route }) {
   } else if (panel.pestana === "calendario") {
     cuerpo = (
       <CalendarioAdmin
+        adminId={panel.sesion.id}
         salonId={panel.salon && panel.salon.id}
         solicitudes={panel.solicitudes}
         version={panel.versionCalendario}
@@ -254,6 +281,7 @@ export default function PanelAdministradorScreen({ navigation, route }) {
           {panel.pestana === "calendario" ? "Calendario de disponibilidad" : "Panel de solicitudes"}
         </Text>
       ) : null}
+      <BannerSinConexion enLinea={panel.enLinea} guardadoEn={panel.guardadoEn} onReintentar={panel.reintentarTodo} />
       <SelectorSalones salones={panel.salones} salonId={panel.salon && panel.salon.id} onElegir={panel.elegirSalon} movil={movil} />
       <Aviso texto={panel.aviso} onCerrar={panel.cerrarAviso} />
       {cuerpo}

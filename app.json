@@ -5,14 +5,15 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "backgroundColor": "#f4ecf7",
+    "backgroundColor": "#2b1f24",
     "web": {
       "bundler": "metro",
       "name": "GlamSpaces",
       "shortName": "GlamSpaces",
-      "themeColor": "#6b2a7a",
-      "backgroundColor": "#f4ecf7",
-      "display": "standalone"
+      "themeColor": "#6b2942",
+      "backgroundColor": "#2b1f24",
+      "display": "standalone",
+      "lang": "es-MX"
     }
   }
 }

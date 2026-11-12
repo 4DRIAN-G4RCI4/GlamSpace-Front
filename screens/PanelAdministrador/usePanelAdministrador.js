@@ -8,13 +8,28 @@
  * Cada acción se confirma antes de enviarse. Si la API responde con error, la solicitud se queda
  * en la lista con el mensaje (criterio 4). Si sale bien, se recarga la lista y el calendario
  * (criterios 2 y 3): la API ya rechazó las otras pendientes del mismo día y bloqueó la fecha.
+ *
+ * HU-22 · Sin conexión: salones y solicitudes salen de la caché local (services/cacheLocal.js) con
+ * la fecha en que se guardaron, aceptar/rechazar se deshabilita y al volver la conexión se recarga solo.
  */
 
 import { useEffect, useState } from "react";
-import { listarSalonesDeAdmin } from "../../services/salonesApi";
-import { aceptarSolicitud, listarSolicitudesDeSalon, rechazarSolicitud } from "../../services/solicitudesApi";
+import { listarSalonesDeAdminConRespaldo } from "../../services/salonesApi";
+import { aceptarSolicitud, listarSolicitudesDeSalonConRespaldo, rechazarSolicitud } from "../../services/solicitudesApi";
 import { textoDeErrorApi } from "../../services/api";
 import { obtenerSesionActiva } from "../../services/sesionStorage";
+import useConexion from "../../utils/useConexion";
+
+export const SIN_DATOS_GUARDADOS =
+  "Sin conexión y sin datos guardados. Conéctate a internet una vez para que tu panel se guarde en este dispositivo.";
+
+export const mensajeDeError = (e) => (e && e.sinDatosGuardados ? SIN_DATOS_GUARDADOS : textoDeErrorApi(e));
+
+// La más vieja de las fechas de lo que se está mostrando desde la caché (null = todo está al día).
+function fechaMasVieja(...fechas) {
+  const conFecha = fechas.filter(Boolean);
+  return conFecha.length ? new Date(Math.min(...conFecha.map((f) => f.getTime()))) : null;
+}
 
 export default function usePanelAdministrador(pestanaInicial = "solicitudes") {
   const [sesion, setSesion] = useState(null);
@@ -32,6 +47,13 @@ export default function usePanelAdministrador(pestanaInicial = "solicitudes") {
   const [erroresPorId, setErroresPorId] = useState({}); // { [id]: "mensaje de la API" }
   const [aviso, setAviso] = useState(null);
   const [versionCalendario, setVersionCalendario] = useState(0); // al cambiar, el calendario se vuelve a consultar
+  const [guardadoSalones, setGuardadoSalones] = useState(null); // Date si los salones salieron de la caché
+  const [guardadoSolicitudes, setGuardadoSolicitudes] = useState(null);
+
+  // Al volver la conexión se recarga todo sin que el administrador haga nada.
+  const enLinea = useConexion(() => {
+    if (sesion && sesion.id) void refrescar();
+  });
 
   const esAdministrador = !!sesion && sesion.tipo_cuenta === "administrador" && !!sesion.id;
   const salon = salones.find((s) => s.id === salonId) || null;
@@ -41,32 +63,42 @@ export default function usePanelAdministrador(pestanaInicial = "solicitudes") {
     setCargando(true);
     setError(null);
     try {
-      const r = await listarSolicitudesDeSalon(adminId, idSalon, { estado: "todas" });
-      setSolicitudes(r.datos);
+      const r = await listarSolicitudesDeSalonConRespaldo(adminId, idSalon, { estado: "todas" });
+      setSolicitudes(r.datos.datos);
+      setGuardadoSolicitudes(r.guardadoEn);
     } catch (e) {
-      setError(textoDeErrorApi(e));
+      setSolicitudes([]);
+      setError(mensajeDeError(e));
     } finally {
       setCargando(false);
     }
   }
 
-  async function cargarTodo(adminId) {
+  // `preferido`: al recargar se queda en el salón que el administrador estaba viendo.
+  async function cargarTodo(adminId, preferido = null) {
     setCargando(true);
     setError(null);
     try {
-      const lista = await listarSalonesDeAdmin(adminId);
+      const r = await listarSalonesDeAdminConRespaldo(adminId);
+      const lista = r.datos;
       setSalones(lista);
-      const primero = lista.length > 0 ? lista[0].id : null;
-      setSalonId(primero);
-      if (primero) {
-        await cargarSolicitudes(adminId, primero);
+      setGuardadoSalones(r.guardadoEn);
+      const elegido = lista.some((s) => s.id === preferido) ? preferido : lista.length > 0 ? lista[0].id : null;
+      setSalonId(elegido);
+      if (elegido) {
+        await cargarSolicitudes(adminId, elegido);
       } else {
         setCargando(false);
       }
     } catch (e) {
-      setError(textoDeErrorApi(e));
+      setError(mensajeDeError(e));
       setCargando(false);
     }
+  }
+
+  async function refrescar() {
+    await cargarTodo(sesion.id, salonId);
+    setVersionCalendario((v) => v + 1);
   }
 
   useEffect(() => {
@@ -101,7 +133,7 @@ export default function usePanelAdministrador(pestanaInicial = "solicitudes") {
   }
 
   async function confirmarAccion() {
-    if (!porConfirmar || procesandoId) return;
+    if (!porConfirmar || procesandoId || !puedeAtender) return;
     const { id, accion } = porConfirmar;
     setProcesandoId(id);
     setErroresPorId((actuales) => ({ ...actuales, [id]: null }));
@@ -128,6 +160,10 @@ export default function usePanelAdministrador(pestanaInicial = "solicitudes") {
     }
   }
 
+  // Aceptar o rechazar necesita la API: sin conexión (o con datos guardados) no se permite.
+  const guardadoEn = fechaMasVieja(guardadoSalones, guardadoSolicitudes);
+  const puedeAtender = enLinea && !guardadoEn;
+
   function nombreDe(id) {
     const s = solicitudes.find((x) => x.id === id);
     return s ? s.nombreCliente : "el cliente";
@@ -144,7 +180,11 @@ export default function usePanelAdministrador(pestanaInicial = "solicitudes") {
     cargando,
     error,
     recargar: () => cargarSolicitudes(),
-    reintentarTodo: () => cargarTodo(sesion.id),
+    reintentarTodo: refrescar,
+    // HU-22
+    enLinea,
+    guardadoEn,
+    puedeAtender,
     pestana,
     setPestana,
     porConfirmar,
