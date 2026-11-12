@@ -16,7 +16,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci --ignore-scripts
 
       - name: Export web build (Expo) + service worker (HU-21)
         run: npm run build:web
@@ -24,7 +24,7 @@ jobs:
           EXPO_PUBLIC_API_URL: ${{ secrets.EXPO_PUBLIC_API_URL }}
 
       - name: Deploy to Azure Storage static website
-        uses: azure/CLI@v2
+        uses: azure/CLI@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956 # v2
         with:
           inlineScript: |
             az storage blob upload-batch \
