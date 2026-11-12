@@ -88,3 +88,58 @@ test("cualquier otro error del almacenamiento no rompe la app", async () => {
   assert.deepStrictEqual(await cache.guardar(PREFIJO + "1:a", 1), { ok: false, motivo: "error" });
   assert.strictEqual(await cache.leer(PREFIJO + "1:a"), null);
 });
+
+// ---------- HU-22 · conRespaldo (en línea → API y guarda; sin red → lo guardado) ----------
+import { conRespaldo } from "../../services/cacheLocal.nucleo.js";
+import { formatearFechaHora } from "../../utils/fechas.js";
+
+const errorDe = (tipo) => Object.assign(new Error(tipo), { tipo });
+
+function respaldoFalso(guardado = null) {
+  const r = { guardado, guardados: [] };
+  r.leer = async () => r.guardado;
+  r.guardar = async (d) => { r.guardados.push(d); };
+  return r;
+}
+
+test("en línea: regresa lo de la API, lo guarda y no está desactualizado", async () => {
+  const c = respaldoFalso();
+  const r = await conRespaldo({ pedir: async () => ({ a: 1 }), leer: c.leer, guardar: c.guardar, enLinea: true });
+  assert.deepStrictEqual(r, { datos: { a: 1 }, desactualizado: false, guardadoEn: null });
+  assert.deepStrictEqual(c.guardados, [{ a: 1 }]);
+});
+
+test("falla de red: regresa lo guardado marcado como desactualizado con su fecha", async () => {
+  const c = respaldoFalso({ datos: [1, 2], guardadoEn: FECHA });
+  const r = await conRespaldo({ pedir: async () => { throw errorDe("red"); }, leer: c.leer, guardar: c.guardar, enLinea: true });
+  assert.deepStrictEqual(r, { datos: [1, 2], desactualizado: true, guardadoEn: FECHA });
+});
+
+test("navigator.onLine false: ni siquiera llama a la API", async () => {
+  const c = respaldoFalso({ datos: "x", guardadoEn: FECHA });
+  let llamadas = 0;
+  const r = await conRespaldo({ pedir: async () => { llamadas++; return "nuevo"; }, leer: c.leer, guardar: c.guardar, enLinea: false });
+  assert.strictEqual(llamadas, 0);
+  assert.strictEqual(r.desactualizado, true);
+});
+
+test("sin red y sin nada guardado: error 'red' con sinDatosGuardados", async () => {
+  const c = respaldoFalso(null);
+  await assert.rejects(
+    conRespaldo({ pedir: async () => { throw errorDe("red"); }, leer: c.leer, guardar: c.guardar, enLinea: true }),
+    (e) => e.tipo === "red" && e.sinDatosGuardados === true,
+  );
+});
+
+test("errores de la API que no son de red no se tapan con lo guardado", async () => {
+  const c = respaldoFalso({ datos: "viejo", guardadoEn: FECHA });
+  await assert.rejects(
+    conRespaldo({ pedir: async () => { throw errorDe("http"); }, leer: c.leer, guardar: c.guardar, enLinea: true }),
+    (e) => e.tipo === "http",
+  );
+});
+
+test("formatearFechaHora: '12 nov 2026, 09:05' en hora local", () => {
+  assert.strictEqual(formatearFechaHora(new Date(2026, 10, 12, 9, 5)), "12 nov 2026, 09:05");
+  assert.strictEqual(formatearFechaHora(new Date(2026, 0, 3, 23, 59).toISOString()), "3 ene 2026, 23:59");
+});
