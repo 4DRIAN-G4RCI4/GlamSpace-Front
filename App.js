@@ -37,6 +37,7 @@ import MisSolicitudesScreen from "./screens/MisSolicitudes/MisSolicitudesScreen"
 import PanelAdministradorScreen from "./screens/PanelAdministrador/PanelAdministradorScreen";
 import PerfilScreen from "./screens/Perfil/PerfilScreen";
 import useFuentesWeb from "./theme/fuentesWeb";
+import AvisoNuevaVersion from "./components/AvisoNuevaVersion"; // HU-21 · service worker
 
 const PANTALLAS = {
   BusquedaSalones: BusquedaSalonesScreen,
@@ -109,6 +110,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <PantallaActiva navigation={navigation} route={{ params: actual.params }} />
+      <AvisoNuevaVersion />
     </SafeAreaView>
   );
 }

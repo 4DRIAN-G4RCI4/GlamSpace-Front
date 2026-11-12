@@ -1,0 +1,22 @@
+✔ llaves por usuario y por partes; sin usuario → publico (2.6556ms)
+✔ guardar y leer regresa los datos con la fecha de guardado (3.359ms)
+✔ leer algo que no existe → null (0.1606ms)
+✔ una entrada de otro esquema o dañada se descarta y se borra (0.2051ms)
+✔ borrar quita solo esa llave (0.6208ms)
+✔ borrarTodo quita toda la caché y deja la sesión y lo demás (0.2459ms)
+✔ almacenamiento lleno: libera la caché propia y vuelve a intentar (0.3811ms)
+✔ si ni liberando cabe, regresa { ok:false, motivo:'lleno' } sin lanzar (0.2252ms)
+✔ cualquier otro error del almacenamiento no rompe la app (0.2637ms)
+✔ nunca intercepta POST (la API y cualquier otro) (1.0363ms)
+✔ nunca intercepta rutas de la API aunque sean GET (0.198ms)
+✔ navegación del sitio → red primero (con respaldo al index.html) (0.1406ms)
+✔ estáticos con hash → caché primero (0.1531ms)
+✔ archivos sin hash del sitio → red primero; sw.js nunca (0.2581ms)
+✔ fotos de salones y fuentes → stale-while-revalidate (0.2361ms)
+✔ otros GET de otros dominios no se interceptan (0.147ms)
+✔ precache: archivos reales sin sw.js, metadata.json ni mapas, ordenados (1.1331ms)
+✔ versión: igual con el mismo contenido, distinta si algo cambia (1.1251ms)
+✔ el sw.js generado es JavaScript válido y trae versión y precache (0.7865ms)
+ℹ tests 19
+ℹ pass 19
+ℹ fail 0
