@@ -16,6 +16,7 @@
 
 import { postJson, postPaginado } from "./api";
 import { conRespaldoLocal, llaveCache } from "./cacheLocal";
+import { armarSolicitudParaApi } from "./solicitudes.logica";
 
 const RUTAS = {
   crear: "/solicitudes/crear",
@@ -40,18 +41,10 @@ function armarSolicitud(s) {
   return { ...s, fechaEvento: String(s.fechaEvento).slice(0, 10) };
 }
 
-// → la solicitud creada, en estado "pendiente"
-export async function crearSolicitud(clienteId, solicitud) {
-  const creada = await postJson(RUTAS.crear, {
-    clienteId,
-    salonId: solicitud.salonId,
-    paqueteId: solicitud.paqueteId || null,
-    fechaEvento: solicitud.fecha,
-    tipoEvento: solicitud.tipoEvento.trim(),
-    numeroInvitados: solicitud.numeroInvitados,
-    telefonoContacto: solicitud.telefono.trim(),
-    comentarios: solicitud.comentarios.trim() || null,
-  });
+// borrador: { salonId, paqueteId, fecha, tipoEvento, invitados, telefono, comentarios }
+// (el body lo arma solicitudes.logica.js) → la solicitud creada, en estado "pendiente"
+export async function crearSolicitud(clienteId, borrador) {
+  const creada = await postJson(RUTAS.crear, armarSolicitudParaApi(clienteId, borrador));
   return armarSolicitud(creada);
 }
 

@@ -1,0 +1,68 @@
+OK   cliente de prueba creado en LocalDB
+OK   al pintar la lista solo se cargan las fotos principales: 3.svg,1.svg,7.svg,no-existe.svg
+OK   primer hover: precarga solo la siguiente (lazy): 3.svg,1.svg,7.svg,no-existe.svg,2.svg
+OK   avance automático cada ~1.5 s, precargando solo la siguiente: 3.svg,1.svg,7.svg,no-existe.svg,2.svg,4.svg
+OK   la flecha no abre el detalle
+OK   al salir el mouse se ocultan las flechas y vuelve a la primera
+OK   sin fotosPreview usa fotoPrincipal y no hay carrusel
+OK   una foto con 404 se reemplaza por la inicial
+OK   con foco de teclado aparecen las flechas
+OK   Tab llega a las flechas sin que se oculten
+OK   con prefers-reduced-motion no avanza solo
+OK   axe WCAG AA sin problemas serios en búsqueda
+OK   galería con 4 miniaturas y '+4' en la última
+OK   miniaturas, '+N' y flechas cambian la foto grande
+OK   elegir paquete se refleja en la tarjeta fija
+OK   la fecha elegida aparece en la tarjeta
+OK   la tarjeta de reserva sigue visible (sticky) al bajar
+OK   axe WCAG AA sin problemas serios en detalle
+OK   Cliente 04 llega con fecha, paquete y total ya llenados
+OK   invitados precargados
+OK   Continuar deshabilitado hasta que todo sea válido
+OK   aviso de lo que falta
+OK   Continuar se habilita con todo válido
+OK   axe WCAG AA sin problemas serios en reserva paso 1
+OK   Cliente 05 sin sesión pide entrar
+OK   con Atrás se conserva lo elegido
+OK   al entrar regresa a Cliente 05 con nombre prellenado de la sesión
+OK   correo prellenado de la sesión
+OK   el resumen conserva la fecha después del login
+OK   Enviar deshabilitado sin aceptar términos
+OK   con términos aceptados se habilita Enviar
+OK   sin conexión el envío queda deshabilitado con el aviso
+OK   axe WCAG AA sin problemas serios en reserva paso 2
+OK   4002: muestra el error y sugiere elegir otra fecha
+OK   la solicitud se guardó en LocalDB con solo los campos de la API: 1|2026-12-19|Boda|120|7711234567|2|pendiente
+OK   4004: solicitud pendiente duplicada con mensaje claro
+OK   lleva a Mis solicitudes y aparece la nueva
+OK   busqueda a 1440×900 sin scroll horizontal
+OK   detalle a 1440×900 sin scroll horizontal
+OK   reserva a 1440×900 sin scroll horizontal
+OK   confirmar a 1440×900 sin scroll horizontal
+OK   busqueda a 1024×768 sin scroll horizontal
+OK   detalle a 1024×768 sin scroll horizontal
+OK   reserva a 1024×768 sin scroll horizontal
+OK   confirmar a 1024×768 sin scroll horizontal
+OK   busqueda a 768×1024 sin scroll horizontal
+OK   detalle a 768×1024 sin scroll horizontal
+OK   reserva a 768×1024 sin scroll horizontal
+OK   confirmar a 768×1024 sin scroll horizontal
+OK   detalle a 768px: barra inferior fija con botón de 46 px
+OK   busqueda a 390×844 sin scroll horizontal
+OK   detalle a 390×844 sin scroll horizontal
+OK   reserva a 390×844 sin scroll horizontal
+OK   confirmar a 390×844 sin scroll horizontal
+OK   detalle a 390px: barra inferior fija con botón de 46 px
+OK   busqueda a 320×640 sin scroll horizontal
+OK   detalle a 320×640 sin scroll horizontal
+OK   reserva a 320×640 sin scroll horizontal
+OK   confirmar a 320×640 sin scroll horizontal
+OK   detalle a 320px: barra inferior fija con botón de 46 px
+OK   busqueda a 844×390 sin scroll horizontal
+OK   detalle a 844×390 sin scroll horizontal
+OK   reserva a 844×390 sin scroll horizontal
+OK   confirmar a 844×390 sin scroll horizontal
+OK   detalle a 844px: barra inferior fija con botón de 46 px
+OK   sin errores de JavaScript 
+
+TODO OK

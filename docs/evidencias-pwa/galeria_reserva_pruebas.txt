@@ -1,0 +1,62 @@
+ok 1 - llaves por usuario y por partes; sin usuario → publico
+ok 2 - guardar y leer regresa los datos con la fecha de guardado
+ok 3 - leer algo que no existe → null
+ok 4 - una entrada de otro esquema o dañada se descarta y se borra
+ok 5 - borrar quita solo esa llave
+ok 6 - borrarTodo quita toda la caché y deja la sesión y lo demás
+ok 7 - almacenamiento lleno: libera la caché propia y vuelve a intentar
+ok 8 - si ni liberando cabe, regresa { ok:false, motivo:'lleno' } sin lanzar
+ok 9 - cualquier otro error del almacenamiento no rompe la app
+ok 10 - en línea: regresa lo de la API, lo guarda y no está desactualizado
+ok 11 - falla de red: regresa lo guardado marcado como desactualizado con su fecha
+ok 12 - navigator.onLine false: ni siquiera llama a la API
+ok 13 - sin red y sin nada guardado: error 'red' con sinDatosGuardados
+ok 14 - errores de la API que no son de red no se tapan con lo guardado
+ok 15 - formatearFechaHora: '12 nov 2026, 09:05' en hora local
+ok 16 - fotosDeTarjeta usa fotosPreview, hasta 5 y sin vacíos
+ok 17 - fotosDeTarjeta regresa a fotoPrincipal si la API aún no manda fotosPreview
+ok 18 - fotosDeTarjeta sin fotos regresa arreglo vacío
+ok 19 - tieneCarrusel solo con 2 fotos o más
+ok 20 - moverIndice da la vuelta en los dos sentidos
+ok 21 - moverIndice con 0 o 1 foto se queda en 0
+ok 22 - conPrecarga carga la foto visible y la siguiente, sin repetir
+ok 23 - resumenMiniaturas: hasta 4 y '+N' con las que sobran
+ok 24 - pasoPorDeslizamiento respeta el umbral
+ok 25 - tipo real por magic bytes: JPG, PNG y WEBP
+ok 26 - tipo real: un texto renombrado a .jpg, GIF, PDF o RIFF de audio no son imagen
+ok 27 - tamaño: hasta 5 MB exactos se acepta; un byte más o vacío no
+ok 28 - validarArchivo revisa el tipo real aunque el tamaño esté bien
+ok 29 - límite de 8 contando las que ya tiene el salón y las que están por subirse
+ok 30 - repartirSeleccion: entran las primeras que caben y se cuentan las sobrantes
+ok 31 - FormData con los campos exactos del contrato: salonId, adminId y archivo
+ok 32 - FormData con un Blob sin nombre usa 'foto' como nombre del archivo
+ok 33 - el selector solo ofrece JPG, PNG y WEBP
+ok 34 - mensajes claros para cada código de la API y genérico para lo demás
+ok 35 - mosaicos de escritorio: 4 por fila de 165 px en la columna de la maqueta (696 px), mínimo 2
+ok 36 - una carga de fotos que termina tarde no borra lo que está en curso
+ok 37 - nunca intercepta POST (la API y cualquier otro)
+ok 38 - nunca intercepta rutas de la API aunque sean GET
+ok 39 - navegación del sitio → red primero (con respaldo al index.html)
+ok 40 - estáticos con hash → caché primero
+ok 41 - archivos sin hash del sitio → red primero; sw.js nunca
+ok 42 - fotos de salones y fuentes → stale-while-revalidate
+ok 43 - otros GET de otros dominios no se interceptan
+ok 44 - precache: archivos reales sin sw.js, metadata.json ni mapas, ordenados
+ok 45 - versión: igual con el mismo contenido, distinta si algo cambia
+ok 46 - el sw.js generado es JavaScript válido y trae versión y precache
+ok 47 - fecha: requerida, futura y disponible
+ok 48 - tipo de evento requerido
+ok 49 - invitados: entero > 0 y hasta la capacidad
+ok 50 - teléfono: exactamente 10 dígitos
+ok 51 - comentarios: hasta 500 caracteres
+ok 52 - nombre, correo y términos
+ok 53 - validarPasoElegir: completo sin errores; vacío marca cada campo
+ok 54 - validarPasoConfirmar marca nombre, correo, teléfono y términos
+ok 55 - armarSolicitudParaApi manda solo lo que guarda la API
+ok 56 - armarSolicitudParaApi sin paquete ni comentarios manda null
+ok 57 - mensajeDeErrorSolicitud: cada código con su mensaje y siguiente paso
+ok 58 - mensajeDeErrorSolicitud: 1001 usa el mensaje de la API; de fecha sugiere otra
+ok 59 - mensajeDeErrorSolicitud: sin red y errores desconocidos
+# tests 59
+# pass 59
+# fail 0
