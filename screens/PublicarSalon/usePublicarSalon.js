@@ -6,6 +6,8 @@
  *
  * Publicar = 3 pasos contra la API (ver services/salonesApi.js):
  *   crear salón → agregar cada paquete → publicar (PUT).
+ * HU-07 (fotos): después, las fotos pendientes del salón nuevo se suben con su salonId
+ * (useFotosSalon). Si alguna falla, el salón ya quedó publicado y se reintenta en "Fotos del salón".
  */
 
 import { useEffect, useState } from "react";
@@ -14,6 +16,7 @@ import { textoDeErrorApi } from "../../services/api";
 import { obtenerSesionActiva } from "../../services/sesionStorage";
 import { aNumero } from "../../utils/validadores";
 import { validarPaquete, validarPublicacion } from "./publicarSalon.validaciones";
+import useFotosSalon from "./useFotosSalon";
 
 const PAQUETE_VACIO = { nombre: "", descripcion: "", precio: "" };
 const PROGRESO_INICIAL = { salonId: null, enviados: 0 };
@@ -55,6 +58,7 @@ export default function usePublicarSalon() {
   }, []);
 
   const esAdministrador = !!sesion && sesion.tipo_cuenta === "administrador";
+  const fotos = useFotosSalon(sesion);
 
   // ---- Paquetes ----
 
@@ -154,12 +158,19 @@ export default function usePublicarSalon() {
       // 3) Publicar (la API exige al menos un paquete)
       await publicarSalon(salonId, datosSalon);
 
+      // 4) HU-07 (fotos): las fotos elegidas se suben ahora que el salón existe
+      const { total, subidas } = await fotos.subirPendientes(salonId);
+      const textoFotos =
+        total === 0 ? "" : subidas === total
+          ? ` Se subieron ${total} ${total === 1 ? "foto" : "fotos"}.`
+          : ` Se subieron ${subidas} de ${total} fotos; reintenta las que fallaron en "Fotos del salón".`;
+
       // Criterio 4: confirmación al administrador
       setMensaje({
-        tipo: "ok",
+        tipo: subidas === total ? "ok" : "fail",
         texto: `¡Listo! "${datosSalon.nombre}" ya está publicado con ${paquetes.length} ${
           paquetes.length === 1 ? "paquete" : "paquetes"
-        }.`,
+        }.${textoFotos}`,
       });
       setNombre(sesion.nombre_salon ? sesion.nombre_salon : "");
       setZona("");
@@ -202,6 +213,8 @@ export default function usePublicarSalon() {
     agregarPaquete,
     quitarPaquete,
     paquetesEnviados: progreso.enviados,
+    // fotos (HU-07)
+    fotos,
     // envío
     errores,
     enviando,
