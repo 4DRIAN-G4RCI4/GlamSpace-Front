@@ -335,11 +335,42 @@ Evidencias en `docs/evidencias-pwa/HU-21.md`.
 - **Privacidad:** cerrar sesión borra toda la caché. Nunca se guardan contraseñas ni tokens.
 - **Evidencias:** `docs/evidencias-pwa/HU-22.md`.
 
+### HU-07 (fotos): subida real de imágenes
+
+En "Mi salón" (panel del administrador) está la sección **Fotos del salón**, con el diseño de Figma Admin 05:
+
+- **Escritorio:** mosaicos de hasta 165 px (de 2 a 4 por fila) y un mosaico "+" punteado.
+- **Móvil:** 2 por fila y un botón "+ Agregar foto" punteado.
+
+**Salón:** con los chips "Salón nuevo" o uno de tus salones se elige de qué salón son las fotos. Todavía no existe una pantalla de editar salón.
+
+- **Salón existente:** las fotos salen de `obtener → fotosDetalle`. Subir y eliminar se hacen al momento.
+- **Salón nuevo:** las fotos quedan pendientes y se suben después de publicar, cuando ya existe el `salonId`. Las que fallen se quedan con **Reintentar** en el chip de ese salón.
+
+**Validación en el cliente** (`services/fotos.logica.js`, la misma regla que la API):
+
+- Tipo real por magic bytes: JPG, PNG o WEBP.
+- 5 MB como máximo.
+- 8 fotos como máximo, contando las que ya tiene el salón.
+
+**Cada foto** muestra vista previa, "Subiendo N %", su error y **Reintentar**. Para eliminar pide confirmación. Si el archivo es una foto vieja con URL externa rota, la API borra solo el registro.
+
+**Servicios:**
+
+- `subirFoto(adminId, salonId, archivo, onProgreso)` manda `multipart/form-data` con `salonId`, `adminId` y `archivo`. Usa `postFormulario` en `api.js`, que usa XMLHttpRequest para reportar el progreso y **no** pone Content-Type, porque el navegador agrega el boundary.
+- `eliminarFoto(adminId, salonId, fotoId)` manda JSON.
+
+**Mensajes de error:** cada código (2001, 2002, 2005–2009, 5000) tiene su mensaje en español, y cualquier otro da uno genérico.
+
+**Mostrar:** las fotos se muestran con su URL pública, que el service worker cachea con stale-while-revalidate. Si una foto da 404, `components/FotoSalon.js` muestra el espacio de la maqueta con la inicial del salón. Lo usan las tarjetas, el detalle y "Mi salón".
+
+**Sin conexión (HU-22):** aparece el mismo aviso, ahora en `screens/PanelAdministrador/BannerSinConexion.js`. Subir y eliminar se deshabilitan. Nada se encola.
+
+**Evidencias:** `docs/evidencias-pwa/HU-07-fotos.md`.
+
 ## Pendiente
 
-- **Fotos:** la HU-07 las pide, pero la API de HU-06 todavía no las recibe al crear ni
-  al actualizar (solo las devuelve en el detalle). El formulario no las incluye hasta que
-  exista el endpoint.
-- **Mi salón** (HU-19) abre por ahora la pantalla de Publicar salón; falta una pantalla para editar el salón.
+- **Mi salón** (HU-19) abre por ahora la pantalla de Publicar salón; falta una pantalla para editar el salón (las fotos de un
+  salón existente ya se manejan desde "Fotos del salón").
 - **Probar la HU-16 contra la API real** con una cuenta de cliente de prueba (los criterios 1, 3 y 4
   se probaron con la API simulada).
