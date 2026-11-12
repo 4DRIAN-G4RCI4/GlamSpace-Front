@@ -1,0 +1,1 @@
+expo start · service workers registrados: 0 · la app carga: sí · errores JS: ninguno

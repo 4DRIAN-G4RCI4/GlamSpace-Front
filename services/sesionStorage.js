@@ -4,6 +4,7 @@
  */
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { borrarCacheCompleta } from "./cacheLocal";
 
 const LLAVE_SESION = "glamspaces_sesion";
 
@@ -25,6 +26,8 @@ export async function obtenerSesionActiva() {
   }
 }
 
+// Privacidad: al cerrar sesión también se borran los datos guardados para usarse sin conexión.
 export async function cerrarSesion() {
   await AsyncStorage.removeItem(LLAVE_SESION);
+  await borrarCacheCompleta();
 }

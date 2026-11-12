@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- viewport-fit=cover: en modo instalado la app ocupa toda la pantalla y respeta las áreas seguras (ver #root). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover" />
+    <title>GlamSpaces</title>
+    <meta name="description" content="Encuentra, compara y reserva salones de fiestas y eventos." />
+
+    <!-- HU-20 · PWA instalable: manifest e íconos (public/ se copia tal cual a dist/). -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="GlamSpaces" />
+    <!-- iOS: la barra de estado deja ver el fondo vino de abajo (igual que theme-color en Android). -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
+    <style id="expo-reset">
+      /* These styles make the body full-height */
+      html,
+      body {
+        height: 100%;
+      }
+      /* These styles disable body scrolling if you are using <ScrollView> */
+      body {
+        overflow: hidden;
+        /* Detrás de las áreas seguras: vino arriba (barra de estado) y crema abajo (fondo de las pantallas). */
+        background: linear-gradient(to bottom, #6b2942 50%, #fbf7f2 50%);
+      }
+      /* These styles make the root element full-height */
+      #root {
+        display: flex;
+        height: 100%;
+        flex: 1;
+        box-sizing: border-box;
+        background-color: #fbf7f2;
+        /* Áreas seguras (muesca, barra de estado y barra de gestos) en modo instalado. Fuera de ahí valen 0. */
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        background-clip: content-box;
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript>Necesitas activar JavaScript para usar GlamSpaces.</noscript>
+    <div id="root"></div>
+  </body>
+</html>

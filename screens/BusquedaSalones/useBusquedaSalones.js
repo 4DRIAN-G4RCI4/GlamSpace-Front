@@ -12,6 +12,7 @@
 import { useEffect, useRef, useState } from "react";
 import { buscarSalones } from "../../services/salonesApi";
 import { textoDeErrorApi } from "../../services/api";
+import { guardarCache, leerCache, llaveCache } from "../../services/cacheLocal";
 import { aNumero } from "../../utils/validadores";
 import { validarCapacidad, validarPrecio } from "./busquedaSalones.validaciones";
 
@@ -51,16 +52,39 @@ export default function useBusquedaSalones() {
     esPrimeraPagina ? setCargando(true) : setCargandoMas(true);
     setError(null);
 
-    try {
-      const r = await buscarSalones({ ...filtros, pagina: paginaPedida, tamanoPagina: TAMANO_PAGINA });
-      if (id !== ultimaBusqueda.current) return;
+    const mostrar = (r) => {
       setSalones((previos) => (esPrimeraPagina ? r.datos : [...previos, ...r.datos]));
       setPagina(r.pagina);
       setTotalPaginas(r.totalPaginas);
       setTotalRegistros(r.totalRegistros);
+    };
+
+    // HU-21 · Catálogo "consultado recientemente" (stale-while-revalidate): la primera página
+    // guardada de esta búsqueda se pinta al instante y la respuesta de la API la reemplaza.
+    const llave = llaveCache(null, "busqueda", filtros.zona, filtros.capacidadMinima, filtros.precioMaximo);
+    const peticion = buscarSalones({ ...filtros, pagina: paginaPedida, tamanoPagina: TAMANO_PAGINA });
+    peticion.catch(() => {}); // se maneja abajo; evita el aviso de promesa sin manejar mientras se lee la caché
+    let mostroGuardado = false;
+
+    try {
+      if (esPrimeraPagina) {
+        const guardado = await leerCache(llave);
+        if (guardado && id === ultimaBusqueda.current) {
+          mostrar(guardado.datos);
+          setCargando(false);
+          mostroGuardado = true;
+        }
+      }
+      const r = await peticion;
+      if (id !== ultimaBusqueda.current) return;
+      mostrar(r);
+      if (esPrimeraPagina) {
+        void guardarCache(llave, { datos: r.datos, pagina: r.pagina, totalPaginas: r.totalPaginas, totalRegistros: r.totalRegistros });
+      }
     } catch (e) {
       if (id !== ultimaBusqueda.current) return;
-      setError(textoDeErrorApi(e));
+      // Sin red pero con lo guardado en pantalla: se queda lo guardado.
+      if (!(mostroGuardado && e.tipo === "red")) setError(textoDeErrorApi(e));
     } finally {
       if (id === ultimaBusqueda.current) {
         setCargando(false);

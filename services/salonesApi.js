@@ -14,6 +14,7 @@
  */
 
 import { postJson, postPaginado } from "./api";
+import { conRespaldoLocal, llaveCache } from "./cacheLocal";
 
 const RUTAS = {
   crearSalon: "/salones/crear",
@@ -55,6 +56,18 @@ export function obtenerDisponibilidad(salonId, anio, mes) {
 export async function listarSalonesDeAdmin(adminId) {
   const r = await postPaginado(RUTAS.listarSalones, { adminId, pagina: 1, tamanoPagina: 100 });
   return r.datos;
+}
+
+// HU-22 · Versiones del panel del administrador que funcionan sin conexión: guardan cada respuesta
+// (por admin, salón y mes) y sin red regresan lo último guardado → { datos, desactualizado, guardadoEn }.
+export function listarSalonesDeAdminConRespaldo(adminId) {
+  return conRespaldoLocal(llaveCache(adminId, "salones"), () => listarSalonesDeAdmin(adminId));
+}
+
+export function obtenerDisponibilidadConRespaldo(adminId, salonId, anio, mes) {
+  return conRespaldoLocal(llaveCache(adminId, "disponibilidad", salonId, `${anio}-${mes}`), () =>
+    obtenerDisponibilidad(salonId, anio, mes),
+  );
 }
 
 function armarSalon(salon) {

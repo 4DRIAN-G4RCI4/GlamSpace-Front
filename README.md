@@ -257,6 +257,84 @@ En pantallas de menos de 1024 px se usa la versión móvil: encabezado con pesta
 
 También se revisó: móvil a 390 px sin scroll horizontal, títulos en Playfair Display y que no haya errores de JavaScript.
 
+## Sprint 7 — PWA
+
+### HU-20 · Manifest e instalación
+
+- `public/manifest.json` contiene el nombre, `display: standalone`, `start_url` y `scope` en `/`, `es-MX`, los colores del diseño y los íconos 192, 512 y 512 maskable.
+- `public/index.html` es la plantilla que Expo usa al exportar. Incluye el link al manifest, el apple-touch-icon, `viewport-fit=cover`, las metas de Apple y las áreas seguras.
+- `public/` se copia tal cual a `dist/`.
+- Evidencias en `docs/evidencias-pwa/HU-20.md`.
+
+### HU-21 · Service worker y estrategia de caché
+
+**Construir:** `npm run build:web`. Corre `expo export -p web` y después `scripts/posexport.js`, que genera `dist/sw.js` con:
+
+- **PRECACHE**: los archivos reales de `dist`, que son el HTML (como `/`), el bundle con hash, los assets, los íconos y el manifest.
+- **VERSION**: un hash del contenido de esos archivos. Si algo cambia, cambia la versión. El navegador instala el SW nuevo, que borra la caché anterior.
+
+| Petición | Estrategia | Por qué |
+|---|---|---|
+| Navegación (abrir la app) | Red primero. Si la red falla o tarda más de 3 s, usa el `index.html` guardado | Así siempre se ve la última versión, pero sin conexión la app abre igual |
+| `/_expo/static/*` y `/assets/*` (llevan hash) | Caché primero | Si el archivo cambia, cambia su nombre, así que lo guardado nunca queda viejo |
+| Manifest e íconos | Red primero | No llevan hash |
+| Fotos de salones y fuentes (Google Fonts) | Stale-while-revalidate (caché `glamspaces-medios`, máximo 150) | Se muestran al instante y se actualizan en segundo plano |
+| **POST y cualquier ruta `/api/`** | **No se interceptan** | La Cache API no guarda POST, y los datos van por la capa local (abajo) |
+
+**Datos ("consultado recientemente"):** `services/cacheLocal.js` guarda las respuestas de la API en AsyncStorage (`localStorage` en web).
+
+- Cada entrada lleva su fecha de guardado y la versión del esquema.
+- Las llaves van por usuario (`glamspaces_cache:<usuario|publico>:…`).
+- Si el almacenamiento se llena, la caché se libera y el guardado se intenta una vez más.
+- La búsqueda de salones usa stale-while-revalidate: pinta al instante la primera página guardada, la reemplaza cuando responde la API y, si no hay red, deja lo guardado.
+- La HU-22 reutiliza este módulo.
+- `sesionStorage.cerrarSesion()` borra toda la caché local. Ahí nunca se guardan contraseñas ni tokens.
+
+**Registro y actualización** (`components/AvisoNuevaVersion.js`):
+
+- Solo se registra en web y en producción. Con `expo start` no se registra nada.
+- El SW nuevo usa `skipWaiting` y `clients.claim`. Si una pestaña abierta todavía tiene código viejo, aparece el aviso "Hay una versión nueva disponible · Actualizar".
+- La app instalada revisa si hay versión nueva cada vez que vuelve al frente.
+
+**Probar y auditar:**
+
+```bash
+npm test                      # pruebas de funciones puras (node --test, sin dependencias; requiere Node 22+)
+npm run build:web
+npx serve dist -l 8081        # 8081: el CORS de la API acepta ese puerto
+```
+
+En Chrome, abre DevTools → Application:
+
+- **Service workers**: "activated and is running".
+- **Cache Storage**: `glamspaces-app-<versión>` y `glamspaces-medios`.
+- **Local storage**: las llaves `glamspaces_cache:*`.
+
+En Network, prueba con "Offline" y con "Slow 3G" y recarga la búsqueda.
+
+Evidencias en `docs/evidencias-pwa/HU-21.md`.
+
+**Límites conocidos:**
+
+- No se probó en un teléfono real (Android/iOS) ni en Safari. iOS no muestra el aviso de instalación; ahí se instala con "Agregar a inicio".
+- Las fotos de otros dominios se guardan como respuestas "opaque". El SW no ve si eran un error, pero las revalida en cada visita.
+- La caché local guarda solo la primera página de cada búsqueda. "Cargar más" necesita red.
+
+### HU-22 · Modo sin conexión del panel del administrador
+
+- **Servicios con respaldo:** `listarSalonesDeAdminConRespaldo`, `listarSolicitudesDeSalonConRespaldo` y `obtenerDisponibilidadConRespaldo` regresan `{ datos, desactualizado, guardadoEn }`.
+  - Con conexión, piden a la API y guardan la respuesta.
+  - Si la red falla (`ApiError` tipo `"red"`) o `navigator.onLine` es `false`, regresan lo último guardado marcado como desactualizado.
+  - Las llaves van por admin y por salón, mes o estado: `glamspaces_cache:<adminId>:solicitudes:<salonId>:<estado>`.
+  - Los errores de negocio o HTTP no se tapan con la caché.
+  - Las versiones originales (y la pantalla del cliente) no cambiaron.
+- **Banner:** sin conexión, el panel muestra "Modo sin conexión · mostrando la última información guardada (actualizado: <fecha y hora>)", con `aria-live`.
+- **Acciones:** "Aceptar" y "Rechazar" se deshabilitan y el banner explica por qué.
+- **Sin nada guardado:** si un salón o un mes no tiene datos guardados, aparece "sin datos guardados".
+- **Reconexión:** `utils/useConexion.js` escucha `online`/`offline`; al volver la conexión, el panel y el calendario se recargan solos.
+- **Privacidad:** cerrar sesión borra toda la caché. Nunca se guardan contraseñas ni tokens.
+- **Evidencias:** `docs/evidencias-pwa/HU-22.md`.
+
 ## Pendiente
 
 - **Fotos:** la HU-07 las pide, pero la API de HU-06 todavía no las recibe al crear ni

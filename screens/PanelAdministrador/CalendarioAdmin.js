@@ -76,8 +76,8 @@ function ProximasConfirmadas({ solicitudes, hoy, movil }) {
   );
 }
 
-export default function CalendarioAdmin({ salonId, solicitudes, version, movil }) {
-  const cal = useCalendarioAdmin(salonId, version);
+export default function CalendarioAdmin({ adminId, salonId, solicitudes, version, movil }) {
+  const cal = useCalendarioAdmin(adminId, salonId, version);
   const pendientes = fechasConPendientes(solicitudes);
   const ocupadas = new Set(cal.ocupadas);
   const semanas = semanasDelMes(cal.mes.anio, cal.mes.mes, { desdeDomingo: true });

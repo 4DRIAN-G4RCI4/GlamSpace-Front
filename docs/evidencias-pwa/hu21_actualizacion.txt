@@ -1,0 +1,32 @@
+[Versión 1]
+  publicado → posexport: dist/sw.js · versión 2b200f072709 · 14 archivos en precaché
+  el servidor ya entrega sw.js 2b200f072709 (intento 1)
+  caches: glamspaces-app-2b200f072709, glamspaces-medios · título: Encuentra el salón para tu evento
+
+[Se publica la versión 2 con la pestaña abierta]
+  publicado → posexport: dist/sw.js · versión ac2879754639 · 14 archivos en precaché
+  el servidor ya entrega sw.js ac2879754639 (intento 1)
+  aviso 'Hay una versión nueva disponible · Actualizar': true · caches ya: glamspaces-app-2b200f072709, glamspaces-medios, glamspaces-app-ac2879754639
+  320x640: botón 106x44 · aviso x 16–304 (ancho 288) · dentro de la pantalla: true · scroll horizontal: false
+  360x740: botón 106x44 · aviso x 16–344 (ancho 328) · dentro de la pantalla: true · scroll horizontal: false
+  390x844: botón 106x44 · aviso x 16–374 (ancho 358) · dentro de la pantalla: true · scroll horizontal: false
+  768x1024: botón 106x44 · aviso x 104–664 (ancho 560) · dentro de la pantalla: true · scroll horizontal: false
+  1024x768: botón 106x44 · aviso x 232–792 (ancho 560) · dentro de la pantalla: true · scroll horizontal: false
+  1440x900: botón 106x44 · aviso x 440–1000 (ancho 560) · dentro de la pantalla: true · scroll horizontal: false
+  844x390: botón 106x44 · aviso x 142–702 (ancho 560) · dentro de la pantalla: true · scroll horizontal: false
+  740x360: botón 106x44 · aviso x 90–650 (ancho 560) · dentro de la pantalla: true · scroll horizontal: false
+  accesibilidad: {"role":"status","ariaLive":"polite","botonRole":"button","tabindex":0}
+  foco con teclado: solid 2px rgb(43, 31, 36)
+
+[Después de 'Actualizar']
+  título: Encuentra el salón para tu evento (versión de prueba 2) · caches: glamspaces-medios, glamspaces-app-ac2879754639
+  caché de la versión 1 borrada: true
+  aviso visible: false
+
+[Se publica la versión 3 y el usuario recarga (la recarga ya trae la versión nueva)]
+  publicado → posexport: dist/sw.js · versión 2b200f072709 · 14 archivos en precaché
+  el servidor ya entrega sw.js 2b200f072709 (intento 1)
+  título: Encuentra el salón para tu evento · caches: glamspaces-medios, glamspaces-app-2b200f072709
+  aviso visible (debe ser false: la página ya es la nueva): false
+
+Errores de JavaScript: ninguno
