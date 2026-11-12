@@ -258,6 +258,23 @@ export const estilos = StyleSheet.create({
   },
   avisoTexto: { ...texto(13, "600", PWA.confirmadaTexto), flex: 1 },
   avisoCerrar: texto(13, "700", PWA.confirmadaTexto),
+  // HU-22 · Modo sin conexión: fondo y borde de "pendiente" con texto oscuro (contraste AA).
+  sinConexion: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: 12,
+    backgroundColor: PWA.pendienteFondo,
+    borderLeftWidth: 4,
+    borderLeftColor: PWA.pendienteTexto,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  sinConexionTextos: { flex: 1, minWidth: 200, gap: 2 },
+  sinConexionTitulo: texto(13, "600", PWA.texto),
+  sinConexionTexto: texto(12.5, "400", PWA.texto),
+  sinConexionBoton: { minHeight: 44, justifyContent: "center", backgroundColor: PWA.superficie },
   vacio: {
     backgroundColor: PWA.superficie,
     borderWidth: 1,
