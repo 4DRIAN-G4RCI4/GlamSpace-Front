@@ -4,6 +4,7 @@
  */
 
 import { StyleSheet } from "react-native";
+import { conFuentes } from "../../theme/disenoPwa";
 import { COLORES } from "../../theme/colores";
 import { comunes } from "../../theme/estilosComunes";
 import { ESPACIO, RADIO, ANCHO_MAXIMO } from "../../theme/espaciado";
@@ -12,25 +13,21 @@ const contenedor = { width: "100%", maxWidth: ANCHO_MAXIMO, paddingHorizontal: E
 
 export const estilos = {
   ...comunes,
-  ...StyleSheet.create({
+  ...StyleSheet.create(conFuentes({
     pantalla: { flexGrow: 1, backgroundColor: COLORES.moradoClaro, alignItems: "center", paddingBottom: ESPACIO.xxl },
 
-    // ---------- Franja superior ----------
-    franja: { width: "100%", backgroundColor: COLORES.moradoOscuro, alignItems: "center", paddingBottom: ESPACIO.xl },
-    franjaContenido: contenedor,
-    encabezado: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-    botonCuenta: {
-      borderWidth: 1,
-      borderColor: "rgba(255,255,255,0.5)",
-      borderRadius: RADIO.pill,
-      paddingHorizontal: ESPACIO.lg,
-      paddingVertical: ESPACIO.sm,
-      marginTop: ESPACIO.xxl,
-    },
-    botonCuentaTexto: { color: "#fff", fontWeight: "600", fontSize: 13 },
-    tituloInicio: { fontSize: 26, fontWeight: "700", color: "#fff", marginTop: ESPACIO.sm },
-    tituloAcento: { color: COLORES.dorado },
-    subtituloInicio: { fontSize: 14, color: "rgba(255,255,255,0.8)", marginTop: ESPACIO.xs, marginBottom: ESPACIO.lg },
+    // ---------- Barra superior (Figma Cliente 02) ----------
+    navbar: { width: "100%", backgroundColor: "#fff", borderBottomWidth: 0.8, borderBottomColor: COLORES.borde, alignItems: "center" },
+    navbarContenido: { ...contenedor, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: ESPACIO.md + 2, gap: ESPACIO.md },
+    navbarAcciones: { flexDirection: "row", alignItems: "center", gap: ESPACIO.sm + 2 },
+    botonCuenta: { borderWidth: 1, borderColor: COLORES.morado, borderRadius: 9, paddingHorizontal: ESPACIO.lg, paddingVertical: ESPACIO.sm + 2 },
+    botonCuentaTexto: { color: COLORES.morado, fontWeight: "600", fontSize: 13 },
+    botonRegistro: { backgroundColor: COLORES.morado, borderRadius: 9, paddingHorizontal: ESPACIO.lg, paddingVertical: ESPACIO.sm + 3 },
+    botonRegistroTexto: { color: COLORES.moradoClaro, fontWeight: "600", fontSize: 13 },
+
+    // Título, barra de búsqueda y chips sobre el fondo claro
+    franjaContenido: { ...contenedor, marginTop: ESPACIO.xl + 4 },
+    tituloInicio: { fontSize: 26, fontWeight: "700", color: COLORES.texto, marginBottom: ESPACIO.lg },
 
     // Barra de búsqueda
     barra: {
@@ -38,39 +35,41 @@ export const estilos = {
       alignItems: "center",
       backgroundColor: "#fff",
       borderRadius: RADIO.md,
+      borderWidth: 1,
+      borderColor: COLORES.borde,
       paddingLeft: ESPACIO.lg,
       overflow: "hidden",
     },
-    barraIcono: { fontSize: 16, marginRight: ESPACIO.sm },
-    barraInput: { flex: 1, paddingVertical: ESPACIO.md + 2, fontSize: 15, color: COLORES.texto },
-    barraBoton: { backgroundColor: COLORES.dorado, paddingHorizontal: ESPACIO.xl, alignSelf: "stretch", justifyContent: "center" },
-    barraBotonTexto: { color: COLORES.moradoOscuro, fontWeight: "700", fontSize: 14 },
+    barraIcono: { width: 16, height: 16, marginRight: ESPACIO.sm },
+    barraInput: { flex: 1, paddingVertical: ESPACIO.md, fontSize: 14, color: COLORES.texto },
+    barraBoton: { backgroundColor: COLORES.morado, paddingHorizontal: ESPACIO.xl, alignSelf: "stretch", justifyContent: "center" },
+    barraBotonTexto: { color: COLORES.moradoClaro, fontWeight: "600", fontSize: 13 },
 
     // Chips
-    filaChips: { flexDirection: "row", flexWrap: "wrap", marginTop: ESPACIO.md, gap: ESPACIO.sm },
+    filaChips: { flexDirection: "row", flexWrap: "wrap", marginTop: ESPACIO.md, gap: ESPACIO.sm + 2 },
     chip: {
       flexDirection: "row",
       alignItems: "center",
+      backgroundColor: "#fff",
       borderWidth: 1,
-      borderColor: "rgba(255,255,255,0.5)",
-      borderRadius: RADIO.pill,
-      paddingLeft: ESPACIO.md,
-      paddingRight: ESPACIO.md,
-      minHeight: 36,
+      borderColor: COLORES.borde,
+      borderRadius: 9,
+      paddingHorizontal: ESPACIO.md,
+      minHeight: 34,
     },
-    chipActivo: { backgroundColor: "#fff", borderColor: "#fff" },
-    chipAbierto: { borderColor: COLORES.dorado, borderWidth: 2 },
-    chipFoco: { borderColor: COLORES.dorado, borderWidth: 2 },
+    chipActivo: { borderColor: COLORES.morado, backgroundColor: COLORES.ocupadoFondo },
+    chipAbierto: { borderColor: COLORES.morado },
+    chipFoco: { borderColor: COLORES.morado },
     chipBoton: { flexDirection: "row", alignItems: "center", paddingVertical: ESPACIO.sm },
-    chipTexto: { color: "#fff", fontWeight: "600", fontSize: 13 },
-    chipTextoActivo: { color: COLORES.moradoOscuro },
-    chipFlecha: { color: "rgba(255,255,255,0.7)", fontSize: 10, marginLeft: ESPACIO.xs },
-    chipFlechaActiva: { color: COLORES.muted },
+    chipTexto: { color: COLORES.texto, fontWeight: "600", fontSize: 12.5 },
+    chipTextoActivo: { color: COLORES.morado },
+    chipFlecha: { color: COLORES.muted, fontSize: 9, marginLeft: ESPACIO.xs },
+    chipFlechaActiva: { color: COLORES.morado },
     chipQuitar: { marginLeft: ESPACIO.sm, paddingVertical: ESPACIO.sm, paddingLeft: ESPACIO.xs },
-    chipQuitarTexto: { color: COLORES.moradoOscuro, fontWeight: "700", fontSize: 13 },
+    chipQuitarTexto: { color: COLORES.morado, fontWeight: "700", fontSize: 12.5 },
 
     // Panel del filtro abierto
-    panel: { backgroundColor: "#fff", borderRadius: RADIO.md, padding: ESPACIO.lg, marginTop: ESPACIO.md },
+    panel: { backgroundColor: "#fff", borderRadius: RADIO.md, borderWidth: 1, borderColor: COLORES.borde, padding: ESPACIO.lg, marginTop: ESPACIO.md },
     panelPregunta: { fontSize: 14, fontWeight: "700", color: COLORES.moradoOscuro, marginBottom: ESPACIO.md },
     filaSugerencias: { flexDirection: "row", flexWrap: "wrap", gap: ESPACIO.sm, marginBottom: ESPACIO.md },
     sugerencia: {
@@ -104,7 +103,7 @@ export const estilos = {
     // ---------- Resultados ----------
     resultados: { ...contenedor, marginTop: ESPACIO.xl },
     filaResumen: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: ESPACIO.md },
-    resumen: { fontSize: 14, color: COLORES.texto, fontWeight: "600" },
+    resumen: { fontSize: 13, color: COLORES.muted },
     enlaceLimpiar: { fontSize: 13, color: COLORES.morado, fontWeight: "700", padding: ESPACIO.xs },
 
     // La cuadrícula usa márgenes negativos + relleno en cada celda para el espacio entre tarjetas.
@@ -145,6 +144,6 @@ export const estilos = {
       marginTop: ESPACIO.sm,
     },
     botonMasTexto: { color: COLORES.morado, fontWeight: "700", fontSize: 14 },
-    foco: { borderColor: COLORES.dorado, borderWidth: 2 },
-  }),
+    foco: { borderColor: COLORES.morado, borderWidth: 2 },
+  })),
 };

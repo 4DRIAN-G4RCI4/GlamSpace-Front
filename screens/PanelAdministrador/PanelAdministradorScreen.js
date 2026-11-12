@@ -13,111 +13,21 @@
  */
 
 import React, { useState } from "react";
-import { Image, Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
+import { Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
 import { MEDIDA } from "../../theme/disenoPwa";
-import useFuentesWeb from "../../theme/fuentesWeb";
 import { formatearPrecio } from "../../utils/formato";
 import { fechaHoy, formatearFechaCorta } from "../../utils/fechas";
 import usePanelAdministrador from "./usePanelAdministrador";
 import TarjetaPendiente, { EtiquetaEstado } from "./TarjetaPendiente";
 import CalendarioAdmin from "./CalendarioAdmin";
+import LayoutAdmin from "./LayoutAdmin";
 import {
   estadisticas,
   historialReciente,
-  iniciales,
   pendientesEnConflicto,
   solicitudesPendientes,
 } from "./panelAdministrador.logica";
 import { estilos } from "./PanelAdministrador.styles";
-
-const LOGO = require("../../assets/admin/logo-destello.svg");
-
-const SECCIONES = [
-  { clave: "solicitudes", texto: "Solicitudes" },
-  { clave: "calendario", texto: "Calendario" },
-  { clave: "salon", texto: "Mi salón" },
-];
-
-function BarraLateral({ pestana, onElegir, nombreSalon, onCuenta }) {
-  return (
-    <View style={estilos.barraLateral}>
-      <View style={estilos.marca}>
-        <View style={estilos.marcaIcono}>
-          <Image source={LOGO} style={{ width: 16, height: 16 }} accessibilityIgnoresInvertColors />
-        </View>
-        <Text style={estilos.marcaTexto}>GLAMSPACES</Text>
-      </View>
-
-      <View style={estilos.nav} accessibilityRole="menu">
-        {SECCIONES.map((s) => {
-          const activa = s.clave === pestana;
-          return (
-            <Pressable
-              key={s.clave}
-              onPress={() => onElegir(s.clave)}
-              accessibilityRole="menuitem"
-              accessibilityState={{ selected: activa }}
-              style={({ hovered, focused }) => [
-                estilos.navEnlace,
-                activa && estilos.navEnlaceActivo,
-                !activa && (hovered || focused) && estilos.navEnlaceFoco,
-              ]}
-            >
-              <Text style={activa ? estilos.navTextoActivo : estilos.navTexto}>{s.texto}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
-
-      <Pressable
-        onPress={onCuenta}
-        accessibilityRole="button"
-        accessibilityLabel="Ver mi cuenta y cerrar sesión"
-        style={({ hovered, focused }) => [estilos.pieLateral, (hovered || focused) && { opacity: 0.85 }]}
-      >
-        <View style={estilos.avatar}>
-          <Text style={estilos.avatarTexto}>{iniciales(nombreSalon)}</Text>
-        </View>
-        <View>
-          <Text style={estilos.pieNombre} numberOfLines={1}>{nombreSalon}</Text>
-          <Text style={estilos.pieRol}>Administrador</Text>
-        </View>
-      </Pressable>
-    </View>
-  );
-}
-
-function EncabezadoMovil({ pestana, onElegir, nombreSalon, onCuenta }) {
-  return (
-    <View>
-      <View style={estilos.encabezadoMovil}>
-        <View>
-          <Text style={estilos.encabezadoNombre}>{nombreSalon}</Text>
-          <Text style={estilos.encabezadoRol}>Panel de administrador</Text>
-        </View>
-        <Pressable onPress={onCuenta} accessibilityRole="button" accessibilityLabel="Ver mi cuenta y cerrar sesión" style={estilos.avatarMovil}>
-          <Text style={estilos.avatarMovilTexto}>{iniciales(nombreSalon)}</Text>
-        </Pressable>
-      </View>
-      <View style={estilos.pestanas} accessibilityRole="tablist">
-        {SECCIONES.map((s) => {
-          const activa = s.clave === pestana;
-          return (
-            <Pressable
-              key={s.clave}
-              onPress={() => onElegir(s.clave)}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: activa }}
-              style={[estilos.pestana, activa && estilos.pestanaActiva]}
-            >
-              <Text style={activa ? estilos.pestanaTextoActiva : estilos.pestanaTexto}>{s.texto}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
-    </View>
-  );
-}
 
 // Solo aparece si el administrador tiene más de un salón. En móvil es una fila con scroll horizontal.
 function SelectorSalones({ salones, salonId, onElegir, movil }) {
@@ -284,17 +194,16 @@ function SinAcceso({ navigation, haySesion }) {
   );
 }
 
-export default function PanelAdministradorScreen({ navigation }) {
-  useFuentesWeb();
+export default function PanelAdministradorScreen({ navigation, route }) {
   const { width } = useWindowDimensions();
   const movil = width < MEDIDA.corteEscritorio;
-  const panel = usePanelAdministrador();
+  const panel = usePanelAdministrador(route && route.params ? route.params.pestana : undefined);
 
   if (panel.cargandoSesion) return <View style={estilos.pantalla} />;
   if (!panel.esAdministrador) return <SinAcceso navigation={navigation} haySesion={!!panel.sesion} />;
 
   const nombreSalon = (panel.salon && panel.salon.nombre) || panel.sesion.nombre_salon || panel.sesion.nombre;
-  const irACuenta = () => navigation && navigation.navigate("Login");
+  const irACuenta = () => navigation && navigation.navigate("Perfil");
   const elegirSeccion = (clave) => {
     if (clave === "salon") {
       if (navigation) navigation.navigate("PublicarSalon");
@@ -351,15 +260,9 @@ export default function PanelAdministradorScreen({ navigation }) {
     </ScrollView>
   );
 
-  return movil ? (
-    <View style={estilos.pantalla}>
-      <EncabezadoMovil pestana={panel.pestana} onElegir={elegirSeccion} nombreSalon={nombreSalon} onCuenta={irACuenta} />
+  return (
+    <LayoutAdmin seccion={panel.pestana} onElegir={elegirSeccion} nombreSalon={nombreSalon} onCuenta={irACuenta}>
       {contenido}
-    </View>
-  ) : (
-    <View style={estilos.fila}>
-      <BarraLateral pestana={panel.pestana} onElegir={elegirSeccion} nombreSalon={nombreSalon} onCuenta={irACuenta} />
-      <View style={{ flex: 1 }}>{contenido}</View>
-    </View>
+    </LayoutAdmin>
   );
 }

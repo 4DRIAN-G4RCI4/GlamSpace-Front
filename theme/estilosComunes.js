@@ -5,9 +5,10 @@
  */
 
 import { StyleSheet } from "react-native";
+import { conFuentes } from "./disenoPwa";
 import { COLORES } from "./colores";
 
-export const comunes = StyleSheet.create({
+export const comunes = StyleSheet.create(conFuentes({
   cargandoContenedor: {
     flex: 1,
     alignItems: "center",
@@ -24,18 +25,15 @@ export const comunes = StyleSheet.create({
     backgroundColor: "#fff",
     width: "90%",
     maxWidth: 720,
-    borderRadius: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: COLORES.borde,
     padding: 24,
-    shadowColor: COLORES.moradoOscuro,
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 4,
   },
-  titulo: { fontSize: 22, fontWeight: "700", color: COLORES.moradoOscuro, marginBottom: 4 },
+  titulo: { fontSize: 24, fontWeight: "700", color: COLORES.moradoOscuro, marginBottom: 4 },
   subtitulo: { fontSize: 13, color: COLORES.muted, marginBottom: 20, lineHeight: 18 },
   seccion: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: "700",
     color: COLORES.moradoOscuro,
     marginTop: 8,
@@ -46,22 +44,22 @@ export const comunes = StyleSheet.create({
 
   boton: {
     backgroundColor: COLORES.morado,
-    borderRadius: 12,
-    paddingVertical: 14,
+    borderRadius: 10,
+    paddingVertical: 13,
     alignItems: "center",
     marginTop: 18,
   },
   botonDeshabilitado: { opacity: 0.6 },
-  botonTexto: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  botonTexto: { color: COLORES.moradoClaro, fontSize: 14, fontWeight: "600" },
   botonSecundario: {
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: COLORES.morado,
-    borderRadius: 12,
-    paddingVertical: 13,
+    borderRadius: 10,
+    paddingVertical: 12,
     alignItems: "center",
     marginTop: 14,
   },
-  botonSecundarioTexto: { color: COLORES.morado, fontSize: 15, fontWeight: "700" },
+  botonSecundarioTexto: { color: COLORES.morado, fontSize: 14, fontWeight: "600" },
 
   mensajeGeneral: { textAlign: "center", fontSize: 13.5, marginTop: 14, fontWeight: "600" },
   mensajeOk: { color: COLORES.ok },
@@ -85,4 +83,4 @@ export const comunes = StyleSheet.create({
   enlaceCambio: { textAlign: "center", fontSize: 12.5, color: COLORES.muted, marginTop: 20 },
   enlaceResaltado: { color: COLORES.morado, fontWeight: "700" },
   pie: { fontSize: 11, color: COLORES.muted, marginTop: 18 }, // sin opacidad: debe pasar contraste AA
-});
+}, ["titulo","seccion"]));

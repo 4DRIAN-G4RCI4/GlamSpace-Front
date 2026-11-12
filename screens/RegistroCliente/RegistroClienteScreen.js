@@ -131,7 +131,6 @@ export default function RegistroClienteScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <Text style={estilos.pie}>Registro de cliente · GlamSpaces</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );

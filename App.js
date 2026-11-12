@@ -36,6 +36,7 @@ import SolicitudReservacionScreen from "./screens/SolicitudReservacion/Solicitud
 import MisSolicitudesScreen from "./screens/MisSolicitudes/MisSolicitudesScreen";
 import PanelAdministradorScreen from "./screens/PanelAdministrador/PanelAdministradorScreen";
 import PerfilScreen from "./screens/Perfil/PerfilScreen";
+import useFuentesWeb from "./theme/fuentesWeb";
 
 const PANTALLAS = {
   BusquedaSalones: BusquedaSalonesScreen,
@@ -64,6 +65,7 @@ function pantallaInicial() {
 }
 
 export default function App() {
+  useFuentesWeb(); // Playfair Display + Inter del diseño PWA, para todas las pantallas
   const [actual, setActual] = useState(pantallaInicial);
 
   useEffect(() => {
@@ -89,6 +91,15 @@ export default function App() {
       setActual(destino);
       if (ES_WEB) {
         window.history.pushState(destino, "");
+      }
+    },
+    // Igual que navigate, pero sin dejar la pantalla actual en el historial (para redirecciones).
+    reemplazar: (nombre, params = {}) => {
+      if (!PANTALLAS[nombre]) return;
+      const destino = { nombre, params };
+      setActual(destino);
+      if (ES_WEB) {
+        window.history.replaceState(destino, "");
       }
     },
   };

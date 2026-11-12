@@ -22,7 +22,7 @@ function Chip({ filtro, valor, abierto, onAbrir, onQuitar }) {
         accessibilityLabel={activo ? `Filtro ${filtro.inactivo}: ${filtro.activo(valor)}. Cambiar` : `Filtrar por ${filtro.inactivo}`}
       >
         <Text style={[estilos.chipTexto, activo && estilos.chipTextoActivo]}>
-          {filtro.icono} {activo ? filtro.activo(valor) : filtro.inactivo}
+          {activo ? filtro.activo(valor) : filtro.inactivo}
         </Text>
         <Text style={[estilos.chipFlecha, activo && estilos.chipFlechaActiva]}>{abierto ? "▲" : "▼"}</Text>
       </Pressable>
