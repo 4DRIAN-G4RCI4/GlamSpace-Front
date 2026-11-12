@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "GlamSpaces",
+  "short_name": "GlamSpaces",
+  "description": "Encuentra, compara y reserva salones de fiestas y eventos. Los administradores gestionan sus solicitudes y su calendario.",
+  "lang": "es-MX",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#6b2942",
+  "background_color": "#2b1f24",
+  "categories": ["lifestyle", "business"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
