@@ -6,7 +6,7 @@
  * panelAdministrador.logica.js.
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import EtiquetaEstado from "../../components/EtiquetaEstado";
 import { formatearFechaLarga } from "../../utils/fechas";
@@ -15,9 +15,10 @@ import {
   ORDENES,
   contarPorEstado,
   listaDeSolicitudes,
-  paginaVisible,
 } from "./panelAdministrador.logica";
 import { estilos } from "./ListaSolicitudes.styles";
+import Paginacion from "../../components/Paginacion";
+import { POR_PAGINA_SOLICITUDES, paginar } from "../../services/paginacion.logica";
 
 const mayuscula = (t) => (t ? t[0].toUpperCase() + t.slice(1) : t);
 
@@ -68,21 +69,35 @@ export default function ListaSolicitudes({ solicitudes, movil, anchoContenido, o
   // Empieza en las pendientes (lo que el admin tiene que atender); si no hay, en todas.
   const [estado, setEstado] = useState(conteo.pendiente > 0 ? "pendiente" : "todas");
   const [orden, setOrden] = useState("proximas");
-  const [paginas, setPaginas] = useState(1);
+  // Página actual: vuelve a 1 cuando cambian los filtros o el orden.
+  const [pagina, setPagina] = useState(1);
+  const inicioLista = useRef(null);
 
-  useEffect(() => setPaginas(1), [estado, orden]);
+  useEffect(() => setPagina(1), [estado, orden]);
 
   const lista = listaDeSolicitudes(solicitudes, estado, orden);
-  const { visibles, hayMas } = paginaVisible(lista, paginas);
-  const dosColumnas = anchoContenido >= 900;
-  const anchoTarjeta = dosColumnas ? (anchoContenido - 14) / 2 : "100%";
+  // 2 columnas × 5 filas = 10 por página.
+  const p = paginar(lista, pagina, POR_PAGINA_SOLICITUDES);
+
+  // Al cambiar de página se sube al inicio de la lista, no al final de la anterior.
+  function irAPagina(n) {
+    setPagina(n);
+    if (inicioLista.current && inicioLista.current.scrollIntoView) {
+      inicioLista.current.scrollIntoView({ behavior: "auto", block: "start" });
+    }
+  }
+  // Dos columnas desde tableta; en teléfono queda una sola (petición del Sprint 7).
+  const dosColumnas = anchoContenido >= 700;
+  // En porcentaje, no en píxeles: así no depende de medir el contenedor (con el ancho
+  // calculado, 2 tarjetas + el gap se pasaban por unos píxeles y caían en filas distintas).
+  const anchoTarjeta = dosColumnas ? "calc(50% - 7px)" : "100%";
   const Grupo = movil ? ScrollView : View;
   const propsGrupo = movil
     ? { horizontal: true, showsHorizontalScrollIndicator: false, contentContainerStyle: estilos.grupoMovil }
     : { style: estilos.grupo };
 
   return (
-    <View style={estilos.seccion}>
+    <View style={estilos.seccion} ref={inicioLista}>
       <View style={estilos.cabecera}>
         <Text style={estilos.titulo} accessibilityRole="header" aria-level={2}>Solicitudes</Text>
         <Text style={estilos.contador}>{lista.length} de {conteo.todas}</Text>
@@ -108,7 +123,7 @@ export default function ListaSolicitudes({ solicitudes, movil, anchoContenido, o
         </View>
       </View>
 
-      {visibles.length === 0 ? (
+      {p.visibles.length === 0 ? (
         <View style={estilos.vacio}>
           <Text style={estilos.vacioTitulo}>
             {estado === "todas" ? "Todavía no hay solicitudes" : `No hay solicitudes ${FILTROS_ESTADO.find((f) => f.clave === estado).texto.toLowerCase()}`}
@@ -122,17 +137,25 @@ export default function ListaSolicitudes({ solicitudes, movil, anchoContenido, o
         </View>
       ) : (
         <View style={estilos.rejilla}>
-          {visibles.map((s) => (
+          {p.visibles.map((s) => (
             <TarjetaSolicitud key={s.id} s={s} ancho={anchoTarjeta} onAbrir={onAbrir} />
           ))}
         </View>
       )}
 
-      {hayMas ? (
-        <Pressable onPress={() => setPaginas(paginas + 1)} accessibilityRole="button" style={({ focused }) => [estilos.boton, { alignSelf: "center" }, focused && estilos.foco]}>
-          <Text style={estilos.botonTexto}>Ver más solicitudes</Text>
-        </Pressable>
-      ) : null}
+      <Paginacion
+        pagina={p.pagina}
+        totalPaginas={p.totalPaginas}
+        totalRegistros={p.totalRegistros}
+        desde={p.desde}
+        hasta={p.hasta}
+        hayAnterior={p.hayAnterior}
+        haySiguiente={p.haySiguiente}
+        onPagina={irAPagina}
+        singular="solicitud"
+        plural="solicitudes"
+        etiqueta="Paginación de solicitudes"
+      />
     </View>
   );
 }

@@ -39,7 +39,8 @@ test("acceso activo según la pantalla (aria-current)", () => {
   assert.strictEqual(claveActiva("SolicitudReservacion"), "buscar");
   assert.strictEqual(claveActiva("MisSolicitudes"), "solicitudes");
   assert.strictEqual(claveActiva("PanelAdministrador"), "solicitudes");
-  assert.strictEqual(claveActiva("PublicarSalon"), "salon");
+  // La pantalla vieja de un solo salón ya no existe: todo pasa por "Mis salones".
+  assert.strictEqual(claveActiva("PublicarSalon"), null);
   assert.strictEqual(claveActiva("MisSalones"), "salon");
   assert.strictEqual(claveActiva("EditarSalon"), "salon");
   assert.strictEqual(claveActiva("Perfil"), "perfil");

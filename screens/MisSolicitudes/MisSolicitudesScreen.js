@@ -22,6 +22,10 @@ import useSalonDeSolicitud from "../../components/useSalonDeSolicitud";
 import { Bloque } from "../../components/Esqueleto";
 import { COLORES } from "../../theme/colores";
 import { ESPACIO } from "../../theme/espaciado";
+import BotonRegresar from "../../components/BotonRegresar";
+import Paginacion from "../../components/Paginacion";
+import FotoSalon from "../../components/FotoSalon";
+import { FILTROS_ESTADO, ORDENES_CLIENTE } from "./misSolicitudes.logica";
 import useMisSolicitudes from "./useMisSolicitudes";
 import { estilos } from "./MisSolicitudes.styles";
 
@@ -49,6 +53,39 @@ function Aviso({ titulo, texto, boton, onPress }) {
   );
 }
 
+function Chip({ texto, etiqueta, activo, onPress }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={etiqueta || texto}
+      accessibilityState={{ selected: activo }}
+      style={({ hovered, focused, pressed }) => [
+        estilos.chip,
+        activo && estilos.chipActivo,
+        (hovered || pressed) && !activo && estilos.chipHover,
+        focused && estilos.foco,
+      ]}
+    >
+      <Text style={[estilos.chipTexto, activo && estilos.chipTextoActivo]}>{texto}</Text>
+    </Pressable>
+  );
+}
+
+// Tarjeta con la foto del salon. `fotoPrincipal` llega del back cuando exista; si no hay
+// (o la URL da 404) se pinta el marcador, sin pedir el salon de cada solicitud.
+function TarjetaConFoto({ s, ancho, onVerDetalle, accion, aviso }) {
+  return (
+    <View style={[estilos.tarjetaFoto, { width: ancho }]}>
+      <View style={estilos.tarjetaFotoImagen}>
+        <FotoSalon uri={s.fotoPrincipal} nombre={s.nombreSalon} style={estilos.foto} tamanoInicial={40} />
+      </View>
+      <TarjetaSolicitud solicitud={s} onVerDetalle={onVerDetalle} accion={accion} />
+      {aviso ? <Text style={estilos.avisoEstado} accessibilityLiveRegion="polite">{aviso}</Text> : null}
+    </View>
+  );
+}
+
 export default function MisSolicitudesScreen({ navigation, route }) {
   const f = useMisSolicitudes();
   const ir = (nombre, p) => navigation && navigation.navigate(nombre, p);
@@ -56,6 +93,15 @@ export default function MisSolicitudesScreen({ navigation, route }) {
   const solicitudId = (route && route.params && route.params.solicitudId) || null;
   const abierta = solicitudId ? f.solicitudes.find((x) => x.id === solicitudId) || null : null;
   const salonDeSolicitud = useSalonDeSolicitud(f.sesion && f.sesion.id, abierta && abierta.salonId);
+  const inicioLista = React.useRef(null);
+
+  // Al cambiar de pagina se sube al inicio de la lista.
+  function irAPaginaArriba(n) {
+    f.irAPagina(n);
+    if (inicioLista.current && inicioLista.current.scrollIntoView) {
+      inicioLista.current.scrollIntoView({ behavior: "auto", block: "start" });
+    }
+  }
 
   let contenido;
   if (f.cargandoSesion) {
@@ -73,7 +119,7 @@ export default function MisSolicitudesScreen({ navigation, route }) {
     contenido = <Aviso titulo="No se pudieron cargar tus solicitudes" texto={f.error} boton="Reintentar" onPress={f.recargar} />;
   } else if (f.cargando && f.solicitudes.length === 0) {
     contenido = <ListaEsqueleto />;
-  } else if (f.solicitudes.length === 0) {
+  } else if (f.sinResultados && f.conteo.todas === 0) {
     contenido = (
       <Aviso
         titulo="Todavía no tienes solicitudes"
@@ -83,42 +129,81 @@ export default function MisSolicitudesScreen({ navigation, route }) {
       />
     );
   } else {
+    // Dos columnas desde tableta; una en telefono.
+    const dosColumnas = width >= 700;
+    const anchoTarjeta = dosColumnas ? "48.5%" : "100%";
+
     contenido = (
       <>
-        {f.solicitudes.map((s) => (
-          <View key={s.id}>
-            <TarjetaSolicitud
-              solicitud={s}
-              onVerDetalle={() => ir("MisSolicitudes", { solicitudId: s.id })}
-              accion={{
-                texto: "Actualizar estado",
-                etiqueta: `Actualizar el estado de la solicitud en ${s.nombreSalon}`,
-                onPress: () => f.actualizarEstado(s.id),
-                cargando: f.actualizandoId === s.id,
-              }}
-            />
-            {f.avisos[s.id] ? (
-              <Text style={estilos.avisoEstado} accessibilityLiveRegion="polite">
-                {f.avisos[s.id]}
-              </Text>
-            ) : null}
-          </View>
-        ))}
-        {f.error ? <Text style={[estilos.mensajeGeneral, estilos.mensajeFail]}>{f.error}</Text> : null}
-        {f.hayMas ? (
-          <Pressable
-            style={[estilos.botonSecundario, f.cargando && estilos.botonDeshabilitado]}
-            onPress={f.verMas}
-            disabled={f.cargando}
-            accessibilityRole="button"
+        {/* Filtros con los contadores del TOTAL, no de la pagina que se ve */}
+        <View style={estilos.controles}>
+          <ScrollView
+            horizontal={!dosColumnas}
+            scrollEnabled={!dosColumnas}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={estilos.chips}
+            accessibilityLabel="Filtrar por estado"
           >
-            {f.cargando ? (
-              <ActivityIndicator color={COLORES.morado} />
-            ) : (
-              <Text style={estilos.botonSecundarioTexto}>Ver más solicitudes</Text>
-            )}
-          </Pressable>
-        ) : null}
+            {FILTROS_ESTADO.map((x) => (
+              <Chip
+                key={x.clave}
+                texto={`${x.texto} (${f.conteo[x.clave]})`}
+                etiqueta={`${x.texto}: ${f.conteo[x.clave]}`}
+                activo={f.estado === x.clave}
+                onPress={() => f.cambiarEstado(x.clave)}
+              />
+            ))}
+          </ScrollView>
+          <View style={estilos.chips} accessibilityLabel="Ordenar">
+            <Text style={estilos.chipsEtiqueta}>Ordenar por:</Text>
+            {ORDENES_CLIENTE.map((o) => (
+              <Chip key={o.clave} texto={o.texto} activo={f.orden === o.clave} onPress={() => f.cambiarOrden(o.clave)} />
+            ))}
+          </View>
+        </View>
+
+        {f.sinResultados ? (
+          <Aviso
+            titulo={f.textoVacio}
+            texto="Cambia el filtro para ver otras solicitudes."
+            boton="Ver todas"
+            onPress={() => f.cambiarEstado("todas")}
+          />
+        ) : (
+          <View style={estilos.rejilla}>
+            {f.solicitudes.map((s) => (
+              <TarjetaConFoto
+                key={s.id}
+                s={s}
+                ancho={anchoTarjeta}
+                onVerDetalle={() => ir("MisSolicitudes", { solicitudId: s.id })}
+                accion={{
+                  texto: "Actualizar estado",
+                  etiqueta: `Actualizar el estado de la solicitud en ${s.nombreSalon}`,
+                  onPress: () => f.actualizarEstado(s.id),
+                  cargando: f.actualizandoId === s.id,
+                }}
+                aviso={f.avisos[s.id]}
+              />
+            ))}
+          </View>
+        )}
+
+        {f.error ? <Text style={[estilos.mensajeGeneral, estilos.mensajeFail]}>{f.error}</Text> : null}
+
+        <Paginacion
+          pagina={f.paginacion.pagina}
+          totalPaginas={f.paginacion.totalPaginas}
+          totalRegistros={f.paginacion.totalRegistros}
+          desde={f.paginacion.desde}
+          hasta={f.paginacion.hasta}
+          hayAnterior={f.paginacion.hayAnterior}
+          haySiguiente={f.paginacion.haySiguiente}
+          onPagina={irAPaginaArriba}
+          singular="solicitud"
+          plural="solicitudes"
+          etiqueta="Paginación de mis solicitudes"
+        />
       </>
     );
   }

@@ -31,6 +31,7 @@ import SeccionFotos from "../PublicarSalon/SeccionFotos";
 import { COLORES } from "../../theme/colores";
 import { MEDIDA } from "../../theme/disenoPwa";
 import { formatearPrecio } from "../../utils/formato";
+import BotonRegresar from "../../components/BotonRegresar";
 import CampoUbicacion from "./CampoUbicacion";
 import useEditarSalon from "./useEditarSalon";
 import { estilos } from "./MisSalones.styles";
@@ -131,6 +132,7 @@ export default function EditarSalonScreen({ navigation, route }) {
       seccion="salon"
       onElegir={irASeccion}
       nombreSalon={f.formulario.nombre}
+      nombreAdmin={f.sesion ? f.sesion.nombre : ""}
       onCuenta={() => navigation && navigation.navigate("Perfil")}
     >
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
@@ -138,6 +140,8 @@ export default function EditarSalonScreen({ navigation, route }) {
           contentContainerStyle={escritorio ? estilos.contenido : estilos.contenidoMovil}
           keyboardShouldPersistTaps="handled"
         >
+          <BotonRegresar navigation={navigation} respaldo="MisSalones" />
+
           <View style={estilos.encabezado}>
             <Text style={estilos.titulo} accessibilityRole="header">
               {f.esNuevo ? "Nuevo salón" : "Editar salón"}
