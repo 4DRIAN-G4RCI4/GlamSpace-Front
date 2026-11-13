@@ -17,6 +17,8 @@
  *   RegistroCliente        HU-02 (Sprint 1)
  *   RegistroAdministrador  HU-03 (Sprint 1)
  *   PublicarSalon          HU-07 (Sprint 2)
+ *   MisSalones             Mejora de HU-07/HU-08 · gestión de los salones del admin
+ *   EditarSalon            Mejora de HU-07/HU-08 · editar o crear un salón
  *
  * En web, cada cambio de pantalla se registra en el historial del navegador
  * (history.pushState), así los botones Atrás / Adelante del navegador se mueven
@@ -32,6 +34,8 @@ import LoginScreen from "./screens/Login/LoginScreen";
 import RegistroClienteScreen from "./screens/RegistroCliente/RegistroClienteScreen";
 import RegistroAdministradorScreen from "./screens/RegistroAdministrador/RegistroAdministradorScreen";
 import PublicarSalonScreen from "./screens/PublicarSalon/PublicarSalonScreen";
+import MisSalonesScreen from "./screens/MisSalones/MisSalonesScreen";
+import EditarSalonScreen from "./screens/MisSalones/EditarSalonScreen";
 import SolicitudReservacionScreen from "./screens/SolicitudReservacion/SolicitudReservacionScreen";
 import MisSolicitudesScreen from "./screens/MisSolicitudes/MisSolicitudesScreen";
 import PanelAdministradorScreen from "./screens/PanelAdministrador/PanelAdministradorScreen";
@@ -49,6 +53,8 @@ const PANTALLAS = {
   RegistroCliente: RegistroClienteScreen,
   RegistroAdministrador: RegistroAdministradorScreen,
   PublicarSalon: PublicarSalonScreen,
+  MisSalones: MisSalonesScreen,
+  EditarSalon: EditarSalonScreen,
   Perfil: PerfilScreen,
 };
 
