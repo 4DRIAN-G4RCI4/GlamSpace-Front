@@ -102,6 +102,10 @@ test("fecha de creación: la API la manda en UTC (con o sin Z) y se muestra en h
   };
   assert.strictEqual(fechaDeCreacion("2026-11-12T15:05:00"), local("2026-11-12T15:05:00Z"));
   assert.strictEqual(fechaDeCreacion("2026-11-12T15:05:00Z"), local("2026-11-12T15:05:00Z"));
+  // Con desfase explícito no se le agrega "Z" (si se agregara, la fecha sería inválida y saldría vacía)
+  assert.strictEqual(fechaDeCreacion("2026-11-12T09:05:00-06:00"), local("2026-11-12T15:05:00Z"));
+  assert.strictEqual(fechaDeCreacion("2026-11-12T15:05:00+0000"), local("2026-11-12T15:05:00Z"));
+  // Una "Z" en medio no cuenta como zona
   assert.strictEqual(fechaDeCreacion(""), "");
   assert.strictEqual(fechaDeCreacion("no es fecha"), "");
 });

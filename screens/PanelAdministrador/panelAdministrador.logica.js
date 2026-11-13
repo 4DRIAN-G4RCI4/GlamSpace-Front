@@ -111,7 +111,8 @@ export function paginaVisible(lista, paginas, porPagina = 10) {
 // La API guarda FechaCreacion en UTC; si viene sin zona se trata como UTC. → "12 nov 2026, 09:05" (hora local)
 export function fechaDeCreacion(texto) {
   if (!texto) return "";
-  const conZona = /[zZ]|[+-]d{2}:?d{2}$/.test(texto) ? texto : `${texto}Z`;
+  // Ya trae zona si TERMINA en "Z" o en un desfase como "-06:00" / "+0000".
+  const conZona = /(?:[zZ]|[+-]\d{2}:?\d{2})$/.test(texto) ? texto : `${texto}Z`;
   const fecha = new Date(conZona);
   return Number.isNaN(fecha.getTime()) ? "" : formatearFechaHora(fecha);
 }
