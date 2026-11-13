@@ -99,3 +99,12 @@ test("listarArchivos de una carpeta vacía regresa lista vacía", () => {
     fs.rmSync(base, { recursive: true, force: true });
   }
 });
+
+// Mejora de HU-07/HU-08 · El campo de ubicación consulta dos APIs externas: el service worker
+// NO debe cachearlas ni servir respuestas viejas (una colonia o un CP cambian de contexto).
+test("las APIs de ubicación nunca se cachean", () => {
+  const zippopotam = get("https://api.zippopotam.us/mx/42800", { destino: "" });
+  const nominatim = get("https://nominatim.openstreetmap.org/search?format=jsonv2&q=Tula", { destino: "" });
+  assert.strictEqual(estrategiaPara(zippopotam, SITIO), null);
+  assert.strictEqual(estrategiaPara(nominatim, SITIO), null);
+});
