@@ -19,7 +19,7 @@ export function accesosPara(sesion) {
     return [
       BUSCAR,
       { clave: "solicitudes", texto: "Solicitudes", destino: "PanelAdministrador", params: { pestana: "solicitudes" } },
-      { clave: "salon", texto: "Mi salón", destino: "PublicarSalon" },
+      { clave: "salon", texto: "Mis salones", destino: "MisSalones" },
       PERFIL,
     ];
   }
@@ -33,6 +33,8 @@ const ACTIVO_POR_PANTALLA = {
   MisSolicitudes: "solicitudes",
   PanelAdministrador: "solicitudes",
   PublicarSalon: "salon",
+  MisSalones: "salon",
+  EditarSalon: "salon",
   Perfil: "perfil",
 };
 
