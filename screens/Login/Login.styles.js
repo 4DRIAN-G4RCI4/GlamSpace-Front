@@ -31,6 +31,19 @@ export const estilos = {
       alignItems: "center",
       justifyContent: "center",
     },
+// Botón secundario del login: mismo ancho que el principal, borde vino.
+botonSecundario: {
+  minHeight: 48,
+  width: "100%",
+  alignItems: "center",
+  justifyContent: "center",
+  borderRadius: 10,
+  borderWidth: 1.5,
+  borderColor: COLORES.morado,
+  backgroundColor: "transparent",
+  marginTop: 14,
+},
+botonSecundarioTexto: { fontSize: 14.5, fontWeight: "700", color: COLORES.morado },
     panelMarcaNombre: { fontSize: 20, fontWeight: "400", letterSpacing: 4, color: "#f3e4c8" },
     panelMarcaTexto: { fontSize: 13.5, lineHeight: 22, color: "#e8d6dc", textAlign: "center", maxWidth: 320 },
 

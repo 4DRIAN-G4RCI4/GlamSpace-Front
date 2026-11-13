@@ -11,39 +11,30 @@
  */
 
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import Campo from "../../components/Campo";
-import Marca from "../../components/Marca";
+import LayoutAcceso from "../../components/LayoutAcceso";
 import useRegistroAdministrador from "./useRegistroAdministrador";
 import { estilos } from "./RegistroAdministrador.styles";
+
+const MARCA =
+  "Publica tu salón en GlamSpaces y recibe solicitudes de reservación de clientes que buscan un lugar para su evento.";
 
 export default function RegistroAdministradorScreen({ navigation }) {
   const f = useRegistroAdministrador();
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView contentContainerStyle={estilos.pagina} keyboardShouldPersistTaps="handled">
-        <Marca />
-
-        <View style={estilos.tarjeta}>
-          <Text style={estilos.titulo}>Registra tu salón</Text>
+    <LayoutAcceso navigation={navigation} respaldoRegresar="Login" textoMarca={MARCA}>
+      <View>
+          <Text style={estilos.titulo} accessibilityRole="header">Registra tu salón</Text>
           <Text style={estilos.subtitulo}>
             Crea tu cuenta de administrador para publicar tu espacio en GlamSpaces.
           </Text>
 
           <Campo
             etiqueta="Nombre completo"
+            autoComplete="name"
+            textContentType="name"
             valor={f.nombre}
             onCambiar={f.setNombre}
             placeholder="Ej. Adrian García Jiménez"
@@ -53,6 +44,8 @@ export default function RegistroAdministradorScreen({ navigation }) {
 
           <Campo
             etiqueta="Correo electrónico"
+            autoComplete="email"
+            textContentType="emailAddress"
             valor={f.correo}
             onCambiar={f.setCorreo}
             placeholder="tucorreo@ejemplo.com"
@@ -63,6 +56,8 @@ export default function RegistroAdministradorScreen({ navigation }) {
 
           <Campo
             etiqueta="Nombre del salón"
+            autoComplete="off"
+            textContentType="none"
             valor={f.nombreSalon}
             onCambiar={f.setNombreSalon}
             placeholder="Ej. Salón Jardín Las Rosas"
@@ -72,6 +67,8 @@ export default function RegistroAdministradorScreen({ navigation }) {
 
           <Campo
             etiqueta="Contraseña"
+            autoComplete="new-password"
+            textContentType="newPassword"
             valor={f.password}
             onCambiar={f.setPassword}
             placeholder="Mínimo 8 caracteres"
@@ -85,6 +82,8 @@ export default function RegistroAdministradorScreen({ navigation }) {
 
           <Campo
             etiqueta="Confirmar contraseña"
+            autoComplete="new-password"
+            textContentType="newPassword"
             valor={f.password2}
             onCambiar={f.setPassword2}
             placeholder="Repite tu contraseña"
@@ -136,9 +135,7 @@ export default function RegistroAdministradorScreen({ navigation }) {
               <Text style={estilos.enlaceResaltado}>Regístrate como cliente</Text>
             </Text>
           </TouchableOpacity>
-        </View>
-
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </LayoutAcceso>
   );
 }

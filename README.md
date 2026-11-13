@@ -519,6 +519,49 @@ subir o borrar fotos quedan deshabilitados con el motivo. No se encola ningún P
 contra la **API local** (LocalDB con M012 y Azurite), con capturas a 1440, 1024, 768, 390, 320 px
 y 844×390, y la lista de desviaciones de la maqueta.
 
+### Experiencia: paginación, Regresar e invitación a administrador (ajustes del Sprint 7)
+
+Ajustes de usabilidad sobre lo ya existente, a partir de capturas de producción.
+
+- **Listas paginadas.** `services/paginacion.logica.js` (puro y probado) da los cortes, los
+  números de página con "…" y los textos "Mostrando 1–18 de 1,500 salones".
+  `components/Paginacion.js` los pinta con Anterior / Siguiente, `aria-current` en la página
+  actual y botones de 44 px.
+  - **Solicitudes** (panel del administrador y "Mis solicitudes" del cliente): tarjetas a dos
+    columnas (una en teléfono) y **10 por página**. Los filtros y el orden vuelven a la página 1
+    al cambiar, y **los contadores son del total**, no de la página.
+  - **Salones** (Buscar salones y Mis salones): 3 columnas, **18 por página**, botón
+    **"Cargar más salones"** que agrega 6 y, debajo, la paginación de 18 en 18. Se usa la
+    paginación real del back (se piden bloques de 6; tres bloques forman la página), no se trae
+    todo para paginar en el front. Al cambiar de página se sube al inicio y se reinicia lo
+    cargado de más.
+- **"Mis solicitudes" del cliente** ahora tiene los mismos filtros que el administrador y la
+  **foto del salón** en cada tarjeta, con marcador cuando no hay foto o la URL falla.
+- **Botón "← Regresar"** (`components/BotonRegresar.js`) en las pantallas internas. Usa el
+  historial del navegador, así que hace lo mismo que Atrás y no lo rompe; si se entró directo
+  por la URL, va a la pantalla de respaldo de `navegacion.logica.js` (`regresoDe`), nunca a una
+  pantalla en blanco ni al login desde una pantalla con sesión.
+- **La pantalla vieja de un solo salón ya no existe.** Se borraron `PublicarSalonScreen`,
+  `usePublicarSalon` y sus estilos; se conservan `SeccionFotos`, `useFotosSalon` y
+  `publicarSalon.validaciones` porque los usa "Editar salón". Todos los accesos (barra, menú
+  lateral y Perfil) van a **"Mis salones"**. El pie del menú lateral muestra el **nombre del
+  administrador** y "Administrador", nunca el título de la pantalla.
+- **Invitación a ser administrador** (`components/InvitacionAdmin.js`): tarjeta en Buscar salones
+  y en el Perfil, **solo para cuentas de cliente**. El botón lleva al registro de administrador
+  porque el back todavía no puede convertir una cuenta existente (ver "Pendiente").
+- **Pantallas de acceso con un solo diseño.** `components/LayoutAcceso.js` saca el diseño de dos
+  paneles del login (panel vino con la marca + formulario) y lo usan también los dos registros,
+  que conservaban un diseño viejo. En el login, "← Ver salones sin iniciar sesión" pasó de enlace
+  a **botón secundario** con borde vino y el mismo ancho que el principal.
+- **Autocompletado de los formularios.** Ninguno tenía `autoComplete`, así que el navegador
+  rellenaba "Nombre del salón" con el correo guardado. Ahora: nombre → `name`, correo → `email`,
+  **nombre del salón → `off`**, contraseña de login → `current-password` y las de registro →
+  `new-password`.
+
+**Evidencias:** [`docs/evidencias-pwa/experiencia/`](docs/evidencias-pwa/experiencia/) — probado
+contra la **API local** con 1,422 salones y 28 solicitudes, con capturas a 1440, 1024, 768, 390 y
+320 px y 844×390, y la lista de contratos del back que faltan.
+
 ## Calidad y cobertura (SonarQube Cloud)
 
 Proyecto [`4DRIAN-G4RCI4_GlamSpace-Front`](https://sonarcloud.io/project/overview?id=4DRIAN-G4RCI4_GlamSpace-Front)
