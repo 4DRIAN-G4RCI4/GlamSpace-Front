@@ -456,6 +456,51 @@ No es una HU nueva: es un ajuste de usabilidad y de fidelidad al diseño (Figma 
   - "Mis solicitudes" del cliente usa el mismo detalle sin acciones.
 - **Evidencias:** `docs/evidencias-pwa/navegacion/Navegacion-Perfil-Solicitudes.md`, con capturas antes y después y la lista de desviaciones.
 
+## Calidad y cobertura (SonarQube Cloud)
+
+Proyecto [`4DRIAN-G4RCI4_GlamSpace-Front`](https://sonarcloud.io/project/overview?id=4DRIAN-G4RCI4_GlamSpace-Front)
+(organización `4drian-g4rci4`). El análisis corre en GitHub Actions con
+[`.github/workflows/sonar.yml`](.github/workflows/sonar.yml) en cada push a `develop`, `release` y `main`
+y en cada PR; la configuración vive en [`sonar-project.properties`](sonar-project.properties).
+
+### Pruebas y cobertura
+
+| Comando | Qué hace |
+|---|---|
+| `npm test` | Corre las pruebas de `scripts/pruebas/` (necesita Node 22 o más). |
+| `npm run test:cobertura` | Las mismas pruebas midiendo cobertura; escribe `coverage/lcov.info` para Sonar. |
+
+La cobertura la genera el propio Node (`node --test --experimental-test-coverage` con reporter `lcov`,
+ver [`scripts/cobertura.js`](scripts/cobertura.js)); no hay Jest ni otra dependencia de pruebas.
+`coverage/` no se versiona.
+
+Las pruebas importan los módulos de la app, que a su vez importan sin extensión (`"../../utils/validadores"`)
+porque Metro la agrega sola. Node con módulos ES sí la exige, así que las pruebas se corren con
+[`scripts/pruebas/resolverExpo.mjs`](scripts/pruebas/resolverExpo.mjs), que resuelve esas rutas igual que
+Metro. **El código de la app no se modificó para poder probarlo.**
+
+### Qué se mide y qué no (`sonar.coverage.exclusions`)
+
+Se mide **toda la lógica de negocio**: `*.validaciones.js`, `*.logica.js`, `services/` y `utils/`.
+
+Quedan fuera de la medición de cobertura las capas de **presentación**, porque no tienen reglas de negocio
+que una prueba unitaria pueda afirmar (son JSX de React Native Web, hojas de estilo y tokens del diseño);
+medirlas obligaría a montar un render de React que no aporta a la calidad del código y solo diluiría el
+porcentaje:
+
+| Qué se excluye | Por qué |
+|---|---|
+| `App.js` | Arranque de la app: registra el service worker y arma la navegación. |
+| `components/*.js` y `screens/**/*Screen.js` y los componentes de pantalla | Componentes de React Native Web: solo pintan lo que el hook les entrega. |
+| `**/*.styles.js` y `theme/**` | Hojas de estilo y tokens del diseño: no tienen lógica. |
+| `**/use*.js` | Hooks de React: estado y efectos. La lógica que contenían vive en los `*.logica.js`, que sí se miden. |
+| `scripts/sw.base.js` | Cuerpo del service worker: corre en el navegador, con `caches` y `fetch`. Su estrategia (`scripts/swEstrategia.js`) sí se prueba. |
+| `scripts/cobertura.js` | Utilería de build: es el script que *genera* el reporte de cobertura; medirlo sería medirse a sí mismo. La lógica de build que sí se prueba está en `posexport.js` y `swEstrategia.js`. |
+
+Estas capas **sí se verifican**, pero con pruebas en el navegador real (Chrome contra la API local,
+incluidas axe WCAG AA y los cortes de 1440/1024/768/390/320 px): la evidencia de cada trabajo está en
+[`docs/evidencias-pwa/`](docs/evidencias-pwa/). No se excluye ninguna lógica de negocio.
+
 ## Pendiente
 
 - **Mi salón** (HU-19) abre por ahora la pantalla de Publicar salón; falta una pantalla para editar el salón (las fotos de un
