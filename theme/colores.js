@@ -25,7 +25,7 @@ export const COLORES = {
   pendienteFondo: "#fceed2", // Double Pearl Lusta
   pendienteTexto: "#8a6508", // Hot Toddy oscurecido para contraste AA en texto chico
   confirmadaFondo: "#dceee1", // Harp
-  confirmadaTexto: "#4c7a5d", // Como
+  confirmadaTexto: "#446e53", // Como oscurecido para contraste AA en texto chico (4.8:1 sobre confirmadaFondo)
   rechazadaFondo: "#f6dadd", // We Peep
   rechazadaTexto: "#a63446", // Stiletto
 };

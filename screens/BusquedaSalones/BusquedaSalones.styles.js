@@ -14,16 +14,8 @@ const contenedor = { width: "100%", maxWidth: ANCHO_MAXIMO, paddingHorizontal: E
 export const estilos = {
   ...comunes,
   ...StyleSheet.create(conFuentes({
+    raiz: { flex: 1, backgroundColor: COLORES.moradoClaro },
     pantalla: { flexGrow: 1, backgroundColor: COLORES.moradoClaro, alignItems: "center", paddingBottom: ESPACIO.xxl },
-
-    // ---------- Barra superior (Figma Cliente 02) ----------
-    navbar: { width: "100%", backgroundColor: "#fff", borderBottomWidth: 0.8, borderBottomColor: COLORES.borde, alignItems: "center" },
-    navbarContenido: { ...contenedor, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingVertical: ESPACIO.md + 2, gap: ESPACIO.md },
-    navbarAcciones: { flexDirection: "row", alignItems: "center", gap: ESPACIO.sm + 2 },
-    botonCuenta: { borderWidth: 1, borderColor: COLORES.morado, borderRadius: 9, paddingHorizontal: ESPACIO.lg, paddingVertical: ESPACIO.sm + 2 },
-    botonCuentaTexto: { color: COLORES.morado, fontWeight: "600", fontSize: 13 },
-    botonRegistro: { backgroundColor: COLORES.morado, borderRadius: 9, paddingHorizontal: ESPACIO.lg, paddingVertical: ESPACIO.sm + 3 },
-    botonRegistroTexto: { color: COLORES.moradoClaro, fontWeight: "600", fontSize: 13 },
 
     // Título, barra de búsqueda y chips sobre el fondo claro
     franjaContenido: { ...contenedor, marginTop: ESPACIO.xl + 4 },

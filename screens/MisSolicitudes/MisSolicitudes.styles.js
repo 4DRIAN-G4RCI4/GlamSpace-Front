@@ -15,17 +15,13 @@ export const estilos = {
   ...StyleSheet.create(conFuentes({
     pantalla: { flexGrow: 1, backgroundColor: COLORES.moradoClaro, alignItems: "center", paddingBottom: ESPACIO.xxl },
 
-    barraSuperior: { width: "100%", backgroundColor: "#fff", borderBottomWidth: 0.8, borderBottomColor: COLORES.borde, alignItems: "center" },
-    barraContenido: {
-      width: "100%",
-      maxWidth: ANCHO_LISTA,
-      paddingHorizontal: ESPACIO.lg,
-      paddingVertical: ESPACIO.md,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-    },
+    raiz: { flex: 1, backgroundColor: COLORES.moradoClaro },
+    encabezadoLista: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: ESPACIO.md, flexWrap: "wrap" },
+    contenidoDetalle: { width: "100%", maxWidth: 1080, paddingHorizontal: ESPACIO.lg, marginTop: ESPACIO.lg },
+
     botonBarra: {
+      minHeight: 44,
+      justifyContent: "center",
       paddingVertical: ESPACIO.sm,
       paddingHorizontal: ESPACIO.md,
       borderRadius: 9,

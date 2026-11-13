@@ -9,25 +9,28 @@
  *   - PanelAdministrador.styles.js   → estilos
  *   - usePanelAdministrador.js       → lógica / estado
  *   - panelAdministrador.logica.js   → reglas puras (orden, cifras, historial)
- *   - TarjetaPendiente.js, CalendarioAdmin.js → piezas de la pantalla
+ *   - ListaSolicitudes.js, AccionesSolicitud.js, CalendarioAdmin.js → piezas de la pantalla
+ *   - components/DetalleSolicitud.js  → detalle de una solicitud con su salón (Figma Admin 03)
+ *
+ * Ajuste de usabilidad (HU-19 / navegación): lista con filtros por estado y orden, y detalle de cada
+ * solicitud con el salón (fotos, descripción) y las acciones. El detalle se abre con la ruta
+ * { pestana: "solicitudes", solicitudId }, así Atrás del navegador regresa a la lista.
  */
 
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
 import { MEDIDA } from "../../theme/disenoPwa";
 import { formatearPrecio } from "../../utils/formato";
-import { fechaHoy, formatearFechaCorta } from "../../utils/fechas";
+import { fechaHoy } from "../../utils/fechas";
 import usePanelAdministrador from "./usePanelAdministrador";
-import TarjetaPendiente, { EtiquetaEstado } from "./TarjetaPendiente";
 import CalendarioAdmin from "./CalendarioAdmin";
+import ListaSolicitudes from "./ListaSolicitudes";
+import AccionesSolicitud from "./AccionesSolicitud";
+import DetalleSolicitud from "../../components/DetalleSolicitud";
+import useSalonDeSolicitud from "../../components/useSalonDeSolicitud";
 import LayoutAdmin from "./LayoutAdmin";
 import BannerSinConexion from "./BannerSinConexion";
-import {
-  estadisticas,
-  historialReciente,
-  pendientesEnConflicto,
-  solicitudesPendientes,
-} from "./panelAdministrador.logica";
+import { estadisticas } from "./panelAdministrador.logica";
 import { estilos } from "./PanelAdministrador.styles";
 
 // Solo aparece si el administrador tiene más de un salón. En móvil es una fila con scroll horizontal.
@@ -76,79 +79,11 @@ function Cifras({ solicitudes }) {
   );
 }
 
-function Historial({ solicitudes, movil }) {
-  const [verTodo, setVerTodo] = useState(false);
-  const todas = historialReciente(solicitudes, 0);
-  const visibles = verTodo ? todas : todas.slice(0, movil ? 3 : 5);
-  if (todas.length === 0) return null;
-
-  return (
-    <View style={estilos.seccion}>
-      <View style={estilos.filaTituloSeccion}>
-        <Text style={movil ? estilos.tituloSeccionMovil : estilos.tituloSeccion} accessibilityRole="header">
-          Historial reciente
-        </Text>
-        {todas.length > visibles.length || verTodo ? (
-          <Pressable onPress={() => setVerTodo(!verTodo)} accessibilityRole="button">
-            <Text style={movil ? estilos.enlaceMovil : estilos.enlace}>{verTodo ? "Ver menos" : "Ver todo"}</Text>
-          </Pressable>
-        ) : null}
-      </View>
-      {visibles.map((s) => (
-        <View key={s.id} style={[estilos.historial, movil && estilos.historialMovil]}>
-          <View style={estilos.tarjetaDatos}>
-            <Text style={movil ? estilos.historialNombreMovil : estilos.historialNombre}>{s.nombreCliente}</Text>
-            <Text style={movil ? estilos.historialDetalleMovil : estilos.historialDetalle}>
-              {formatearFechaCorta(s.fechaEvento, { conAnio: false })} · {s.tipoEvento} · {s.numeroInvitados} inv.
-            </Text>
-          </View>
-          <EtiquetaEstado estado={s.estado} movil={movil} />
-        </View>
-      ))}
-    </View>
-  );
-}
-
-function SeccionSolicitudes({ panel, movil }) {
-  const pendientes = solicitudesPendientes(panel.solicitudes);
-
+function SeccionSolicitudes({ panel, movil, anchoContenido, onAbrir }) {
   return (
     <>
       {!movil ? <Cifras solicitudes={panel.solicitudes} /> : null}
-
-      <View style={estilos.seccion}>
-        <Text style={movil ? estilos.tituloSeccionMovil : estilos.tituloSeccion} accessibilityRole="header">
-          Solicitudes pendientes ({pendientes.length})
-        </Text>
-
-        {pendientes.length === 0 ? (
-          <View style={estilos.vacio}>
-            <Text style={estilos.vacioTitulo}>No tienes solicitudes pendientes</Text>
-            <Text style={estilos.vacioTexto}>Cuando un cliente pida una fecha de tu salón, aparecerá aquí.</Text>
-          </View>
-        ) : (
-          <View style={movil ? estilos.listaMovil : estilos.lista}>
-            {pendientes.map((s) => (
-              <TarjetaPendiente
-                key={s.id}
-                solicitud={s}
-                movil={movil}
-                porConfirmar={panel.porConfirmar}
-                conflictos={pendientesEnConflicto(panel.solicitudes, s)}
-                procesando={panel.procesandoId === s.id}
-                bloqueada={!!panel.procesandoId || !panel.puedeAtender}
-                error={panel.erroresPorId[s.id]}
-                onAceptar={() => panel.pedirConfirmacion(s.id, "aceptar")}
-                onRechazar={() => panel.pedirConfirmacion(s.id, "rechazar")}
-                onConfirmar={panel.confirmarAccion}
-                onCancelar={panel.cancelarConfirmacion}
-              />
-            ))}
-          </View>
-        )}
-      </View>
-
-      <Historial solicitudes={panel.solicitudes} movil={movil} />
+      <ListaSolicitudes solicitudes={panel.solicitudes} movil={movil} anchoContenido={anchoContenido} onAbrir={onAbrir} />
     </>
   );
 }
@@ -198,7 +133,27 @@ function SinAcceso({ navigation, haySesion }) {
 export default function PanelAdministradorScreen({ navigation, route }) {
   const { width } = useWindowDimensions();
   const movil = width < MEDIDA.corteEscritorio;
-  const panel = usePanelAdministrador(route && route.params ? route.params.pestana : undefined);
+  const params = (route && route.params) || {};
+  const panel = usePanelAdministrador(params.pestana);
+  const solicitudId = params.solicitudId || null;
+  const abierta = solicitudId ? panel.solicitudes.find((x) => x.id === solicitudId) || null : null;
+  const salonDeSolicitud = useSalonDeSolicitud(panel.sesion && panel.sesion.id, abierta && abierta.salonId);
+  // Ancho real del contenido: sin la barra lateral (escritorio) y sin los márgenes.
+  const anchoContenido = movil ? width - 40 : width - MEDIDA.barraLateral - 96;
+
+  // La pestaña sigue a la ruta (Atrás / Adelante del navegador y los enlaces de la barra).
+  useEffect(() => {
+    if (params.pestana) panel.setPestana(params.pestana);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.pestana]);
+
+  // Un enlace directo (o recargar) al detalle trae el salón de la solicitud: el panel se cambia a ese salón.
+  useEffect(() => {
+    if (params.salonId && panel.salon && panel.salon.id !== params.salonId && panel.salones.some((x) => x.id === params.salonId)) {
+      panel.elegirSalon(params.salonId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.salonId, panel.salon && panel.salon.id, panel.salones.length]);
 
   if (panel.cargandoSesion) return <View style={estilos.pantalla} />;
   if (!panel.esAdministrador) return <SinAcceso navigation={navigation} haySesion={!!panel.sesion} />;
@@ -210,8 +165,11 @@ export default function PanelAdministradorScreen({ navigation, route }) {
       if (navigation) navigation.navigate("PublicarSalon");
       return;
     }
-    panel.setPestana(clave);
+    if (navigation) navigation.navigate("PanelAdministrador", { pestana: clave });
   };
+  const abrirSolicitud = (id) =>
+    navigation && navigation.navigate("PanelAdministrador", { pestana: "solicitudes", solicitudId: id, salonId: panel.salon && panel.salon.id });
+  const volverALista = () => navigation && navigation.navigate("PanelAdministrador", { pestana: "solicitudes" });
 
   let cuerpo;
   if (panel.error && panel.solicitudes.length === 0) {
@@ -235,6 +193,28 @@ export default function PanelAdministradorScreen({ navigation, route }) {
     );
   } else if (panel.cargando && panel.solicitudes.length === 0) {
     cuerpo = <Cargando />;
+  } else if (solicitudId && panel.pestana !== "calendario") {
+    cuerpo = abierta ? (
+      <DetalleSolicitud
+        solicitud={abierta}
+        salon={salonDeSolicitud}
+        esAdmin
+        ancho={anchoContenido}
+        onVolver={volverALista}
+        onVerSalon={() => navigation && navigation.navigate("DetalleSalon", { salonId: abierta.salonId })}
+        acciones={<AccionesSolicitud solicitud={abierta} panel={panel} />}
+      />
+    ) : panel.cargando ? (
+      <Cargando />
+    ) : (
+      <View style={estilos.vacio}>
+        <Text style={estilos.vacioTitulo}>No encontramos esa solicitud</Text>
+        <Text style={estilos.vacioTexto}>Puede ser de otro de tus salones. Elige el salón arriba o regresa a la lista.</Text>
+        <Pressable onPress={volverALista} accessibilityRole="button" style={estilos.botonCancelar}>
+          <Text style={estilos.botonCancelarTexto}>Volver a las solicitudes</Text>
+        </Pressable>
+      </View>
+    );
   } else if (panel.pestana === "calendario") {
     cuerpo = (
       <CalendarioAdmin
@@ -246,12 +226,12 @@ export default function PanelAdministradorScreen({ navigation, route }) {
       />
     );
   } else {
-    cuerpo = <SeccionSolicitudes panel={panel} movil={movil} />;
+    cuerpo = <SeccionSolicitudes panel={panel} movil={movil} anchoContenido={anchoContenido} onAbrir={abrirSolicitud} />;
   }
 
   const contenido = (
     <ScrollView contentContainerStyle={movil ? estilos.contenidoMovil : estilos.contenido}>
-      {!movil ? (
+      {!movil && !solicitudId ? (
         <Text style={estilos.tituloPagina} accessibilityRole="header">
           {panel.pestana === "calendario" ? "Calendario de disponibilidad" : "Panel de solicitudes"}
         </Text>
