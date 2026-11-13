@@ -23,6 +23,7 @@ import { MEDIDA } from "../../theme/disenoPwa";
 import { formatearPrecio } from "../../utils/formato";
 import { fechaHoy } from "../../utils/fechas";
 import usePanelAdministrador from "./usePanelAdministrador";
+import { nombreDeNegocio } from "../../services/sesion.logica";
 import CalendarioAdmin from "./CalendarioAdmin";
 import ListaSolicitudes from "./ListaSolicitudes";
 import AccionesSolicitud from "./AccionesSolicitud";
@@ -158,11 +159,13 @@ export default function PanelAdministradorScreen({ navigation, route }) {
   if (panel.cargandoSesion) return <View style={estilos.pantalla} />;
   if (!panel.esAdministrador) return <SinAcceso navigation={navigation} haySesion={!!panel.sesion} />;
 
-  const nombreSalon = (panel.salon && panel.salon.nombre) || panel.sesion.nombre_salon || panel.sesion.nombre;
+  // El nombre del salón: el del salón que se ve, o el de la cuenta si es un nombre de verdad.
+  // Nunca el nombre del usuario: en varias cuentas ese "nombre" es el propio correo.
+  const nombreSalon = (panel.salon && panel.salon.nombre) || nombreDeNegocio(panel.sesion);
   const irACuenta = () => navigation && navigation.navigate("Perfil");
   const elegirSeccion = (clave) => {
     if (clave === "salon") {
-      if (navigation) navigation.navigate("PublicarSalon");
+      if (navigation) navigation.navigate("MisSalones");
       return;
     }
     if (navigation) navigation.navigate("PanelAdministrador", { pestana: clave });

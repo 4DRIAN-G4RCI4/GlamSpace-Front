@@ -28,6 +28,7 @@ import LayoutAdmin from "../PanelAdministrador/LayoutAdmin";
 import { MEDIDA } from "../../theme/disenoPwa";
 import { COLORES } from "../../theme/colores";
 import usePublicarSalon from "./usePublicarSalon";
+import { nombreDeNegocio } from "../../services/sesion.logica";
 import SeccionFotos from "./SeccionFotos";
 import { estilos } from "./PublicarSalon.styles";
 
@@ -81,7 +82,7 @@ export default function PublicarSalonScreen({ navigation }) {
     <LayoutAdmin
       seccion="salon"
       onElegir={irASeccion}
-      nombreSalon={(f.sesion && (f.sesion.nombre_salon || f.sesion.nombre)) || ""}
+      nombreSalon={nombreDeNegocio(f.sesion)}
       onCuenta={() => navigation && navigation.navigate("Perfil")}
     >
     <KeyboardAvoidingView

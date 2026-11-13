@@ -16,6 +16,7 @@ import { textoDeErrorApi } from "../../services/api";
 import { obtenerSesionActiva } from "../../services/sesionStorage";
 import { aNumero } from "../../utils/validadores";
 import { validarPaquete, validarPublicacion } from "./publicarSalon.validaciones";
+import { nombreDeNegocio } from "../../services/sesion.logica";
 import useFotosSalon from "./useFotosSalon";
 
 const PAQUETE_VACIO = { nombre: "", descripcion: "", precio: "" };
@@ -50,9 +51,8 @@ export default function usePublicarSalon() {
     void (async () => {
       const sesionGuardada = await obtenerSesionActiva();
       setSesion(sesionGuardada);
-      if (sesionGuardada && sesionGuardada.nombre_salon) {
-        setNombre(sesionGuardada.nombre_salon);
-      }
+      // El nombre del salón solo se sugiere si la cuenta guardó uno de verdad (nunca el correo).
+      setNombre(nombreDeNegocio(sesionGuardada));
       setCargandoSesion(false);
     })();
   }, []);
@@ -172,7 +172,7 @@ export default function usePublicarSalon() {
           paquetes.length === 1 ? "paquete" : "paquetes"
         }.${textoFotos}`,
       });
-      setNombre(sesion.nombre_salon ? sesion.nombre_salon : "");
+      setNombre(nombreDeNegocio(sesion));
       setZona("");
       setCapacidad("");
       setDescripcionSalon("");
