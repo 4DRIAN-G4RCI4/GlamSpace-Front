@@ -456,6 +456,69 @@ No es una HU nueva: es un ajuste de usabilidad y de fidelidad al diseño (Figma 
   - "Mis solicitudes" del cliente usa el mismo detalle sin acciones.
 - **Evidencias:** `docs/evidencias-pwa/navegacion/Navegacion-Perfil-Solicitudes.md`, con capturas antes y después y la lista de desviaciones.
 
+### Mis salones: gestión de los salones del administrador (mejora de HU-07 / HU-08)
+
+No es una HU nueva: "Mi salón" (una sola pantalla de publicar) se convirtió en la **gestión de
+todos los salones** del administrador. Pantallas en [`screens/MisSalones/`](screens/MisSalones/).
+
+**Mis salones** (`MisSalonesScreen.js`)
+
+- Una ficha por salón: foto principal (o el marcador "Sin fotos todavía"), nombre, zona,
+  capacidad, estado (Publicado / Borrador), paquetes y fotos, con **Editar**, **Ver salón** y
+  **Eliminar**, más **+ Nuevo salón**.
+- Rejilla responsiva: 3 columnas en escritorio, 2 en tableta y 1 en teléfono, con "Ver más"
+  cada 9 salones.
+- Estado vacío que invita a crear el primero.
+
+**Editar salón** (`EditarSalonScreen.js`, también crea)
+
+- Al abrirla carga el salón con `obtener` y **muestra todo lo que ya tiene**: nombre, ubicación,
+  capacidad, descripción, estado, fotos y paquetes, todo editable.
+- Los paquetes se agregan, se editan y se quitan; las fotos usan la sección de la HU-07.
+- Guardar cambios, Cancelar y, al final, una **zona de peligro** con Eliminar salón.
+- Validación por campo con el mensaje en español debajo (`editarSalon.validaciones.js`).
+
+**El bug del nombre prellenado con el correo**
+
+El campo "Nombre del salón" aparecía con el correo del usuario: si la cuenta no tenía
+`nombre_salon`, se caía al `nombre` del usuario, y en varias cuentas ese nombre es el propio
+correo. Ahora [`services/sesion.logica.js`](services/sesion.logica.js) solo sugiere el nombre
+cuando de verdad es un nombre de negocio (nunca algo con `@`); al crear, el campo nace vacío.
+La barra del panel usa la misma regla.
+
+**Ubicación asistida** (`CampoUbicacion.js`, `useUbicacion.js`, `services/ubicacion.logica.js`)
+
+- **Código postal** (5 dígitos) → `api.zippopotam.us/mx/{cp}`: lista las colonias para elegir.
+- **Texto libre** → Nominatim de OpenStreetMap, con **600 ms** de espera desde la última tecla y
+  **máximo 1 petición por segundo**; la consulta anterior se cancela.
+- Solo se consulta **al escribir o al elegir**, nunca al abrir la pantalla.
+- La zona se guarda como `Colonia, Municipio, Estado, CP 00000`, recortada a los **200 caracteres**
+  de `Salones.Zona` sin cortar palabras, para que la búsqueda por zona (HU-09) siga funcionando.
+- Se muestra la atribución **© OpenStreetMap contributors**, como pide su licencia.
+- Si fallan o no hay conexión, el campo se escribe a mano y **nunca** bloquea guardar.
+- El service worker **no cachea** esas llamadas (probado en `serviceWorker.test.js`).
+
+**Confirmación en todo lo que escribe** ([`components/DialogoConfirmacion.js`](components/DialogoConfirmacion.js))
+
+Guardar, eliminar salón, eliminar paquete, eliminar foto, cambiar entre publicado y borrador y
+salir con cambios sin guardar. El diálogo es `role="dialog"` con `aria-modal`, atrapa el foco
+(Tab y Shift+Tab giran), cierra con **Escape**, devuelve el foco a donde estaba y sus botones
+dicen lo que hacen ("Eliminar salón", no "Aceptar"). Después de cada acción hay un aviso de
+éxito o de error.
+
+**Errores del back**
+
+Si la API manda `mensaje`, se muestra **tal cual**. Códigos: 2001 no existe, 2002 no es el dueño,
+2003 publicar sin paquetes, **2010 tiene solicitudes pendientes o confirmadas** (el salón **no**
+se elimina) y 5000.
+
+**Sin conexión (HU-22):** la lista se ve desde la caché con su aviso y crear, editar, eliminar y
+subir o borrar fotos quedan deshabilitados con el motivo. No se encola ningún POST.
+
+**Evidencias:** [`docs/evidencias-pwa/mis-salones/`](docs/evidencias-pwa/mis-salones/) — probado
+contra la **API local** (LocalDB con M012 y Azurite), con capturas a 1440, 1024, 768, 390, 320 px
+y 844×390, y la lista de desviaciones de la maqueta.
+
 ## Calidad y cobertura (SonarQube Cloud)
 
 Proyecto [`4DRIAN-G4RCI4_GlamSpace-Front`](https://sonarcloud.io/project/overview?id=4DRIAN-G4RCI4_GlamSpace-Front)
@@ -503,7 +566,5 @@ incluidas axe WCAG AA y los cortes de 1440/1024/768/390/320 px): la evidencia de
 
 ## Pendiente
 
-- **Mi salón** (HU-19) abre por ahora la pantalla de Publicar salón; falta una pantalla para editar el salón (las fotos de un
-  salón existente ya se manejan desde "Fotos del salón").
 - **`fotosPreview` en producción:** el carrusel ya lo usa; mientras el back no lo publique, las tarjetas
   muestran solo la foto principal.
