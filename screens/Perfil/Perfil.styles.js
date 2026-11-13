@@ -7,6 +7,7 @@
  */
 
 import { StyleSheet } from "react-native";
+import { ANCHO_MAXIMO } from "../../theme/espaciado";
 import { FUENTE, MEDIDA, PWA } from "../../theme/disenoPwa";
 
 const texto = (tamano, peso = "400", color = PWA.texto) => ({ fontFamily: FUENTE.texto, fontSize: tamano, fontWeight: peso, color });
@@ -26,8 +27,8 @@ export const estilos = StyleSheet.create({
     paddingVertical: 22,
     gap: 22,
   },
-  // Tablet y escritorio: aprovecha el ancho (hasta 1200 px).
-  contenidoAncho: { maxWidth: 1200, paddingHorizontal: 32, paddingVertical: 32 },
+  // Tablet y escritorio: aprovecha el ancho (el mismo de la barra superior).
+  contenidoAncho: { maxWidth: ANCHO_MAXIMO, paddingHorizontal: 16, paddingVertical: 32 }, // alineado con la barra superior
   columnas: { flexDirection: "row", alignItems: "flex-start", gap: 24 },
   columnaIdentidad: { width: 340, gap: 16 },
   columnaSecciones: { flex: 1, minWidth: 0 },
