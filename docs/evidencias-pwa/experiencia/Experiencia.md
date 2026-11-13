@@ -136,16 +136,16 @@ Captura: `mis-salones-sin-conexion-1440.png`.
 
 ---
 
-## Contratos del back que hacen falta (no se inventaron)
+## Contratos del back
 
-1. **Foto en las solicitudes del cliente.** `POST /api/solicitudes/listar` devuelve `salonId` y
-   `nombreSalon` pero **no la foto** (revisado en `GlamSpaces.Domain/Dtos/SolicitudDtos.cs`).
-   Haría falta que cada renglón trajera **`fotoPrincipal` (string | null)**. Mientras tanto la
-   tarjeta pinta el marcador; **no** se pide el salón de cada solicitud para no hacer N+1.
-2. **Convertir una cuenta de cliente en administrador.** `UsuariosController` solo tiene
-   `registro`, `login` y `obtener`: no hay forma de cambiar el `TipoCuenta`. Por eso la invitación
-   lleva al registro de administrador. Haría falta algo como
-   `POST /api/usuarios/convertirAAdministrador { id, nombreSalon }`.
+1. **Foto en las solicitudes del cliente: ya resuelto.** Cuando se escribió esta evidencia,
+   `POST /api/solicitudes/listar` no mandaba la foto. El back la agregó (`fotoPrincipal`,
+   string o null, en `listar` y en `listarPorSalon`), así que la tarjeta la usa directo: una sola
+   llamada trae todo y **no** se pide el salón de cada solicitud (nada de N+1). Si el salón no
+   tiene fotos, o la URL falla, se sigue pintando el marcador.
+2. **Convertir una cuenta de cliente en administrador: pendiente de conectar.** El back ya publicó
+   `POST /api/usuarios/convertirAAdministrador`, pero el front **todavía no lo usa**: la invitación
+   sigue llevando al registro de administrador. Queda para una ronda siguiente.
 
 ## Desviaciones y lo que no se probó
 
