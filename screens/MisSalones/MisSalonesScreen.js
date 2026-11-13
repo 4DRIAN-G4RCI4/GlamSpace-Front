@@ -19,6 +19,8 @@ import Marca from "../../components/Marca";
 import { COLORES } from "../../theme/colores";
 import { MEDIDA } from "../../theme/disenoPwa";
 import { nombreDeNegocio } from "../../services/sesion.logica";
+import BotonRegresar from "../../components/BotonRegresar";
+import Paginacion from "../../components/Paginacion";
 import useMisSalones from "./useMisSalones";
 import { estilos } from "./MisSalones.styles";
 
@@ -123,6 +125,15 @@ export default function MisSalonesScreen({ navigation }) {
   const { width } = useWindowDimensions();
   const escritorio = width >= MEDIDA.corteEscritorio;
   const ancho = anchoDeFicha(width);
+  const inicioRejilla = React.useRef(null);
+
+  // Al cambiar de página se sube al inicio de la rejilla.
+  function irAPaginaArriba(n) {
+    f.irAPagina(n);
+    if (inicioRejilla.current && inicioRejilla.current.scrollIntoView) {
+      inicioRejilla.current.scrollIntoView({ behavior: "auto", block: "start" });
+    }
+  }
 
   if (f.cargandoSesion) {
     return (
@@ -158,9 +169,12 @@ export default function MisSalonesScreen({ navigation }) {
       // Si la cuenta no guardó un nombre de salón de verdad, la barra dice "Mis salones"
       // en vez de quedarse vacía (y nunca el correo del usuario).
       nombreSalon={nombreDeNegocio(f.sesion) || "Mis salones"}
+      nombreAdmin={f.sesion ? f.sesion.nombre : ""}
       onCuenta={() => navigation && navigation.navigate("Perfil")}
     >
       <ScrollView contentContainerStyle={escritorio ? estilos.contenido : estilos.contenidoMovil}>
+        <BotonRegresar navigation={navigation} respaldo="PanelAdministrador" />
+
         <View style={estilos.encabezado}>
           <Text style={estilos.titulo} accessibilityRole="header">Mis salones</Text>
           <Boton
@@ -215,7 +229,7 @@ export default function MisSalonesScreen({ navigation }) {
           </View>
         ) : (
           <>
-            <View style={estilos.rejilla}>
+            <View style={estilos.rejilla} ref={inicioRejilla}>
               {f.salones.map((ficha) => (
                 <FichaSalon
                   key={ficha.id}
@@ -232,9 +246,23 @@ export default function MisSalonesScreen({ navigation }) {
 
             {f.hayMas ? (
               <View style={{ alignItems: "center", marginTop: 24 }}>
-                <Boton texto="Ver más salones" onPress={f.verMas} />
+                <Boton texto="Cargar más salones" onPress={f.verMas} />
               </View>
             ) : null}
+
+            <Paginacion
+              pagina={f.paginacion.pagina}
+              totalPaginas={f.paginacion.totalPaginas}
+              totalRegistros={f.paginacion.totalRegistros}
+              desde={f.paginacion.desde}
+              hasta={f.paginacion.hasta}
+              hayAnterior={f.paginacion.hayAnterior}
+              haySiguiente={f.paginacion.haySiguiente}
+              onPagina={irAPaginaArriba}
+              singular="salón"
+              plural="salones"
+              etiqueta="Paginación de mis salones"
+            />
           </>
         )}
       </ScrollView>

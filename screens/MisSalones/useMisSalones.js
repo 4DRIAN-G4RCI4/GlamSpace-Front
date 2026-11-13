@@ -11,15 +11,15 @@ import { useCallback, useEffect, useState } from "react";
 import { eliminarSalon, listarSalonesDeAdminConRespaldo } from "../../services/salonesApi";
 import { obtenerSesionActiva } from "../../services/sesionStorage";
 import useConexion from "../../utils/useConexion";
+import { POR_PAGINA_SALONES, SALONES_POR_CARGA, paginar, visiblesConCargarMas } from "../../services/paginacion.logica";
 import {
   confirmacionEliminarSalon,
   estadoDeAccion,
   fichasDeSalones,
   mensajeDeErrorSalon,
-  paginaDeSalones,
 } from "./misSalones.logica";
 
-const POR_PAGINA = 9;
+// 3 columnas × 6 filas = 18 por página; 'Cargar más' suma 2 filas (6).
 
 export default function useMisSalones() {
   const [sesion, setSesion] = useState(null);
@@ -29,7 +29,8 @@ export default function useMisSalones() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [guardadoEn, setGuardadoEn] = useState(null);
-  const [paginas, setPaginas] = useState(1);
+  const [pagina, setPagina] = useState(1);
+  const [cargas, setCargas] = useState(0);
 
   // Diálogo de confirmación y avisos de resultado.
   const [confirmacion, setConfirmacion] = useState(null); // { ...texto, salon }
@@ -73,7 +74,9 @@ export default function useMisSalones() {
   const esAdministrador = !!sesion && sesion.tipo_cuenta === "administrador";
 
   const fichas = fichasDeSalones(salones);
-  const { visibles, hayMas } = paginaDeSalones(fichas, paginas, POR_PAGINA);
+  // Página de 18 y, dentro de ella, "Cargar más" de 6 en 6.
+  const p = paginar(fichas, pagina, POR_PAGINA_SALONES);
+  const { visibles, hayMasEnLaPagina } = visiblesConCargarMas(p.visibles, cargas, POR_PAGINA_SALONES, SALONES_POR_CARGA);
 
   const accionCrear = estadoDeAccion("crear", enLinea);
   const accionEliminar = estadoDeAccion("eliminarSalon", enLinea);
@@ -116,8 +119,10 @@ export default function useMisSalones() {
     salones: visibles,
     totalSalones: fichas.length,
     vacia: !cargando && fichas.length === 0,
-    hayMas,
-    verMas: () => setPaginas((p) => p + 1),
+    hayMas: hayMasEnLaPagina,
+    verMas: () => setCargas((n) => n + 1),
+    paginacion: p,
+    irAPagina: (n) => { setPagina(n); setCargas(0); },
     cargando,
     error,
     refrescar: () => sesion && cargar(sesion.id),

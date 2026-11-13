@@ -19,12 +19,24 @@ import BarraNavegacion from "../../components/BarraNavegacion";
 import BarraBusqueda from "./BarraBusqueda";
 import FiltrosChips from "./FiltrosChips";
 import ResultadosSalones from "./ResultadosSalones";
+import InvitacionAdmin from "../../components/InvitacionAdmin";
+import useSesion from "../../components/useSesion";
 import useBusquedaSalones from "./useBusquedaSalones";
 import { estilos } from "./BusquedaSalones.styles";
 
 export default function BusquedaSalonesScreen({ navigation }) {
   const f = useBusquedaSalones();
+  const { sesion } = useSesion();
   const ir =(pantalla, params) => navigation && navigation.navigate(pantalla, params);
+  const inicioResultados = React.useRef(null);
+
+  // Al cambiar de página de 18 se sube al inicio de la lista.
+  function irAPagina(n) {
+    f.irAPagina(n);
+    if (inicioResultados.current && inicioResultados.current.scrollIntoView) {
+      inicioResultados.current.scrollIntoView({ behavior: "auto", block: "start" });
+    }
+  }
 
   return (
     <View style={estilos.raiz}>
@@ -40,9 +52,18 @@ export default function BusquedaSalonesScreen({ navigation }) {
         <FiltrosChips f={f} />
       </View>
 
-      <View style={estilos.resultados}>
+      <View style={estilos.franjaContenido}>
+        {/* Solo la ve un cliente que todavía no tiene cuenta de administrador */}
+        <InvitacionAdmin sesion={sesion} navigation={navigation} />
+      </View>
+
+      <View style={estilos.resultados} ref={inicioResultados}>
         {/* Criterio 4: al tocar una tarjeta se abre el detalle de ese salón */}
-        <ResultadosSalones f={f} onAbrirSalon={(salonId) => ir("DetalleSalon", { salonId })} />
+        <ResultadosSalones
+          f={f}
+          onAbrirSalon={(salonId) => ir("DetalleSalon", { salonId })}
+          onPagina={irAPagina}
+        />
       </View>
 
     </ScrollView>

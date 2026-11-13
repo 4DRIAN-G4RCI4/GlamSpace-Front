@@ -66,6 +66,8 @@ export default function LoginScreen({ navigation, route }) {
 
       <Campo
         etiqueta="Correo electrónico"
+        autoComplete="email"
+        textContentType="emailAddress"
         valor={f.correo}
         onCambiar={f.setCorreo}
         placeholder="tucorreo@ejemplo.com"
@@ -76,6 +78,8 @@ export default function LoginScreen({ navigation, route }) {
 
       <Campo
         etiqueta="Contraseña"
+        autoComplete="current-password"
+        textContentType="password"
         valor={f.password}
         onCambiar={f.setPassword}
         placeholder="Tu contraseña"
@@ -112,10 +116,15 @@ export default function LoginScreen({ navigation, route }) {
           ¿Tu salón aún no está en GlamSpaces? <Text style={estilos.enlaceResaltado}>Regístralo</Text>
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation && navigation.navigate("BusquedaSalones")}>
-        <Text style={[estilos.enlaceCambio, estilos.enlaceLogin]}>
-          <Text style={estilos.enlaceResaltado}>← Ver salones sin iniciar sesión</Text>
-        </Text>
+      {/* Botón secundario (no un enlace): mismo ancho que el principal, con borde vino. */}
+      <TouchableOpacity
+        onPress={() => navigation && navigation.navigate("BusquedaSalones")}
+        accessibilityRole="button"
+        accessibilityLabel="Ver salones sin iniciar sesión"
+        style={estilos.botonSecundario}
+        activeOpacity={0.85}
+      >
+        <Text style={estilos.botonSecundarioTexto}>← Ver salones sin iniciar sesión</Text>
       </TouchableOpacity>
     </View>
   );

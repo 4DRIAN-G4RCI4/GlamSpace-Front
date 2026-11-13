@@ -21,6 +21,7 @@ import { MEDIDA, PWA } from "../../theme/disenoPwa";
 import BarraNavegacion from "../../components/BarraNavegacion";
 import { esTelefono, inicialesDe } from "../../components/navegacion.logica";
 import { estilos } from "./Perfil.styles";
+import InvitacionAdmin from "../../components/InvitacionAdmin";
 import usePerfil from "./usePerfil";
 
 const ICONOS = {
@@ -186,7 +187,7 @@ export default function PerfilScreen({ navigation }) {
         <View style={estilos.lista}>
           <Fila primera etiqueta="Buscar salones" onPress={() => ir("BusquedaSalones")} />
           <Fila etiqueta={solicitudes.texto} onPress={() => ir(solicitudes.pantalla)} />
-          {esAdministrador ? <Fila etiqueta="Mi salón y fotos" onPress={() => ir("PublicarSalon")} /> : null}
+          {esAdministrador ? <Fila etiqueta="Mis salones y fotos" onPress={() => ir("MisSalones")} /> : null}
           <Fila etiqueta="Editar perfil" proximamente />
           <Fila etiqueta="Cambiar contraseña" proximamente />
           <Fila etiqueta="Preferencias" proximamente />
@@ -197,6 +198,8 @@ export default function PerfilScreen({ navigation }) {
     const secciones = <View style={telefono ? estilos.rejillaSecciones : estilos.rejillaDos}>{miCuenta}{accesos}</View>;
 
     cuerpo = escritorio ? (
+      <>
+      <InvitacionAdmin sesion={usuario} navigation={navigation} />
       <View style={estilos.columnas}>
         <View style={estilos.columnaIdentidad}>
           {identidad}
@@ -204,8 +207,10 @@ export default function PerfilScreen({ navigation }) {
         </View>
         <View style={estilos.columnaSecciones}>{secciones}</View>
       </View>
+      </>
     ) : (
       <View style={estilos.apilado}>
+        <InvitacionAdmin sesion={usuario} navigation={navigation} />
         {identidad}
         {secciones}
         {botonSalir}
