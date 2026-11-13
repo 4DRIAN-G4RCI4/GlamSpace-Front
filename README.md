@@ -548,7 +548,7 @@ Ajustes de usabilidad sobre lo ya existente, a partir de capturas de producción
   administrador** y "Administrador", nunca el título de la pantalla.
 - **Invitación a ser administrador** (`components/InvitacionAdmin.js`): tarjeta en Buscar salones
   y en el Perfil, **solo para cuentas de cliente**. El botón lleva al registro de administrador
-  porque el back todavía no puede convertir una cuenta existente (ver "Pendiente").
+  porque el front todavía no usa el endpoint que lo hace (ver "Pendiente").
 - **Pantallas de acceso con un solo diseño.** `components/LayoutAcceso.js` saca el diseño de dos
   paneles del login (panel vino con la marca + formulario) y lo usan también los dos registros,
   que conservaban un diseño viejo. En el login, "← Ver salones sin iniciar sesión" pasó de enlace
@@ -609,5 +609,8 @@ incluidas axe WCAG AA y los cortes de 1440/1024/768/390/320 px): la evidencia de
 
 ## Pendiente
 
+- **Convertir una cuenta de cliente en administrador:** el back ya publicó
+  `POST /api/usuarios/convertirAAdministrador`, pero el front todavía no lo usa: la tarjeta de
+  invitación (`components/InvitacionAdmin.js`) sigue llevando al registro de administrador.
 - **`fotosPreview` en producción:** el carrusel ya lo usa; mientras el back no lo publique, las tarjetas
   muestran solo la foto principal.

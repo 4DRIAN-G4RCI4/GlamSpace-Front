@@ -18,7 +18,8 @@ import {
   claveActiva,
 } from "../../components/navegacion.logica.js";
 
-// Lo que regresa hoy POST /api/solicitudes/listar: trae salonId y nombreSalon, pero NO la foto.
+// Lo que regresa POST /api/solicitudes/listar. `fotoPrincipal` llega cuando el salón tiene
+// fotos; estas de ejemplo no la traen, para comprobar el marcador de posición.
 const SOLICITUDES = [
   { id: 1, salonId: 10, nombreSalon: "Jardín Villa", estado: "pendiente", fechaEvento: "2026-12-20", fechaCreacion: "2026-11-01T10:00:00", numeroInvitados: 100, nombrePaquete: "Oro" },
   { id: 2, salonId: 11, nombreSalon: "Terraza del Valle", estado: "confirmada", fechaEvento: "2026-11-30", fechaCreacion: "2026-11-05T10:00:00", numeroInvitados: 80, nombrePaquete: null },
@@ -94,13 +95,13 @@ test("tarjetaDeSolicitud conserva los demás campos que manda la API", () => {
   assert.strictEqual(t.comentarios, "Con jardín");
 });
 
-// El endpoint todavía no manda la foto: la tarjeta debe aguantar su ausencia sin romperse
-// y sin pedir el salón de cada solicitud (eso sería una llamada por tarjeta).
-test("sin foto del back, la tarjeta deja fotoPrincipal en null (pinta el marcador)", () => {
+// Un salón sin fotos llega con fotoPrincipal en null: la tarjeta pinta el marcador y no pide
+// el salón de esa solicitud (eso sería una llamada por tarjeta).
+test("un salón sin fotos deja fotoPrincipal en null (pinta el marcador)", () => {
   assert.strictEqual(tarjetaDeSolicitud(SOLICITUDES[0]).fotoPrincipal, null);
 });
 
-test("cuando el back mande fotoPrincipal, la tarjeta la usa", () => {
+test("la tarjeta usa la fotoPrincipal que manda la API", () => {
   const con = tarjetaDeSolicitud({ ...SOLICITUDES[0], fotoPrincipal: "https://ejemplo.mx/f.jpg" });
   assert.strictEqual(con.fotoPrincipal, "https://ejemplo.mx/f.jpg");
 });

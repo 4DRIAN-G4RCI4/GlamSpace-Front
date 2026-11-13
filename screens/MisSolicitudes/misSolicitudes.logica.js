@@ -5,10 +5,10 @@
  * (Todas / Pendientes / Confirmadas / Rechazadas, con contadores del TOTAL, no de la página)
  * y paginación de 10 en 10.
  *
- * La foto del salón: POST /api/solicitudes/listar todavía NO manda la foto (su respuesta trae
- * salonId y nombreSalon, pero no `fotoPrincipal`). Para no hacer una llamada por tarjeta
- * (N+1), la tarjeta usa `fotoPrincipal` cuando llegue y mientras tanto pinta el marcador.
- * El contrato que hace falta está anotado en el README y en la evidencia.
+ * La foto del salón viene en la propia respuesta de POST /api/solicitudes/listar
+ * (`fotoPrincipal`, string o null), así que no se pide el salón de cada solicitud: una sola
+ * llamada trae todo. Si una solicitud no tiene foto, o su URL falla, la tarjeta pinta el
+ * marcador de posición.
  */
 
 import { contarPorEstado as contarEstados, FILTROS_ESTADO } from "../PanelAdministrador/panelAdministrador.logica.js";
@@ -40,8 +40,8 @@ export function listaDeMisSolicitudes(solicitudes, estado = "todas", orden = "re
 }
 
 /**
- * Lo que necesita pintar una tarjeta. `fotoPrincipal` es opcional: mientras el back no la
- * mande (o si la URL da 404), la tarjeta usa el marcador de posición.
+ * Lo que necesita pintar una tarjeta. `fotoPrincipal` es opcional: si el salón no tiene fotos
+ * (la API manda null) o la URL da 404, la tarjeta usa el marcador de posición.
  * → { id, salonId, nombreSalon, estado, fotoPrincipal, nombrePaquete, numeroInvitados, fechaEvento }
  */
 export function tarjetaDeSolicitud(solicitud) {
