@@ -32,7 +32,9 @@ export default function BusquedaSalonesScreen({ navigation }) {
 
   // Al cambiar de página de 18 se sube al inicio de la lista.
   function irAPagina(n) {
-    f.irAPagina(n);
+    // `void`: la consulta al back es asíncrona y aquí no hay nada que esperar; sus errores
+    // los maneja el propio hook y los muestra la lista.
+    void f.irAPagina(n);
     if (inicioResultados.current && inicioResultados.current.scrollIntoView) {
       inicioResultados.current.scrollIntoView({ behavior: "auto", block: "start" });
     }
