@@ -222,6 +222,19 @@ test("hayCambiosSinGuardar detecta paquetes agregados, quitados o editados", () 
   assert.strictEqual(hayCambiosSinGuardar(ORIGINAL, editado), true);
 });
 
+// El orden en que llegan los paquetes no debe contar como un cambio.
+test("hayCambiosSinGuardar no se confunde si los paquetes vienen en otro orden", () => {
+  const dos = { ...ORIGINAL, paquetes: [
+    { id: 1, nombre: "Oro", descripcion: "8 hrs", precio: 8500 },
+    { id: 2, nombre: "Ángeles", descripcion: "4 hrs", precio: 4000 },
+  ] };
+  const alReves = { ...dos, paquetes: [...dos.paquetes].reverse() };
+  assert.strictEqual(hayCambiosSinGuardar(dos, alReves), false);
+  // Y sí detecta un cambio de verdad aunque el orden cambie.
+  const cambiado = { ...dos, paquetes: [dos.paquetes[1], { ...dos.paquetes[0], precio: 9999 }] };
+  assert.strictEqual(hayCambiosSinGuardar(dos, cambiado), true);
+});
+
 test("hayCambiosSinGuardar ignora los espacios de más", () => {
   assert.strictEqual(hayCambiosSinGuardar(ORIGINAL, { ...ORIGINAL, nombre: "  Villa  " }), false);
 });

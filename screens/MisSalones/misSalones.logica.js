@@ -176,8 +176,11 @@ export function hayCambiosSinGuardar(original, actual) {
 function paquetesCambiaron(antes = [], ahora = []) {
   if (antes.length !== ahora.length) return true;
   const clave = (p) => `${p.id ?? "nuevo"}|${String(p.nombre ?? "").trim()}|${String(p.descripcion ?? "").trim()}|${Number(p.precio) || 0}`;
-  const previos = antes.map(clave).sort();
-  const nuevos = ahora.map(clave).sort();
+  // Se ordenan con localeCompare para que el orden no dependa del idioma del dispositivo
+  // (sort() a secas compara por el código del carácter y Sonar lo marca, regla S2871).
+  const porTexto = (a, b) => a.localeCompare(b);
+  const previos = antes.map(clave).sort(porTexto);
+  const nuevos = ahora.map(clave).sort(porTexto);
   return previos.some((v, i) => v !== nuevos[i]);
 }
 
