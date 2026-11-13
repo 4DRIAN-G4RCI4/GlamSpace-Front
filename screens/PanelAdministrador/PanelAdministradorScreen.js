@@ -247,7 +247,7 @@ export default function PanelAdministradorScreen({ navigation, route }) {
   );
 
   return (
-    <LayoutAdmin seccion={panel.pestana} onElegir={elegirSeccion} nombreSalon={nombreSalon} onCuenta={irACuenta}>
+    <LayoutAdmin seccion={panel.pestana} onElegir={elegirSeccion} nombreSalon={nombreSalon} nombreAdmin={panel.sesion ? panel.sesion.nombre : ""} onCuenta={irACuenta}>
       {contenido}
     </LayoutAdmin>
   );

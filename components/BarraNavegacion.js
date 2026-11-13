@@ -18,7 +18,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Platform, Pressable, Text, View, useWindowDimensions } from "react-native";
 import Marca from "./Marca";
 import { cerrarSesion, obtenerSesionActiva } from "../services/sesionStorage";
-import { accesosPara, claveActiva, esTelefono, inicialesDe } from "./navegacion.logica";
+import BotonRegresar from "./BotonRegresar";
+import { accesosPara, claveActiva, esTelefono, inicialesDe, llevaBotonRegresar, regresoDe } from "./navegacion.logica";
 import { estilos } from "./BarraNavegacion.styles";
 
 const ES_WEB = Platform.OS === "web" && typeof document !== "undefined";
@@ -201,6 +202,12 @@ export default function BarraNavegacion({ navigation, pantalla, migas = [], volv
   return (
     <View ref={barra} style={estilos.barra} role="navigation" aria-label="Principal">
       {fila}
+      {/* Sprint 7: en las pantallas internas, un "← Regresar" bajo la barra. */}
+      {llevaBotonRegresar(pantalla) ? (
+        <View style={estilos.renglonRegresar}>
+          <BotonRegresar navigation={navigation} respaldo={regresoDe(pantalla)} estilo={{ marginBottom: 0 }} />
+        </View>
+      ) : null}
       {migas.length > 0 ? <View style={estilos.renglonMigas}><Migas migas={migas} /></View> : null}
       {telefono && menuAbierto ? (
         <View style={estilos.panel} nativeID="menu-principal">

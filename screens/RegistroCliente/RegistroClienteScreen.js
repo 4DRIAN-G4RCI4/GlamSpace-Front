@@ -11,39 +11,30 @@
  */
 
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-} from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import Campo from "../../components/Campo";
-import Marca from "../../components/Marca";
+import LayoutAcceso from "../../components/LayoutAcceso";
 import useRegistroCliente from "./useRegistroCliente";
 import { estilos } from "./RegistroCliente.styles";
+
+const MARCA =
+  "Encuentra y reserva el salón para tu evento: compara espacios, revisa disponibilidad y envía tu solicitud.";
 
 export default function RegistroClienteScreen({ navigation }) {
   const f = useRegistroCliente();
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView contentContainerStyle={estilos.pagina} keyboardShouldPersistTaps="handled">
-        <Marca />
-
-        <View style={estilos.tarjeta}>
-          <Text style={estilos.titulo}>Crea tu cuenta</Text>
+    <LayoutAcceso navigation={navigation} respaldoRegresar="Login" textoMarca={MARCA}>
+      <View>
+          <Text style={estilos.titulo} accessibilityRole="header">Crea tu cuenta</Text>
           <Text style={estilos.subtitulo}>
             Regístrate para buscar y reservar salones de fiestas en tu zona.
           </Text>
 
           <Campo
             etiqueta="Nombre completo"
+            autoComplete="name"
+            textContentType="name"
             valor={f.nombre}
             onCambiar={f.setNombre}
             placeholder="Ej. Erick Trejo Reséndiz"
@@ -53,6 +44,8 @@ export default function RegistroClienteScreen({ navigation }) {
 
           <Campo
             etiqueta="Correo electrónico"
+            autoComplete="email"
+            textContentType="emailAddress"
             valor={f.correo}
             onCambiar={f.setCorreo}
             placeholder="tucorreo@ejemplo.com"
@@ -63,6 +56,8 @@ export default function RegistroClienteScreen({ navigation }) {
 
           <Campo
             etiqueta="Contraseña"
+            autoComplete="new-password"
+            textContentType="newPassword"
             valor={f.password}
             onCambiar={f.setPassword}
             placeholder="Mínimo 8 caracteres"
@@ -76,6 +71,8 @@ export default function RegistroClienteScreen({ navigation }) {
 
           <Campo
             etiqueta="Confirmar contraseña"
+            autoComplete="new-password"
+            textContentType="newPassword"
             valor={f.password2}
             onCambiar={f.setPassword2}
             placeholder="Repite tu contraseña"
@@ -129,9 +126,7 @@ export default function RegistroClienteScreen({ navigation }) {
               <Text style={estilos.enlaceResaltado}>Regístrate como administrador</Text>
             </Text>
           </TouchableOpacity>
-        </View>
-
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </LayoutAcceso>
   );
 }

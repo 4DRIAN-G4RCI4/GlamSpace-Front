@@ -32,7 +32,6 @@ const ACTIVO_POR_PANTALLA = {
   SolicitudReservacion: "buscar",
   MisSolicitudes: "solicitudes",
   PanelAdministrador: "solicitudes",
-  PublicarSalon: "salon",
   MisSalones: "salon",
   EditarSalon: "salon",
   Perfil: "perfil",
@@ -48,4 +47,51 @@ export function inicialesDe(nombre) {
   const partes = String(nombre || "").trim().split(/\s+/).filter(Boolean);
   if (partes.length === 0) return "?";
   return `${partes[0][0]}${partes.length > 1 ? partes[partes.length - 1][0] : ""}`.toUpperCase();
+}
+
+// ---------- Invitación a ser administrador (Sprint 7) ----------
+
+/**
+ * ¿Se le ofrece al usuario registrar un salón?
+ * Solo a los clientes: quien ya es administrador no la ve, y sin sesión tampoco
+ * (primero inicia sesión o se registra).
+ */
+export function muestraInvitacionAdmin(sesion) {
+  return !!sesion && sesion.tipo_cuenta === "cliente";
+}
+
+export const INVITACION_ADMIN = {
+  titulo: "¿Quieres registrar un salón?",
+  texto: "Conviértete en administrador y publica tu salón para que los clientes lo encuentren y te envíen solicitudes.",
+  boton: "Conviértete en administrador",
+  // El back todavía no puede convertir una cuenta de cliente en administrador (usuarios solo
+  // tiene registro, login y obtener), así que el botón lleva al registro de administrador.
+  destino: "RegistroAdministrador",
+};
+
+// ---------- Botón "Regresar" ----------
+
+// A dónde vuelve cada pantalla interna cuando no hay historial al cual regresar (por ejemplo,
+// si se entró directo por la URL). Nunca al login ni a una pantalla en blanco.
+const REGRESO_POR_PANTALLA = {
+  DetalleSalon: "BusquedaSalones",
+  SolicitudReservacion: "BusquedaSalones",
+  MisSolicitudes: "BusquedaSalones",
+  Perfil: "BusquedaSalones",
+  MisSalones: "PanelAdministrador",
+  EditarSalon: "MisSalones",
+  PanelAdministrador: "BusquedaSalones",
+  RegistroCliente: "Login",
+  RegistroAdministrador: "Login",
+  Login: "BusquedaSalones",
+};
+
+/** Pantalla a la que regresa `pantalla` si no se puede usar el historial del navegador. */
+export function regresoDe(pantalla) {
+  return REGRESO_POR_PANTALLA[pantalla] || "BusquedaSalones";
+}
+
+/** ¿Esta pantalla lleva botón "← Regresar"? La de inicio no lo necesita. */
+export function llevaBotonRegresar(pantalla) {
+  return pantalla !== "BusquedaSalones" && !!REGRESO_POR_PANTALLA[pantalla];
 }

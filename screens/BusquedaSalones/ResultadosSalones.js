@@ -10,6 +10,7 @@ import TarjetaSalon from "../../components/TarjetaSalon";
 import { TarjetaSalonEsqueleto } from "../../components/Esqueleto";
 import { COLORES } from "../../theme/colores";
 import { CORTES } from "../../theme/espaciado";
+import Paginacion from "../../components/Paginacion";
 import { estilos } from "./BusquedaSalones.styles";
 
 function useColumnas() {
@@ -48,7 +49,7 @@ function Estado({ titulo, texto, boton, onBoton }) {
   );
 }
 
-export default function ResultadosSalones({ f, onAbrirSalon }) {
+export default function ResultadosSalones({ f, onAbrirSalon, onPagina }) {
   const columnas = useColumnas();
 
   if (f.cargando) {
@@ -112,6 +113,23 @@ export default function ResultadosSalones({ f, onAbrirSalon }) {
             <Text style={estilos.botonMasTexto}>Cargar más salones</Text>
           )}
         </Pressable>
+      ) : null}
+
+      {/* Paginación de 18 en 18, debajo del botón de cargar más. */}
+      {f.paginacion ? (
+        <Paginacion
+          pagina={f.paginacion.pagina}
+          totalPaginas={f.paginacion.totalPaginas}
+          totalRegistros={f.paginacion.totalRegistros}
+          desde={f.paginacion.desde}
+          hasta={f.paginacion.hasta}
+          hayAnterior={f.paginacion.hayAnterior}
+          haySiguiente={f.paginacion.haySiguiente}
+          onPagina={onPagina}
+          singular="salón"
+          plural="salones"
+          etiqueta="Paginación de salones"
+        />
       ) : null}
     </>
   );

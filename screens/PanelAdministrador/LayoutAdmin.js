@@ -8,6 +8,7 @@ import React from "react";
 import { Image, Pressable, Text, View, useWindowDimensions } from "react-native";
 import { MEDIDA } from "../../theme/disenoPwa";
 import { iniciales } from "./panelAdministrador.logica";
+import { inicialesDe } from "../../components/navegacion.logica";
 import { estilos } from "./PanelAdministrador.styles";
 
 const LOGO = require("../../assets/admin/logo-destello.svg");
@@ -15,10 +16,10 @@ const LOGO = require("../../assets/admin/logo-destello.svg");
 export const SECCIONES = [
   { clave: "solicitudes", texto: "Solicitudes" },
   { clave: "calendario", texto: "Calendario" },
-  { clave: "salon", texto: "Mi salón" },
+  { clave: "salon", texto: "Mis salones" },
 ];
 
-function BarraLateral({ pestana, onElegir, nombreSalon, onCuenta }) {
+function BarraLateral({ pestana, onElegir, nombreSalon, nombreAdmin, onCuenta }) {
   return (
     <View style={estilos.barraLateral}>
       <View style={estilos.marca}>
@@ -56,10 +57,11 @@ function BarraLateral({ pestana, onElegir, nombreSalon, onCuenta }) {
         style={({ hovered, focused }) => [estilos.pieLateral, (hovered || focused) && { opacity: 0.85 }]}
       >
         <View style={estilos.avatar}>
-          <Text style={estilos.avatarTexto}>{iniciales(nombreSalon)}</Text>
+          <Text style={estilos.avatarTexto}>{inicialesDe(nombreAdmin)}</Text>
         </View>
         <View>
-          <Text style={estilos.pieNombre} numberOfLines={1}>{nombreSalon}</Text>
+          {/* El pie identifica a la PERSONA que entró, nunca el título de la pantalla. */}
+          <Text style={estilos.pieNombre} numberOfLines={1}>{nombreAdmin || "Mi cuenta"}</Text>
           <Text style={estilos.pieRol}>Administrador</Text>
         </View>
       </Pressable>
@@ -67,7 +69,7 @@ function BarraLateral({ pestana, onElegir, nombreSalon, onCuenta }) {
   );
 }
 
-function EncabezadoMovil({ pestana, onElegir, nombreSalon, onCuenta }) {
+function EncabezadoMovil({ pestana, onElegir, nombreSalon, nombreAdmin, onCuenta }) {
   return (
     <View>
       <View style={estilos.encabezadoMovil}>
@@ -76,7 +78,7 @@ function EncabezadoMovil({ pestana, onElegir, nombreSalon, onCuenta }) {
           <Text style={estilos.encabezadoRol}>Panel de administrador</Text>
         </View>
         <Pressable onPress={onCuenta} accessibilityRole="button" accessibilityLabel="Ver mi cuenta y cerrar sesión" style={estilos.avatarMovil}>
-          <Text style={estilos.avatarMovilTexto}>{iniciales(nombreSalon)}</Text>
+          <Text style={estilos.avatarMovilTexto}>{inicialesDe(nombreAdmin)}</Text>
         </Pressable>
       </View>
       <View style={estilos.pestanas} accessibilityRole="tablist">
@@ -101,17 +103,17 @@ function EncabezadoMovil({ pestana, onElegir, nombreSalon, onCuenta }) {
 
 
 // Pantalla del administrador con su navegación. `seccion`: "solicitudes" | "calendario" | "salon".
-export default function LayoutAdmin({ seccion, onElegir, nombreSalon, onCuenta, children }) {
+export default function LayoutAdmin({ seccion, onElegir, nombreSalon, nombreAdmin, onCuenta, children }) {
   const { width } = useWindowDimensions();
   const movil = width < MEDIDA.corteEscritorio;
   return movil ? (
     <View style={estilos.pantalla}>
-      <EncabezadoMovil pestana={seccion} onElegir={onElegir} nombreSalon={nombreSalon} onCuenta={onCuenta} />
+      <EncabezadoMovil pestana={seccion} onElegir={onElegir} nombreSalon={nombreSalon} nombreAdmin={nombreAdmin} onCuenta={onCuenta} />
       {children}
     </View>
   ) : (
     <View style={estilos.fila}>
-      <BarraLateral pestana={seccion} onElegir={onElegir} nombreSalon={nombreSalon} onCuenta={onCuenta} />
+      <BarraLateral pestana={seccion} onElegir={onElegir} nombreSalon={nombreSalon} nombreAdmin={nombreAdmin} onCuenta={onCuenta} />
       <View style={{ flex: 1 }}>{children}</View>
     </View>
   );
