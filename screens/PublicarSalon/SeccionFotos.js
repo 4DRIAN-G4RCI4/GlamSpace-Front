@@ -106,7 +106,9 @@ function Mosaico({ foto, numero, nombreSalon, movil, tamano, enLinea, puedeReint
   );
 }
 
-export default function SeccionFotos({ fotos: s, nombreNuevo, movil }) {
+// `conSelectorDeSalon`: en "Mi salón" se elige de qué salón son las fotos. En "Editar salón"
+// no hace falta (ya se sabe cuál se está editando), así que se oculta.
+export default function SeccionFotos({ fotos: s, nombreNuevo, movil, conSelectorDeSalon = true }) {
   const [anchoRejilla, setAnchoRejilla] = useState(0);
   const tamano = tamanoMosaico(anchoRejilla);
   const salonActual = s.salones.find((x) => x.id === s.salonId);
@@ -145,7 +147,7 @@ export default function SeccionFotos({ fotos: s, nombreNuevo, movil }) {
 
       <BannerSinConexion enLinea={s.enLinea} accion="Para subir o eliminar fotos necesitas conexión." />
 
-      {s.salones.length > 0 ? (
+      {conSelectorDeSalon && s.salones.length > 0 ? (
         <ScrollView
           horizontal={movil}
           scrollEnabled={movil}

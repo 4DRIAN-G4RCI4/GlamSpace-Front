@@ -3,7 +3,9 @@
  * Funciones puras: sin React, sin red.
  */
 
-const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Cada tramo del dominio excluye el punto: así el motor no tiene que probar varias
+// particiones de la misma cadena (evita el retroceso super-lineal que marca Sonar S8786).
+const REGEX_CORREO = /^[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+$/;
 const REGEX_URL = /^https?:\/\/[^\s/$.?#][^\s]*$/i;
 
 export const LONGITUD_MIN_PASSWORD = 8;
@@ -19,5 +21,5 @@ export function esUrlValida(url) {
 // Acepta "1500", "1,500", "$1,500.50". La coma se toma como separador de miles.
 export function aNumero(valor) {
   const limpio = String(valor).replace(/[$\s,]/g, "");
-  return limpio === "" ? NaN : Number(limpio);
+  return limpio === "" ? Number.NaN : Number(limpio);
 }

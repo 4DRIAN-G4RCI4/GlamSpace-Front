@@ -23,12 +23,14 @@ test("cliente: Buscar salones, Mis solicitudes y Mi perfil", () => {
   assert.strictEqual(a[1].texto, "Mis solicitudes");
 });
 
-test("administrador: Buscar salones, Solicitudes (panel), Mi salón y Mi perfil", () => {
+test("administrador: Buscar salones, Solicitudes (panel), Mis salones y Mi perfil", () => {
   const a = accesosPara({ id: 7, tipo_cuenta: "administrador" });
   assert.deepStrictEqual(claves(a), ["buscar", "solicitudes", "salon", "perfil"]);
   assert.strictEqual(a[1].destino, "PanelAdministrador");
   assert.deepStrictEqual(a[1].params, { pestana: "solicitudes" });
-  assert.strictEqual(a[2].destino, "PublicarSalon");
+  // "Mi salón" pasó a ser "Mis salones": abre la lista de todos los salones del admin.
+  assert.strictEqual(a[2].destino, "MisSalones");
+  assert.strictEqual(a[2].texto, "Mis salones");
 });
 
 test("acceso activo según la pantalla (aria-current)", () => {
@@ -38,6 +40,8 @@ test("acceso activo según la pantalla (aria-current)", () => {
   assert.strictEqual(claveActiva("MisSolicitudes"), "solicitudes");
   assert.strictEqual(claveActiva("PanelAdministrador"), "solicitudes");
   assert.strictEqual(claveActiva("PublicarSalon"), "salon");
+  assert.strictEqual(claveActiva("MisSalones"), "salon");
+  assert.strictEqual(claveActiva("EditarSalon"), "salon");
   assert.strictEqual(claveActiva("Perfil"), "perfil");
   assert.strictEqual(claveActiva("Login"), null);
 });
