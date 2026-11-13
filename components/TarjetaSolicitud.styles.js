@@ -41,5 +41,8 @@ export const estilos = StyleSheet.create(conFuentes({
     alignItems: "center",
   },
   accionFoco: { borderColor: COLORES.morado },
+  // "Ver detalle →" (Figma Cliente 06): enlace en vino, 44 px de alto para el dedo.
+  verDetalle: { alignSelf: "flex-start", minHeight: 44, justifyContent: "center", borderWidth: 1, borderColor: "transparent", borderRadius: 8, paddingHorizontal: 4, marginTop: 4 },
+  verDetalleTexto: { fontSize: 13, fontWeight: "700", color: COLORES.morado },
   accionTexto: { fontSize: 13, fontWeight: "700", color: COLORES.morado },
 }, ["salon"]));

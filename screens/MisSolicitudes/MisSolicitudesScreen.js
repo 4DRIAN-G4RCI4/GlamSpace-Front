@@ -7,43 +7,23 @@
  *   - MisSolicitudesScreen.js   → pantalla (JSX)   [este archivo]
  *   - MisSolicitudes.styles.js  → estilos
  *   - useMisSolicitudes.js      → lógica / estado
+ *
+ * Ajuste de usabilidad: barra superior fija (components/BarraNavegacion) y el detalle de cada
+ * solicitud con su salón (components/DetalleSolicitud, el mismo del panel, sin acciones de admin).
+ * El detalle se abre con la ruta { solicitudId }, así Atrás del navegador regresa a la lista.
  */
 
 import React from "react";
-import { View, Text, Pressable, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, Pressable, ScrollView, ActivityIndicator, useWindowDimensions } from "react-native";
 import TarjetaSolicitud from "../../components/TarjetaSolicitud";
+import BarraNavegacion from "../../components/BarraNavegacion";
+import DetalleSolicitud from "../../components/DetalleSolicitud";
+import useSalonDeSolicitud from "../../components/useSalonDeSolicitud";
 import { Bloque } from "../../components/Esqueleto";
 import { COLORES } from "../../theme/colores";
 import { ESPACIO } from "../../theme/espaciado";
 import useMisSolicitudes from "./useMisSolicitudes";
 import { estilos } from "./MisSolicitudes.styles";
-
-function BarraSuperior({ onVolver, onRecargar, puedeRecargar }) {
-  return (
-    <View style={estilos.barraSuperior}>
-      <View style={estilos.barraContenido}>
-        <Pressable
-          onPress={onVolver}
-          accessibilityRole="button"
-          accessibilityLabel="Volver a la búsqueda"
-          style={({ hovered, focused }) => [estilos.botonBarra, (hovered || focused) && estilos.botonBarraFoco]}
-        >
-          <Text style={estilos.botonBarraTexto}>← Buscar salones</Text>
-        </Pressable>
-        {puedeRecargar ? (
-          <Pressable
-            onPress={onRecargar}
-            accessibilityRole="button"
-            accessibilityLabel="Actualizar la lista"
-            style={({ hovered, focused }) => [estilos.botonBarra, (hovered || focused) && estilos.botonBarraFoco]}
-          >
-            <Text style={estilos.botonBarraTexto}>↻ Actualizar</Text>
-          </Pressable>
-        ) : null}
-      </View>
-    </View>
-  );
-}
 
 function ListaEsqueleto() {
   return (
@@ -69,9 +49,13 @@ function Aviso({ titulo, texto, boton, onPress }) {
   );
 }
 
-export default function MisSolicitudesScreen({ navigation }) {
+export default function MisSolicitudesScreen({ navigation, route }) {
   const f = useMisSolicitudes();
   const ir = (nombre, p) => navigation && navigation.navigate(nombre, p);
+  const { width } = useWindowDimensions();
+  const solicitudId = (route && route.params && route.params.solicitudId) || null;
+  const abierta = solicitudId ? f.solicitudes.find((x) => x.id === solicitudId) || null : null;
+  const salonDeSolicitud = useSalonDeSolicitud(f.sesion && f.sesion.id, abierta && abierta.salonId);
 
   let contenido;
   if (f.cargandoSesion) {
@@ -105,6 +89,7 @@ export default function MisSolicitudesScreen({ navigation }) {
           <View key={s.id}>
             <TarjetaSolicitud
               solicitud={s}
+              onVerDetalle={() => ir("MisSolicitudes", { solicitudId: s.id })}
               accion={{
                 texto: "Actualizar estado",
                 etiqueta: `Actualizar el estado de la solicitud en ${s.nombreSalon}`,
@@ -138,16 +123,59 @@ export default function MisSolicitudesScreen({ navigation }) {
     );
   }
 
-  return (
-    <ScrollView contentContainerStyle={estilos.pantalla}>
-      <BarraSuperior onVolver={() => ir("BusquedaSalones")} onRecargar={f.recargar} puedeRecargar={f.esCliente} />
-      <View style={estilos.contenido}>
-        <Text style={estilos.titulo} accessibilityRole="header">
-          Mis solicitudes
-        </Text>
-        <Text style={estilos.subtitulo}>Consulta si cada salón confirmó o rechazó tu solicitud.</Text>
-        {contenido}
+  // Detalle de una solicitud (con su salón), en lugar de la lista.
+  if (solicitudId && f.esCliente) {
+    let detalle;
+    if (abierta) {
+      detalle = (
+        <DetalleSolicitud
+          solicitud={abierta}
+          salon={salonDeSolicitud}
+          esAdmin={false}
+          ancho={Math.min(width, 1080) - 32}
+          onVolver={() => ir("MisSolicitudes")}
+          onVerSalon={() => ir("DetalleSalon", { salonId: abierta.salonId })}
+        />
+      );
+    } else if (f.cargando || f.cargandoSesion) {
+      detalle = <ListaEsqueleto />;
+    } else {
+      detalle = <Aviso titulo="No encontramos esa solicitud" texto="Regresa a tu lista de solicitudes." boton="Ver mis solicitudes" onPress={() => ir("MisSolicitudes")} />;
+    }
+    return (
+      <View style={estilos.raiz}>
+        <BarraNavegacion navigation={navigation} pantalla="MisSolicitudes" />
+        <ScrollView style={estilos.raiz} contentContainerStyle={estilos.pantalla}>
+          <View style={estilos.contenidoDetalle}>{detalle}</View>
+        </ScrollView>
       </View>
-    </ScrollView>
+    );
+  }
+
+  return (
+    <View style={estilos.raiz}>
+      <BarraNavegacion navigation={navigation} pantalla="MisSolicitudes" volverA={{ nombre: "MisSolicitudes", params: {} }} />
+      <ScrollView style={estilos.raiz} contentContainerStyle={estilos.pantalla}>
+        <View style={estilos.contenido}>
+          <View style={estilos.encabezadoLista}>
+            <Text style={estilos.titulo} accessibilityRole="header">
+              Mis solicitudes
+            </Text>
+            {f.esCliente ? (
+              <Pressable
+                onPress={f.recargar}
+                accessibilityRole="button"
+                accessibilityLabel="Actualizar la lista"
+                style={({ hovered, focused }) => [estilos.botonBarra, (hovered || focused) && estilos.botonBarraFoco]}
+              >
+                <Text style={estilos.botonBarraTexto}>↻ Actualizar</Text>
+              </Pressable>
+            ) : null}
+          </View>
+          <Text style={estilos.subtitulo}>Consulta si cada salón confirmó o rechazó tu solicitud.</Text>
+          {contenido}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
