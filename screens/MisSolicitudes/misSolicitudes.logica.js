@@ -47,6 +47,9 @@ export function listaDeMisSolicitudes(solicitudes, estado = "todas", orden = "re
 export function tarjetaDeSolicitud(solicitud) {
   const s = solicitud || {};
   return {
+    // Se conserva todo lo que mandó la API (tipoEvento, comentarios, teléfono…) y encima se
+    // normaliza lo que la tarjeta necesita sí o sí.
+    ...s,
     id: s.id,
     salonId: s.salonId,
     nombreSalon: s.nombreSalon || "Salón",

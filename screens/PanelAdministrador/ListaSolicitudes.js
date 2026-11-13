@@ -88,7 +88,9 @@ export default function ListaSolicitudes({ solicitudes, movil, anchoContenido, o
   }
   // Dos columnas desde tableta; en teléfono queda una sola (petición del Sprint 7).
   const dosColumnas = anchoContenido >= 700;
-  const anchoTarjeta = dosColumnas ? (anchoContenido - 14) / 2 : "100%";
+  // En porcentaje, no en píxeles: así no depende de medir el contenedor (con el ancho
+  // calculado, 2 tarjetas + el gap se pasaban por unos píxeles y caían en filas distintas).
+  const anchoTarjeta = dosColumnas ? "calc(50% - 7px)" : "100%";
   const Grupo = movil ? ScrollView : View;
   const propsGrupo = movil
     ? { horizontal: true, showsHorizontalScrollIndicator: false, contentContainerStyle: estilos.grupoMovil }

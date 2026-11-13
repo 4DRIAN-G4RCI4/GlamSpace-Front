@@ -84,6 +84,16 @@ test("tarjetaDeSolicitud arma lo que pinta la tarjeta", () => {
   assert.strictEqual(t.numeroInvitados, 100);
 });
 
+// La tarjeta también pinta el tipo de evento, el teléfono y los comentarios: no se pueden
+// perder al normalizar (si se pierden, en pantalla sale "undefined").
+test("tarjetaDeSolicitud conserva los demás campos que manda la API", () => {
+  const api = { ...SOLICITUDES[0], tipoEvento: "XV años", telefonoContacto: "7731234567", comentarios: "Con jardín" };
+  const t = tarjetaDeSolicitud(api);
+  assert.strictEqual(t.tipoEvento, "XV años");
+  assert.strictEqual(t.telefonoContacto, "7731234567");
+  assert.strictEqual(t.comentarios, "Con jardín");
+});
+
 // El endpoint todavía no manda la foto: la tarjeta debe aguantar su ausencia sin romperse
 // y sin pedir el salón de cada solicitud (eso sería una llamada por tarjeta).
 test("sin foto del back, la tarjeta deja fotoPrincipal en null (pinta el marcador)", () => {
