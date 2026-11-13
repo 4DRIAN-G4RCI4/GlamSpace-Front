@@ -68,6 +68,12 @@ export function listarSalonesDeAdminConRespaldo(adminId) {
   return conRespaldoLocal(llaveCache(adminId, "salones"), () => listarSalonesDeAdmin(adminId));
 }
 
+// Detalle de un salón (fotos, descripción, zona, capacidad) para el detalle de una solicitud.
+// Se guarda por usuario y salón; sin conexión regresa lo último guardado.
+export function obtenerSalonConRespaldo(usuarioId, salonId) {
+  return conRespaldoLocal(llaveCache(usuarioId, "salon", salonId), () => obtenerSalon(salonId));
+}
+
 export function obtenerDisponibilidadConRespaldo(adminId, salonId, anio, mes) {
   return conRespaldoLocal(llaveCache(adminId, "disponibilidad", salonId, `${anio}-${mes}`), () =>
     obtenerDisponibilidad(salonId, anio, mes),

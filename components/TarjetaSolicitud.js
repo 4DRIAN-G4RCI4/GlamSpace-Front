@@ -1,7 +1,8 @@
 /**
  * Resumen de una solicitud de reservación con su estado (HU-16): salón, fecha,
  * tipo de evento, invitados y paquete. Lo usan la confirmación del envío y
- * "Mis solicitudes". Solo presentación; `accion` es un botón opcional al pie.
+ * "Mis solicitudes". Solo presentación; `accion` es un botón opcional al pie y `onVerDetalle`
+ * agrega el enlace "Ver detalle →" (Figma Cliente 06).
  */
 
 import React from "react";
@@ -34,7 +35,7 @@ function Dato({ etiqueta, valor }) {
   );
 }
 
-export default function TarjetaSolicitud({ solicitud, accion }) {
+export default function TarjetaSolicitud({ solicitud, accion, onVerDetalle }) {
   const info = ESTADOS[solicitud.estado];
   return (
     <View style={estilos.tarjeta}>
@@ -51,6 +52,16 @@ export default function TarjetaSolicitud({ solicitud, accion }) {
       <Dato etiqueta="Paquete" valor={solicitud.nombrePaquete || "Sin paquete"} />
       {solicitud.telefonoContacto ? <Dato etiqueta="Teléfono" valor={solicitud.telefonoContacto} /> : null}
 
+      {onVerDetalle ? (
+        <Pressable
+          onPress={onVerDetalle}
+          accessibilityRole="link"
+          accessibilityLabel={`Ver detalle de la solicitud en ${solicitud.nombreSalon}`}
+          style={({ hovered, focused }) => [estilos.verDetalle, (hovered || focused) && estilos.accionFoco]}
+        >
+          <Text style={estilos.verDetalleTexto}>Ver detalle →</Text>
+        </Pressable>
+      ) : null}
       {accion ? (
         <Pressable
           onPress={accion.onPress}

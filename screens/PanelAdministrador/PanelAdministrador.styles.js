@@ -258,6 +258,12 @@ export const estilos = StyleSheet.create({
   },
   avisoTexto: { ...texto(13, "600", PWA.confirmadaTexto), flex: 1 },
   avisoCerrar: texto(13, "700", PWA.confirmadaTexto),
+  // Acciones en el detalle de una solicitud (Figma Admin 03): dos botones a lo ancho, 44 px o más.
+  accionesDetalle: { flexDirection: "row", gap: 12 },
+  botonDetalle: { flex: 1, height: undefined, minHeight: 44 },
+  focoVisible: { outlineStyle: "solid", outlineWidth: 2, outlineColor: PWA.oscuro, outlineOffset: 2 },
+  atendida: { ...texto(13, "400", PWA.textoSecundario), lineHeight: 19 },
+
   // HU-22 · Modo sin conexión: fondo y borde de "pendiente" con texto oscuro (contraste AA).
   sinConexion: {
     flexDirection: "row",

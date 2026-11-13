@@ -6,7 +6,7 @@
  * Las fechas son texto "yyyy-MM-dd", así que se comparan directo.
  */
 
-import { formatearFechaCorta } from "../../utils/fechas";
+import { formatearFechaCorta, formatearFechaHora } from "../../utils/fechas.js";
 
 // Criterio 1: pendientes ordenadas por fecha del evento (las más próximas primero).
 export function solicitudesPendientes(solicitudes) {
@@ -72,3 +72,47 @@ export function iniciales(nombre) {
 }
 
 export const ETIQUETA_ESTADO = { pendiente: "Pendiente", confirmada: "Confirmada", rechazada: "Rechazada" };
+
+// ---------- Lista de solicitudes con filtros (ajuste de usabilidad, HU-19) ----------
+
+export const FILTROS_ESTADO = [
+  { clave: "todas", texto: "Todas" },
+  { clave: "pendiente", texto: "Pendientes" },
+  { clave: "confirmada", texto: "Confirmadas" },
+  { clave: "rechazada", texto: "Rechazadas" },
+];
+
+export const ORDENES = [
+  { clave: "proximas", texto: "Fecha del evento" },
+  { clave: "recientes", texto: "Más recientes" },
+];
+
+// Cuántas hay de cada estado (para los chips del filtro).
+export function contarPorEstado(solicitudes) {
+  const conteo = { todas: solicitudes.length, pendiente: 0, confirmada: 0, rechazada: 0 };
+  for (const s of solicitudes) if (conteo[s.estado] !== undefined) conteo[s.estado] += 1;
+  return conteo;
+}
+
+// Filtra por estado ("todas" no filtra) y ordena: "proximas" por fecha del evento (la más
+// próxima primero) o "recientes" por fecha en que llegó la solicitud (la más nueva primero).
+export function listaDeSolicitudes(solicitudes, estado = "todas", orden = "proximas") {
+  const filtradas = estado === "todas" ? [...solicitudes] : solicitudes.filter((s) => s.estado === estado);
+  return orden === "recientes"
+    ? filtradas.sort((a, b) => String(b.fechaCreacion).localeCompare(String(a.fechaCreacion)) || b.id - a.id)
+    : filtradas.sort((a, b) => a.fechaEvento.localeCompare(b.fechaEvento) || a.id - b.id);
+}
+
+// Muestra la lista por partes ("Ver más") para no pintar cientos de tarjetas de golpe.
+export function paginaVisible(lista, paginas, porPagina = 10) {
+  return { visibles: lista.slice(0, paginas * porPagina), hayMas: lista.length > paginas * porPagina };
+}
+
+// La API guarda FechaCreacion en UTC; si viene sin zona se trata como UTC. → "12 nov 2026, 09:05" (hora local)
+export function fechaDeCreacion(texto) {
+  if (!texto) return "";
+  // Ya trae zona si TERMINA en "Z" o en un desfase como "-06:00" / "+0000".
+  const conZona = /(?:[zZ]|[+-]\d{2}:?\d{2})$/.test(texto) ? texto : `${texto}Z`;
+  const fecha = new Date(conZona);
+  return Number.isNaN(fecha.getTime()) ? "" : formatearFechaHora(fecha);
+}

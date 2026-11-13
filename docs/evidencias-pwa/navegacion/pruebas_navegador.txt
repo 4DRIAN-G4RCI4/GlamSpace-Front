@@ -1,0 +1,22 @@
+Navegación, Perfil y solicitudes · pruebas en navegador real (Chrome) contra la API LOCAL (LocalDB). Nunca producción.
+Datos de prueba en LocalDB marcados E2E-NAV (16 solicitudes y 3 fotos en el salón 2), borrados al final.
+
+PASA  · Escritorio: landmark de navegación con Buscar salones (activo) y Mis solicitudes; avatar; sin hamburguesa — <nav> · GLAMSPACES, Buscar salones [actual], Mis solicitudes
+PASA  · La barra queda fija arriba al hacer scroll — top 0px
+PASA  · Foco visible en los enlaces de la barra — solid 2px
+PASA  · Teléfono 390px: hamburguesa de 44 px (sin enlaces en la barra), panel con los mismos accesos, opciones ≥ 44 px, actual marcado, foco en la primera y Esc cierra — botón 44x44 · enlaces en la barra 0 · Buscar salones, Mis solicitudes, Mi perfil, Cerrar sesión · altos 48/48/48/48 · actual Mis solicitudes · foco "Buscar salones" · aria-expanded true · Esc cierra true
+PASA  · Teléfono 320px: hamburguesa de 44 px (sin enlaces en la barra), panel con los mismos accesos, opciones ≥ 44 px, actual marcado, foco en la primera y Esc cierra — botón 44x44 · enlaces en la barra 0 · Buscar salones, Mis solicitudes, Mi perfil, Cerrar sesión · altos 48/48/48/48 · actual Mis solicitudes · foco "Buscar salones" · aria-expanded true · Esc cierra true
+PASA  · Sin scroll horizontal (5 pantallas × 6 tamaños) — ninguna
+PASA  · Perfil escritorio: identidad a la izquierda, Mi cuenta y Accesos lado a lado; sin barra inferior ni hamburguesa — {"columnas":true,"ladoALado":true,"inferior":false,"hamburguesa":false,"titulo":false}
+PASA  · Perfil teléfono: una columna y la barra inferior con objetivos ≥ 44 px — altos 48/48/48
+PASA  · Lista: filtros por estado con conteo (inicia en Pendientes), 'Ver más' de 10 en 10 y filtro Confirmadas — Todas (16)=false · Pendientes (7)=true · Confirmadas (4)=false · Rechazadas (5)=false · Fecha del evento=true · Más recientes=false · pendientes 7 · todas 10→16
+PASA  · Detalle admin: evento, comentarios, datos del cliente, salón con galería y acciones — Solicitud #1082 · fotos 3/3
+PASA  · Foto del salón que da 404 → placeholder de la maqueta — miniaturas: 3
+PASA  · Sin conexión: aviso de HU-22 y Aceptar/Rechazar deshabilitados — {"aviso":true,"deshabilitado":"true"}
+PASA  · Aceptar pide confirmación, avisa y el detalle queda como confirmada — {"aviso":true,"estado":true}
+PASA  · Atrás del navegador regresa a la lista y 'Ver salón' abre el detalle del salón — lista: true · después: DetalleSalon
+PASA  · Cliente: mismo detalle sin acciones ni datos de admin, con su teléfono y la galería del salón — {"sinAdmin":true,"telefono":true,"salon":true,"fotos":4}
+PASA  · Menú de usuario con Mi perfil y Cerrar sesión; cerrar sesión borra la sesión y la caché — María López García · Cliente · Mi perfil · Cerrar sesión · {"sesion":null,"pantalla":"Login","cache":0}
+
+Errores de JavaScript: ninguno
+Resultado: 16 de 16 pasan
