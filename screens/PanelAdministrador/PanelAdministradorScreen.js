@@ -147,6 +147,14 @@ export default function PanelAdministradorScreen({ navigation, route }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.pestana]);
 
+  // Un enlace directo (o recargar) al detalle trae el salón de la solicitud: el panel se cambia a ese salón.
+  useEffect(() => {
+    if (params.salonId && panel.salon && panel.salon.id !== params.salonId && panel.salones.some((x) => x.id === params.salonId)) {
+      panel.elegirSalon(params.salonId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.salonId, panel.salon && panel.salon.id, panel.salones.length]);
+
   if (panel.cargandoSesion) return <View style={estilos.pantalla} />;
   if (!panel.esAdministrador) return <SinAcceso navigation={navigation} haySesion={!!panel.sesion} />;
 
@@ -159,7 +167,8 @@ export default function PanelAdministradorScreen({ navigation, route }) {
     }
     if (navigation) navigation.navigate("PanelAdministrador", { pestana: clave });
   };
-  const abrirSolicitud = (id) => navigation && navigation.navigate("PanelAdministrador", { pestana: "solicitudes", solicitudId: id });
+  const abrirSolicitud = (id) =>
+    navigation && navigation.navigate("PanelAdministrador", { pestana: "solicitudes", solicitudId: id, salonId: panel.salon && panel.salon.id });
   const volverALista = () => navigation && navigation.navigate("PanelAdministrador", { pestana: "solicitudes" });
 
   let cuerpo;
