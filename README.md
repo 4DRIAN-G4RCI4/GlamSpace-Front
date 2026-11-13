@@ -495,6 +495,7 @@ porcentaje:
 | `**/*.styles.js` y `theme/**` | Hojas de estilo y tokens del diseño: no tienen lógica. |
 | `**/use*.js` | Hooks de React: estado y efectos. La lógica que contenían vive en los `*.logica.js`, que sí se miden. |
 | `scripts/sw.base.js` | Cuerpo del service worker: corre en el navegador, con `caches` y `fetch`. Su estrategia (`scripts/swEstrategia.js`) sí se prueba. |
+| `scripts/cobertura.js` | Utilería de build: es el script que *genera* el reporte de cobertura; medirlo sería medirse a sí mismo. La lógica de build que sí se prueba está en `posexport.js` y `swEstrategia.js`. |
 
 Estas capas **sí se verifican**, pero con pruebas en el navegador real (Chrome contra la API local,
 incluidas axe WCAG AA y los cortes de 1440/1024/768/390/320 px): la evidencia de cada trabajo está en
