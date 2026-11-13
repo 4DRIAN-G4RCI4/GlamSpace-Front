@@ -441,6 +441,21 @@ cada validación y sus límites, armado del envío y mapeo de errores. De punta 
 API **local** con LocalDB (66 comprobaciones, incluidas axe WCAG AA y 1440/1024/768/390/320 px y
 horizontal sin scroll horizontal). Detalle en `docs/evidencias-pwa/Galeria-reserva.md`.
 
+### Navegación, Perfil y solicitudes (ajuste de usabilidad, HU-19 / navegación)
+
+No es una HU nueva: es un ajuste de usabilidad y de fidelidad al diseño (Figma PROYECTO--PWA, Cliente 01/02/06 y Admin 02/03).
+
+- **Barra superior fija** (`components/BarraNavegacion.js`, reemplaza a `EncabezadoCliente`). Accesos por rol (`components/navegacion.logica.js`), acceso activo con `aria-current`, landmark `<nav>` y menú de usuario con Cerrar sesión.
+  - Desde 768 px los enlaces se ven en la barra.
+  - En el teléfono hay menú hamburguesa (44 px) con los mismos accesos.
+  - El panel del admin conserva su barra lateral y sus pestañas de la maqueta.
+- **Perfil:** dos columnas en escritorio; una columna con la barra inferior en el teléfono.
+- **Solicitudes del admin:**
+  - Lista con filtros por estado, orden y "Ver más".
+  - Detalle (`components/DetalleSolicitud.js`) con el salón (galería, descripción y "Ver salón") y Aceptar/Rechazar con confirmación.
+  - "Mis solicitudes" del cliente usa el mismo detalle sin acciones.
+- **Evidencias:** `docs/evidencias-pwa/navegacion/Navegacion-Perfil-Solicitudes.md`, con capturas antes y después y la lista de desviaciones.
+
 ## Pendiente
 
 - **Mi salón** (HU-19) abre por ahora la pantalla de Publicar salón; falta una pantalla para editar el salón (las fotos de un
