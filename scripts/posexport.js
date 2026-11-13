@@ -64,4 +64,4 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { listaDePrecache, versionDeCache, armarServiceWorker };
+module.exports = { listarArchivos, listaDePrecache, versionDeCache, armarServiceWorker };

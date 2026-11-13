@@ -14,8 +14,8 @@
  */
 
 import React from "react";
-import { View, Text, Pressable, ScrollView, useWindowDimensions } from "react-native";
-import Marca from "../../components/Marca";
+import { View, Text, ScrollView } from "react-native";
+import BarraNavegacion from "../../components/BarraNavegacion";
 import BarraBusqueda from "./BarraBusqueda";
 import FiltrosChips from "./FiltrosChips";
 import ResultadosSalones from "./ResultadosSalones";
@@ -24,35 +24,13 @@ import { estilos } from "./BusquedaSalones.styles";
 
 export default function BusquedaSalonesScreen({ navigation }) {
   const f = useBusquedaSalones();
-  const angosta = useWindowDimensions().width < 520; // en móvil solo cabe "Mi cuenta"
   const ir =(pantalla, params) => navigation && navigation.navigate(pantalla, params);
 
   return (
-    <ScrollView contentContainerStyle={estilos.pantalla} keyboardShouldPersistTaps="handled">
-      {/* Barra superior (Figma Cliente 02): marca a la izquierda, cuenta y registro a la derecha */}
-      <View style={estilos.navbar}>
-        <View style={estilos.navbarContenido}>
-          <Marca compacta />
-          <View style={estilos.navbarAcciones}>
-            <Pressable
-              style={({ hovered, focused }) => [estilos.botonCuenta, (hovered || focused) && estilos.foco]}
-              onPress={() => ir("Perfil")}
-              accessibilityRole="button"
-            >
-              <Text style={estilos.botonCuentaTexto}>Mi cuenta</Text>
-            </Pressable>
-            {angosta ? null : (
-              <Pressable
-                style={({ hovered, focused }) => [estilos.botonRegistro, (hovered || focused) && { opacity: 0.85 }]}
-                onPress={() => ir("RegistroAdministrador")}
-                accessibilityRole="button"
-              >
-                <Text style={estilos.botonRegistroTexto}>Registra tu salón</Text>
-              </Pressable>
-            )}
-          </View>
-        </View>
-      </View>
+    <View style={estilos.raiz}>
+    {/* Barra superior fija (Figma Cliente 02/06): fuera del ScrollView para que no se pierda */}
+    <BarraNavegacion navigation={navigation} pantalla="BusquedaSalones" />
+    <ScrollView style={estilos.raiz} contentContainerStyle={estilos.pantalla} keyboardShouldPersistTaps="handled">
 
       <View style={estilos.franjaContenido}>
         <Text style={estilos.tituloInicio} accessibilityRole="header">
@@ -68,5 +46,6 @@ export default function BusquedaSalonesScreen({ navigation }) {
       </View>
 
     </ScrollView>
+    </View>
   );
 }

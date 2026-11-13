@@ -1,43 +1,21 @@
 /**
  * GlamSpaces · Estilos de la pantalla Perfil.
  * Mismo lenguaje del diseño Figma "PROYECTO--PWA" (pantallas móviles del cliente y panel del
- * administrador): encabezado blanco con título en Playfair, tarjetas blancas con borde Pearl Bush,
- * acentos vino, menú lateral oscuro y barra de navegación inferior (Buscar · Solicitudes · Perfil).
+ * administrador): tarjeta oscura de la cuenta, tarjetas blancas con borde Pearl Bush y acentos vino.
+ * Escritorio: dos columnas (identidad · Mi cuenta y Accesos). Teléfono: una columna y la barra
+ * inferior Buscar · Solicitudes · Perfil (Figma Cliente 06 móvil). La barra superior es la compartida.
  */
 
 import { StyleSheet } from "react-native";
+import { ANCHO_MAXIMO } from "../../theme/espaciado";
 import { FUENTE, MEDIDA, PWA } from "../../theme/disenoPwa";
 
 const texto = (tamano, peso = "400", color = PWA.texto) => ({ fontFamily: FUENTE.texto, fontSize: tamano, fontWeight: peso, color });
 const titulo = (tamano, peso = "700", color = PWA.texto) => ({ fontFamily: FUENTE.titulo, fontSize: tamano, fontWeight: peso, color });
 
-export const ANCHO_MENU = 280;
 
 export const estilos = StyleSheet.create({
   container: { flex: 1, backgroundColor: PWA.fondo },
-
-  // ---------- Encabezado ----------
-  encabezado: {
-    backgroundColor: PWA.superficie,
-    borderBottomWidth: 0.8,
-    borderBottomColor: PWA.borde,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 14,
-  },
-  botonMenu: {
-    width: 38,
-    height: 38,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 4,
-  },
-  botonMenuFoco: { backgroundColor: PWA.fondo },
-  rayaMenu: { width: 18, height: 2, borderRadius: 1, backgroundColor: PWA.oscuro },
-  tituloPantalla: titulo(19),
 
   // ---------- Contenido ----------
   cuerpo: { flex: 1 },
@@ -49,6 +27,17 @@ export const estilos = StyleSheet.create({
     paddingVertical: 22,
     gap: 22,
   },
+  // Tablet y escritorio: aprovecha el ancho (el mismo de la barra superior).
+  contenidoAncho: { maxWidth: ANCHO_MAXIMO, paddingHorizontal: 16, paddingVertical: 32 }, // alineado con la barra superior
+  columnas: { flexDirection: "row", alignItems: "flex-start", gap: 24 },
+  columnaIdentidad: { width: 340, gap: 16 },
+  columnaSecciones: { flex: 1, minWidth: 0 },
+  apilado: { gap: 22 },
+  rejillaSecciones: { gap: 22 },
+  rejillaDos: { flexDirection: "row", alignItems: "flex-start", gap: 20 },
+  mitad: { flex: 1, minWidth: 0 },
+  saludo: titulo(24),
+  saludoTexto: texto(13.5, "400", PWA.textoSecundario),
 
   // Tarjeta de la cuenta (oscura, como la barra lateral del panel)
   tarjetaCuenta: {
@@ -99,6 +88,7 @@ export const estilos = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 15,
+    minHeight: 52,
     gap: 12,
   },
   filaSeparador: { borderTopWidth: 0.8, borderTopColor: PWA.borde },
@@ -150,46 +140,6 @@ export const estilos = StyleSheet.create({
   sinSesionTitulo: titulo(17),
   sinSesionTexto: { ...texto(13, "400", PWA.textoSecundario), textAlign: "center", marginBottom: 6 },
 
-  // ---------- Menú lateral deslizante ----------
-  fondoMenu: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    backgroundColor: "rgba(43,31,36,0.45)",
-    zIndex: 9,
-  },
-  menu: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    width: ANCHO_MENU,
-    backgroundColor: PWA.oscuro,
-    paddingHorizontal: 20,
-    paddingVertical: 28,
-    zIndex: 10,
-  },
-  marca: { flexDirection: "row", alignItems: "center", gap: 10, paddingBottom: 32 },
-  marcaIcono: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: PWA.vino,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  marcaTexto: { ...titulo(14, "400", PWA.crema), letterSpacing: 2 },
-  menuLista: { flex: 1, gap: 4 },
-  menuItem: { paddingHorizontal: 14, paddingVertical: 13, borderRadius: 10 },
-  menuItemActivo: { backgroundColor: PWA.vino },
-  menuItemFoco: { backgroundColor: "rgba(255,255,255,0.06)" },
-  menuTexto: texto(14, "400", PWA.navInactivo),
-  menuTextoActivo: texto(14, "600", PWA.fondo),
-  menuPie: { borderTopWidth: 0.8, borderTopColor: PWA.bordeOscuro, paddingTop: 16 },
-  menuSalir: texto(14, "600", "#e6a3ae"), // Stiletto aclarado para leerse sobre el fondo oscuro
-
   // ---------- Barra de navegación inferior ----------
   barraInferior: {
     height: 66,
@@ -206,7 +156,7 @@ export const estilos = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
   },
-  pestana: { alignItems: "center", gap: 3, paddingHorizontal: 16, paddingVertical: 6 },
-  pestanaTexto: texto(9.8, "400", PWA.textoTenue),
-  pestanaTextoActiva: texto(9.8, "600", PWA.vino),
+  pestana: { alignItems: "center", justifyContent: "center", gap: 3, paddingHorizontal: 16, minHeight: 48, minWidth: 64 },
+  pestanaTexto: texto(11, "400", PWA.textoSecundario),
+  pestanaTextoActiva: texto(11, "600", PWA.vino),
 });

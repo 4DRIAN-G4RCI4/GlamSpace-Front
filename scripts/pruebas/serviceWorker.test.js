@@ -2,7 +2,10 @@
 const test = require("node:test");
 const assert = require("node:assert");
 const { estrategiaPara } = require("../swEstrategia");
-const { listaDePrecache, versionDeCache, armarServiceWorker } = require("../posexport");
+const { listarArchivos, listaDePrecache, versionDeCache, armarServiceWorker } = require("../posexport");
+const fs = require("node:fs");
+const os = require("node:os");
+const path = require("node:path");
 
 const SITIO = "https://glamspaces.example";
 const get = (url, extra = {}) => ({ metodo: "GET", url, modo: "cors", destino: "", ...extra });
@@ -63,4 +66,45 @@ test("el sw.js generado es JavaScript válido y trae versión y precache", () =>
   assert.match(codigo, /var VERSION = "abc123";/);
   assert.match(codigo, /"\/index.html"/);
   assert.match(codigo, /function estrategiaPara/);
+});
+
+test("listarArchivos recorre las subcarpetas y usa / en las rutas", () => {
+  // Carpeta temporal con la forma de dist: archivos en la raíz y en subcarpetas.
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), "glamspaces-dist-"));
+  try {
+    fs.mkdirSync(path.join(base, "_expo", "static", "js"), { recursive: true });
+    fs.mkdirSync(path.join(base, "icons"));
+    fs.writeFileSync(path.join(base, "index.html"), "<html></html>");
+    fs.writeFileSync(path.join(base, "_expo", "static", "js", "AppEntry-abc123.js"), "x");
+    fs.writeFileSync(path.join(base, "icons", "icon-192.png"), "y");
+
+    const rutas = listarArchivos(base).sort();
+    assert.deepStrictEqual(rutas, [
+      "_expo/static/js/AppEntry-abc123.js",
+      "icons/icon-192.png",
+      "index.html",
+    ]);
+    // Siempre con "/", nunca con el separador de Windows.
+    for (const r of rutas) assert.ok(!r.includes("\\\\"), r);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+test("listarArchivos de una carpeta vacía regresa lista vacía", () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), "glamspaces-vacio-"));
+  try {
+    assert.deepStrictEqual(listarArchivos(base), []);
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+});
+
+// Mejora de HU-07/HU-08 · El campo de ubicación consulta dos APIs externas: el service worker
+// NO debe cachearlas ni servir respuestas viejas (una colonia o un CP cambian de contexto).
+test("las APIs de ubicación nunca se cachean", () => {
+  const zippopotam = get("https://api.zippopotam.us/mx/42800", { destino: "" });
+  const nominatim = get("https://nominatim.openstreetmap.org/search?format=jsonv2&q=Tula", { destino: "" });
+  assert.strictEqual(estrategiaPara(zippopotam, SITIO), null);
+  assert.strictEqual(estrategiaPara(nominatim, SITIO), null);
 });

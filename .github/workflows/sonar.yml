@@ -1,0 +1,34 @@
+name: SonarQube Cloud
+
+on:
+  push:
+    branches: [ develop, release, main ]
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  sonar:
+    name: Análisis con cobertura
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth 0: Sonar necesita el historial para fechar el código nuevo.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Node 22: el medidor de cobertura de `node --test` necesita 22 o más.
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Instalar dependencias
+        run: npm ci --ignore-scripts
+
+      - name: Pruebas con cobertura
+        run: npm run test:cobertura
+
+      - name: Análisis de SonarQube Cloud
+        uses: SonarSource/sonarqube-scan-action@e805d875275f728fac1885b413934be6d7c63f65 # v8.4.1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "build:web": "expo export -p web && node scripts/posexport.js",
-    "test": "node --test \"scripts/pruebas/*.test.*\""
+    "test": "node --import ./scripts/pruebas/resolverExpo.mjs --test \"scripts/pruebas/*.test.*\"",
+    "test:cobertura": "node scripts/cobertura.js"
   },
   "dependencies": {
     "expo": "~51.0.0",

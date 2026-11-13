@@ -17,7 +17,7 @@
 
 import React from "react";
 import { View, Text, Pressable, ScrollView, ActivityIndicator, KeyboardAvoidingView, Platform } from "react-native";
-import EncabezadoCliente from "../../components/EncabezadoCliente";
+import BarraNavegacion from "../../components/BarraNavegacion";
 import TarjetaSolicitud from "../../components/TarjetaSolicitud";
 import { COLORES } from "../../theme/colores";
 import useSolicitudReservacion from "./useSolicitudReservacion";
@@ -95,12 +95,13 @@ export default function SolicitudReservacionScreen({ navigation, route }) {
 
   return (
     <KeyboardAvoidingView style={estilos.raiz} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <ScrollView style={estilos.raiz} contentContainerStyle={estilos.pantalla} keyboardShouldPersistTaps="handled">
-        <EncabezadoCliente
+      <BarraNavegacion
           navigation={navigation}
+          pantalla="SolicitudReservacion"
           migas={migas}
           volverA={{ nombre: "SolicitudReservacion", params: { salonId: f.salonId, paso: f.paso === "enviada" ? "elegir" : f.paso, borrador: { fecha: f.fecha, paqueteId: f.paqueteId, invitados: f.invitados, tipoEvento: f.tipoEvento, telefono: f.telefono, comentarios: f.comentarios } } }}
         />
+      <ScrollView style={estilos.raiz} contentContainerStyle={estilos.pantalla} keyboardShouldPersistTaps="handled">
         <View style={estilos.contenido}>{contenido}</View>
       </ScrollView>
     </KeyboardAvoidingView>

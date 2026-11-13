@@ -20,11 +20,14 @@ import { armarFormularioFoto } from "./fotos.logica";
 const RUTAS = {
   crearSalon: "/salones/crear",
   actualizarSalon: "/salones/actualizar",
+  eliminarSalon: "/salones/eliminar",
   obtenerSalon: "/salones/obtener",
   buscarSalones: "/salones/buscar",
   disponibilidad: "/salones/disponibilidad",
   listarSalones: "/salones/listar",
   crearPaquete: "/paquetes/crear",
+  actualizarPaquete: "/paquetes/actualizar",
+  eliminarPaquete: "/paquetes/eliminar",
   subirFoto: "/salones/subirFoto",
   eliminarFoto: "/salones/eliminarFoto",
 };
@@ -55,8 +58,10 @@ export function obtenerDisponibilidad(salonId, anio, mes) {
   return postJson(RUTAS.disponibilidad, { salonId, anio, mes });
 }
 
-// HU-19 · Salones del administrador (publicados o no) para su panel.
-// → [{ id, nombre, zona, capacidad, estado, totalPaquetes }]
+// HU-19 · Salones del administrador (publicados o no) para su panel y para "Mis salones".
+// → [{ id, nombre, zona, capacidad, estado, totalPaquetes, fotoPrincipal, totalFotos }]
+//   fotoPrincipal (string|null) y totalFotos (int) los agrega el back de "Mis salones"; mientras
+//   no esté desplegado llegan como undefined y la ficha pinta el marcador de posición.
 export async function listarSalonesDeAdmin(adminId) {
   const r = await postPaginado(RUTAS.listarSalones, { adminId, pagina: 1, tamanoPagina: 100 });
   return r.datos;
@@ -66,6 +71,12 @@ export async function listarSalonesDeAdmin(adminId) {
 // (por admin, salón y mes) y sin red regresan lo último guardado → { datos, desactualizado, guardadoEn }.
 export function listarSalonesDeAdminConRespaldo(adminId) {
   return conRespaldoLocal(llaveCache(adminId, "salones"), () => listarSalonesDeAdmin(adminId));
+}
+
+// Detalle de un salón (fotos, descripción, zona, capacidad) para el detalle de una solicitud.
+// Se guarda por usuario y salón; sin conexión regresa lo último guardado.
+export function obtenerSalonConRespaldo(usuarioId, salonId) {
+  return conRespaldoLocal(llaveCache(usuarioId, "salon", salonId), () => obtenerSalon(salonId));
 }
 
 export function obtenerDisponibilidadConRespaldo(adminId, salonId, anio, mes) {
@@ -121,4 +132,47 @@ export function subirFoto(adminId, salonId, archivo, onProgreso) {
 // → { fotoId, url } de la foto eliminada. Para fotos viejas con URL externa, la API solo borra el registro.
 export function eliminarFoto(adminId, salonId, fotoId) {
   return postJson(RUTAS.eliminarFoto, { salonId, fotoId, adminId });
+}
+
+// ---------- Mejora de HU-07/HU-08: gestión de "Mis salones" ----------
+// Mientras no hay JWT, el adminId (el `id` de la sesión) va en el cuerpo, igual que en el resto.
+
+// Guarda los cambios del salón. "actualizar" REEMPLAZA todo: siempre se mandan todos los campos
+// (si no, se borran). `estado` decide si queda publicado o en borrador.
+// → el salón completo. 2001 no existe · 2002 no es el dueño · 2003 publicar sin paquetes.
+export function actualizarSalon(salonId, salon) {
+  return postJson(RUTAS.actualizarSalon, {
+    id: salonId,
+    ...armarSalon(salon),
+    estado: salon.estado,
+  });
+}
+
+// Elimina el salón con sus paquetes y sus fotos.
+// → codigo 0. Errores: 2001 no existe · 2002 no es el dueño ·
+//   2010 tiene solicitudes pendientes o confirmadas (NO se elimina) · 5000 error interno.
+export function eliminarSalon(adminId, salonId) {
+  return postJson(RUTAS.eliminarSalon, { id: salonId, adminId });
+}
+
+// → { id, salonId, nombrePaquete, descripcion, precio }
+export function actualizarPaquete(adminId, paquete) {
+  return postJson(RUTAS.actualizarPaquete, {
+    id: paquete.id,
+    adminId,
+    nombrePaquete: paquete.nombre,
+    descripcion: paquete.descripcion,
+    precio: paquete.precio,
+  });
+}
+
+// → el paquete eliminado. 3001 no existe · 3002 es el último de un salón publicado.
+export function eliminarPaquete(adminId, paqueteId) {
+  return postJson(RUTAS.eliminarPaquete, { id: paqueteId, adminId });
+}
+
+// Detalle del salón para la pantalla de editar: trae nombre, zona, capacidad, descripción,
+// estado, paquetes y fotos (fotosDetalle con su id para poder eliminarlas).
+export function obtenerSalonParaEditar(salonId) {
+  return obtenerSalon(salonId);
 }
