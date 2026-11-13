@@ -20,7 +20,7 @@
 
 import React, { useRef, useState } from "react";
 import { View, Text, Pressable, ScrollView, useWindowDimensions } from "react-native";
-import EncabezadoCliente from "../../components/EncabezadoCliente";
+import BarraNavegacion from "../../components/BarraNavegacion";
 import { Bloque } from "../../components/Esqueleto";
 import { formatearPrecio } from "../../utils/formato";
 import { MEDIDA } from "../../theme/disenoPwa";
@@ -192,8 +192,8 @@ export default function DetalleSalonScreen({ navigation, route }) {
 
   return (
     <View style={estilos.raiz}>
+      <BarraNavegacion navigation={navigation} pantalla="DetalleSalon" migas={migas} volverA={{ nombre: "DetalleSalon", params: { salonId } }} />
       <ScrollView ref={scroll} style={estilos.raiz} contentContainerStyle={estilos.pantalla}>
-        <EncabezadoCliente navigation={navigation} migas={migas} volverA={{ nombre: "DetalleSalon", params: { salonId } }} />
         <View
           style={[estilos.contenido, escritorio && estilos.contenidoEscritorio]}
           onLayout={(e) => {

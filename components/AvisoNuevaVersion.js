@@ -9,7 +9,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { FUENTE, MEDIDA, PWA } from "../theme/disenoPwa";
 
 function useServiceWorker() {
@@ -48,10 +48,12 @@ function useServiceWorker() {
 
 export default function AvisoNuevaVersion() {
   const hayVersionNueva = useServiceWorker();
+  const { width } = useWindowDimensions();
   if (!hayVersionNueva) return null;
 
+  // En el teléfono hay barras fijas abajo (Perfil y la reserva del detalle): el aviso va encima de ellas.
   return (
-    <View style={estilos.contenedor} pointerEvents="box-none">
+    <View style={[estilos.contenedor, width < 768 && estilos.contenedorTelefono]} pointerEvents="box-none">
       <View style={estilos.aviso} role="status" aria-live="polite">
         <Text style={estilos.texto}>Hay una versión nueva disponible</Text>
         <Pressable
@@ -70,6 +72,7 @@ export default function AvisoNuevaVersion() {
 const estilos = StyleSheet.create({
   // Flota abajo, sobre el contenido; #root ya respeta las áreas seguras del teléfono.
   contenedor: { position: "absolute", left: 16, right: 16, bottom: 16, alignItems: "center" },
+  contenedorTelefono: { bottom: 96 },
   aviso: {
     width: "100%",
     maxWidth: 560,
