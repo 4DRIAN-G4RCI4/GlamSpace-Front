@@ -143,8 +143,9 @@ test("sin sesión no se muestra la invitación", () => {
   assert.strictEqual(muestraInvitacionAdmin({}), false);
 });
 
-test("la invitación lleva al registro de administrador (el back no convierte cuentas)", () => {
-  assert.strictEqual(INVITACION_ADMIN.destino, "RegistroAdministrador");
+// El botón ya no manda al registro: convierte la cuenta y luego lleva a publicar el salón.
+test("tras convertirse, la invitación lleva a Mis salones", () => {
+  assert.strictEqual(INVITACION_ADMIN.destino, "MisSalones");
   assert.match(INVITACION_ADMIN.titulo, /registrar un salón/i);
   assert.match(INVITACION_ADMIN.boton, /administrador/i);
 });

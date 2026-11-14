@@ -65,7 +65,9 @@ y "Mostrando 1–10 de 25 solicitudes".
 > la solicitud se perdían campos de la API. Ahora conserva todo (`tipoEvento`, teléfono,
 > comentarios) y muestra "XV años · 55 invitados". Queda fijado con una prueba.
 
-Capturas: `mis-solicitudes-1440.png`, `-1024.png`, `-390.png`, `-320.png`.
+Capturas: `mis-solicitudes-1440.png`, `-1024.png`, `-390.png`, `-320.png` y
+`mis-solicitudes-con-foto-1440.png` (una tarjeta con la foto real del salón y el resto con el
+marcador). El diálogo de conversión: `convertir-admin-dialogo-1440.png`.
 
 ## 5 · "Cargar más" y paginación en las listas de salones
 
@@ -143,9 +145,14 @@ Captura: `mis-salones-sin-conexion-1440.png`.
    string o null, en `listar` y en `listarPorSalon`), así que la tarjeta la usa directo: una sola
    llamada trae todo y **no** se pide el salón de cada solicitud (nada de N+1). Si el salón no
    tiene fotos, o la URL falla, se sigue pintando el marcador.
-2. **Convertir una cuenta de cliente en administrador: pendiente de conectar.** El back ya publicó
-   `POST /api/usuarios/convertirAAdministrador`, pero el front **todavía no lo usa**: la invitación
-   sigue llevando al registro de administrador. Queda para una ronda siguiente.
+2. **Convertir una cuenta de cliente en administrador: ya conectado.** El botón de la invitación
+   abre un diálogo donde el cliente confirma con su contraseña y se llama a
+   `POST /api/usuarios/convertirAAdministrador { usuarioId, contrasena }`. Probado de punta a
+   punta contra la API local: contraseña vacía (se marca el campo), contraseña incorrecta
+   (1003, se muestra el mensaje de la API y el diálogo sigue abierto) y conversión correcta
+   (la cuenta queda como `administrador` en la base conservando su correo, la sesión se actualiza
+   y la app lleva a "Mis salones"). Después la invitación ya no aparece.
+   El diálogo es accesible: `aria-modal`, foco atrapado y Escape para cerrar.
 
 ## Desviaciones y lo que no se probó
 

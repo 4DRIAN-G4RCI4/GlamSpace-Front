@@ -547,8 +547,12 @@ Ajustes de usabilidad sobre lo ya existente, a partir de capturas de producción
   lateral y Perfil) van a **"Mis salones"**. El pie del menú lateral muestra el **nombre del
   administrador** y "Administrador", nunca el título de la pantalla.
 - **Invitación a ser administrador** (`components/InvitacionAdmin.js`): tarjeta en Buscar salones
-  y en el Perfil, **solo para cuentas de cliente**. El botón lleva al registro de administrador
-  porque el front todavía no usa el endpoint que lo hace (ver "Pendiente").
+  y en el Perfil, **solo para cuentas de cliente**. El botón abre un diálogo donde el cliente
+  confirma con su contraseña y su cuenta pasa a administrador
+  (`POST /api/usuarios/convertirAAdministrador`): conserva el correo, la contraseña y sus
+  solicitudes, y al terminar se va a "Mis salones" para publicar el primero. Las reglas y los
+  mensajes de error (1003 contraseña incorrecta, 1005 no existe, 1006 ya es administrador) están
+  en `services/convertirAdmin.logica.js`, probado.
 - **Pantallas de acceso con un solo diseño.** `components/LayoutAcceso.js` saca el diseño de dos
   paneles del login (panel vino con la marca + formulario) y lo usan también los dos registros,
   que conservaban un diseño viejo. En el login, "← Ver salones sin iniciar sesión" pasó de enlace
@@ -609,8 +613,5 @@ incluidas axe WCAG AA y los cortes de 1440/1024/768/390/320 px): la evidencia de
 
 ## Pendiente
 
-- **Convertir una cuenta de cliente en administrador:** el back ya publicó
-  `POST /api/usuarios/convertirAAdministrador`, pero el front todavía no lo usa: la tarjeta de
-  invitación (`components/InvitacionAdmin.js`) sigue llevando al registro de administrador.
 - **`fotosPreview` en producción:** el carrusel ya lo usa; mientras el back no lo publique, las tarjetas
   muestran solo la foto principal.
