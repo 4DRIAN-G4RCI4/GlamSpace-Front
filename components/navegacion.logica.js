@@ -64,9 +64,9 @@ export const INVITACION_ADMIN = {
   titulo: "¿Quieres registrar un salón?",
   texto: "Conviértete en administrador y publica tu salón para que los clientes lo encuentren y te envíen solicitudes.",
   boton: "Conviértete en administrador",
-  // El back todavía no puede convertir una cuenta de cliente en administrador (usuarios solo
-  // tiene registro, login y obtener), así que el botón lleva al registro de administrador.
-  destino: "RegistroAdministrador",
+  // El botón abre el diálogo que convierte la cuenta (POST /api/usuarios/convertirAAdministrador).
+  // `destino` es a dónde se va DESPUÉS de convertirse, para publicar el primer salón.
+  destino: "MisSalones",
 };
 
 // ---------- Botón "Regresar" ----------

@@ -16,13 +16,8 @@ export async function registrarUsuario({ nombre, correo, password, tipoCuenta, n
   });
 }
 
-// POST /api/usuarios/login  → devuelve la sesión con los nombres que usa la app
-export async function iniciarSesion(correo, password) {
-  const usuario = await postJson("/usuarios/login", {
-    correo: correo.trim(),
-    password,
-  });
-
+// La API contesta siempre con la misma forma (UsuarioResponse); aquí se traduce a la sesión.
+function aSesion(usuario) {
   return {
     id: usuario.id,
     nombre: usuario.nombreCompleto,
@@ -30,4 +25,18 @@ export async function iniciarSesion(correo, password) {
     tipo_cuenta: usuario.tipoCuenta,
     nombre_salon: usuario.nombreSalon || null,
   };
+}
+
+// POST /api/usuarios/login  → devuelve la sesión con los nombres que usa la app
+export async function iniciarSesion(correo, password) {
+  return aSesion(await postJson("/usuarios/login", { correo: correo.trim(), password }));
+}
+
+// POST /api/usuarios/convertirAAdministrador  { usuarioId, contrasena }
+// Convierte una cuenta de cliente en administrador: mismo correo, contraseña e historial.
+// Pide la contraseña porque todavía no hay JWT (la cuenta la confirma quien la está usando).
+// → la sesión ya con tipo_cuenta "administrador".
+// Errores: 1005 la cuenta no existe · 1003 contraseña incorrecta · 1006 ya es administrador.
+export async function convertirAAdministrador(usuarioId, contrasena) {
+  return aSesion(await postJson("/usuarios/convertirAAdministrador", { usuarioId, contrasena }));
 }
