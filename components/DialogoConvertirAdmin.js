@@ -9,8 +9,8 @@
  * role="dialog", aria-modal, foco atrapado, Escape para cerrar y el foco vuelve a donde estaba.
  */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Modal, Platform, Pressable, Text, View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, Modal, Pressable, Text, View } from "react-native";
 import Campo from "./Campo";
 import { COLORES } from "../theme/colores";
 import { convertirAAdministrador } from "../services/usuariosApi";
@@ -21,9 +21,8 @@ import {
   validarConversion,
   yaEraAdministrador,
 } from "../services/convertirAdmin.logica";
+import useDialogoModal from "./useDialogoModal";
 import { estilos } from "./DialogoConfirmacion.styles";
-
-const ES_WEB = Platform.OS === "web" && typeof document !== "undefined";
 
 export default function DialogoConvertirAdmin({ visible, sesion, onCerrar, onConvertida }) {
   const [contrasena, setContrasena] = useState("");
@@ -31,68 +30,22 @@ export default function DialogoConvertirAdmin({ visible, sesion, onCerrar, onCon
   const [mensaje, setMensaje] = useState(null);
   const [enviando, setEnviando] = useState(false);
 
-  const tarjeta = useRef(null);
-  const focoPrevio = useRef(null);
 
   const cerrar = useCallback(() => {
     if (!enviando && onCerrar) onCerrar();
   }, [enviando, onCerrar]);
 
-  // Al abrir se limpia lo anterior y el foco entra al campo; al cerrar, vuelve a donde estaba.
+  // Al abrir se limpia lo que quedó de la vez anterior.
   useEffect(() => {
-    if (!visible) return undefined;
+    if (!visible) return;
     setContrasena("");
     setErrores({});
     setMensaje(null);
-
-    if (!ES_WEB) return undefined;
-    focoPrevio.current = document.activeElement;
-    const t = setTimeout(() => {
-      // El primer enfocable del diálogo es el campo de la contraseña.
-      const entrada = tarjeta.current && tarjeta.current.querySelector && tarjeta.current.querySelector("input");
-      if (entrada && entrada.focus) entrada.focus();
-    }, 0);
-    return () => {
-      clearTimeout(t);
-      const volverA = focoPrevio.current;
-      if (volverA && volverA.focus) volverA.focus();
-    };
   }, [visible]);
 
-  // Escape cierra; Tab y Shift+Tab no salen del diálogo.
-  useEffect(() => {
-    if (!ES_WEB || !visible) return undefined;
-    const alTeclear = (e) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        cerrar();
-        return;
-      }
-      if (e.key !== "Tab") return;
-      const caja = tarjeta.current;
-      if (!caja || !caja.querySelectorAll) return;
-      const ROLES = ["button", "link", "textbox", "checkbox"];
-      const enfocables = [...caja.querySelectorAll("button, input, textarea, [role], [tabindex]:not([tabindex='-1'])")]
-        .filter((el) => {
-          if (el.disabled || el.getAttribute("aria-hidden") === "true") return false;
-          const etiqueta = el.tagName.toLowerCase();
-          if (["button", "input", "textarea", "a"].includes(etiqueta)) return true;
-          return ROLES.includes(el.getAttribute("role"));
-        });
-      if (enfocables.length === 0) return;
-      const primero = enfocables[0];
-      const ultimo = enfocables[enfocables.length - 1];
-      if (e.shiftKey && document.activeElement === primero) {
-        e.preventDefault();
-        ultimo.focus();
-      } else if (!e.shiftKey && document.activeElement === ultimo) {
-        e.preventDefault();
-        primero.focus();
-      }
-    };
-    document.addEventListener("keydown", alTeclear, true);
-    return () => document.removeEventListener("keydown", alTeclear, true);
-  }, [visible, cerrar]);
+  // Foco atrapado, Escape y regreso del foco (compartido con DialogoConfirmacion).
+  // `enfocarPrimero`: aquí el foco entra al campo de la contraseña.
+  const { tarjeta } = useDialogoModal({ visible, alCerrar: cerrar, enfocarPrimero: true });
 
   async function convertir() {
     const erroresForm = validarConversion({ contrasena });
