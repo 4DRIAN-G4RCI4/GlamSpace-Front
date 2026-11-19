@@ -11,7 +11,7 @@ ficha, objetivo, criterios de aceptación, entorno, qué se hizo, resultados, ev
 | HU-25 | Corrección de errores encontrados | Terminada | [HU-25.md](HU-25.md) |
 | HU-26 | Despliegue de la PWA en un ambiente accesible | Terminada | [HU-26.md](HU-26.md) |
 | HU-27 | Pruebas de instalación en dispositivo real | Pendiente (la corre el equipo con un teléfono) | [HU-27.md](HU-27.md) |
-| HU-28 | Ajustes finales de UX y rendimiento | Terminada en código · medición final después del deploy | [HU-28.md](HU-28.md) |
+| HU-28 | Ajustes finales de UX y rendimiento | Terminada · LCP 8.1 → 5.8 s | [HU-28.md](HU-28.md) |
 
 Resumen técnico en un solo archivo: [Cierre-HU23-a-HU28.md](Cierre-HU23-a-HU28.md).
 
