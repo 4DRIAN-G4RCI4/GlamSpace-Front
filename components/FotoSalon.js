@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { COLORES } from "../theme/colores";
 
-export default function FotoSalon({ uri, nombre, style, tamanoInicial = 48 }) {
+export default function FotoSalon({ uri, nombre, style, tamanoInicial = 48, resizeMode = "cover" }) {
   const [fallo, setFallo] = useState(false);
 
   // Si cambia la foto (otro salón), se vuelve a intentar.
@@ -23,7 +23,7 @@ export default function FotoSalon({ uri, nombre, style, tamanoInicial = 48 }) {
     );
   }
 
-  return <Image source={{ uri }} style={style} resizeMode="cover" onError={() => setFallo(true)} />;
+  return <Image source={{ uri }} style={style} resizeMode={resizeMode} onError={() => setFallo(true)} />;
 }
 
 const estilos = StyleSheet.create({

@@ -52,6 +52,9 @@ export const estilos = {
     },
     galeriaFlechaIzq: { left: ESPACIO.md },
     galeriaFlechaDer: { right: ESPACIO.md },
+    // HU-28 · botón de pantalla completa: mismo círculo que las flechas, arriba a la derecha.
+    galeriaCompleta: { top: ESPACIO.md, right: ESPACIO.md, marginTop: 0 },
+    galeriaCompletaTexto: { fontSize: 22, lineHeight: 24, fontWeight: "700", color: PWA.vino },
     galeriaFlechaFoco: { borderColor: PWA.vino, borderWidth: 2 },
     galeriaFlechaTexto: { fontSize: 24, lineHeight: 26, fontWeight: "700", color: PWA.vino },
     galeriaContador: {

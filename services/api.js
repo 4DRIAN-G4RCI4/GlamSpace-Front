@@ -10,6 +10,8 @@
  * Todos los endpoints son POST.
  */
 
+import { conReintento } from "./reintento.logica";
+
 export const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export class ApiError extends Error {
@@ -23,7 +25,12 @@ export class ApiError extends Error {
 }
 
 // Regresa la respuesta COMPLETA de la API ({ codigo, mensaje, datos, ... }).
-async function enviar(ruta, cuerpo) {
+// Las lecturas se reintentan una vez si la API (recién despertada) falla con red o 5xx.
+function enviar(ruta, cuerpo) {
+  return conReintento(ruta, () => enviarUnaVez(ruta, cuerpo));
+}
+
+async function enviarUnaVez(ruta, cuerpo) {
   if (!API_URL) {
     throw new ApiError("config");
   }

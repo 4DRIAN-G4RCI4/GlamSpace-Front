@@ -6,9 +6,10 @@
  * Sin fotos: el espacio de la maqueta con la inicial del salón.
  */
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { View, Text, Pressable, PanResponder } from "react-native";
 import FotoSalon from "../../components/FotoSalon";
+import FotoPantallaCompleta from "./FotoPantallaCompleta";
 import { MINIATURAS_GALERIA, moverIndice, pasoPorDeslizamiento, resumenMiniaturas } from "../../components/carrusel.logica";
 import { estilos } from "./DetalleSalon.styles";
 
@@ -28,6 +29,7 @@ function Flecha({ texto, etiqueta, onPress, lado }) {
 export default function GaleriaDetalle({ fotos, activa, onElegir, nombre }) {
   const total = fotos.length;
   const { visibles, extra } = resumenMiniaturas(total);
+  const [completa, setCompleta] = useState(false);
 
   // Deslizar con el dedo sobre la foto grande cambia de foto (solo gestos horizontales).
   const deslizar = useMemo(
@@ -46,6 +48,17 @@ export default function GaleriaDetalle({ fotos, activa, onElegir, nombre }) {
     <View>
       <View style={estilos.galeriaPrincipal} {...(total > 1 ? deslizar.panHandlers : {})}>
         <FotoSalon uri={fotos[activa]} nombre={nombre} style={estilos.fotoGrande} tamanoInicial={72} />
+        {total > 0 ? (
+          <Pressable
+            onPress={() => setCompleta(true)}
+            accessibilityRole="button"
+            accessibilityLabel="Ver foto en pantalla completa"
+            hitSlop={6}
+            style={({ hovered, focused }) => [estilos.galeriaFlecha, estilos.galeriaCompleta, (hovered || focused) && estilos.galeriaFlechaFoco]}
+          >
+            <Text style={estilos.galeriaCompletaTexto}>⤢</Text>
+          </Pressable>
+        ) : null}
         {total > 1 ? (
           <>
             <Flecha texto="‹" etiqueta="Foto anterior" onPress={() => onElegir(moverIndice(activa, total, -1))} lado={estilos.galeriaFlechaIzq} />
@@ -85,6 +98,17 @@ export default function GaleriaDetalle({ fotos, activa, onElegir, nombre }) {
             );
           })}
         </View>
+      ) : null}
+
+      {total > 0 ? (
+        <FotoPantallaCompleta
+          visible={completa}
+          fotos={fotos}
+          activa={activa}
+          onElegir={onElegir}
+          onCerrar={() => setCompleta(false)}
+          nombre={nombre}
+        />
       ) : null}
     </View>
   );
