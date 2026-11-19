@@ -589,6 +589,15 @@ porque Metro la agrega sola. Node con módulos ES sí la exige, así que las pru
 [`scripts/pruebas/resolverExpo.mjs`](scripts/pruebas/resolverExpo.mjs), que resuelve esas rutas igual que
 Metro. **El código de la app no se modificó para poder probarlo.**
 
+Los clientes HTTP (`services/api.js` y los `*Api.js`), la sesión y la caché local se prueban en
+[`servicios.test.mjs`](scripts/pruebas/servicios.test.mjs) con un `fetch`, un `XMLHttpRequest` y un
+`localStorage` falsos: nunca se llama a la API real. Para eso el resolutor cambia
+`@react-native-async-storage/async-storage` por un puente de prueba
+([`asyncStorageWeb.mjs`](scripts/pruebas/asyncStorageWeb.mjs)), porque Node importa ese paquete
+como CommonJS y su `default` llega envuelto.
+
+**Resultado (Sprint 9):** 299 pruebas en verde y **100 % de líneas y de condiciones** en el código medido.
+
 ### Qué se mide y qué no (`sonar.coverage.exclusions`)
 
 Se mide **toda la lógica de negocio**: `*.validaciones.js`, `*.logica.js`, `services/` y `utils/`.
@@ -604,6 +613,7 @@ porcentaje:
 | `components/*.js` y `screens/**/*Screen.js` y los componentes de pantalla | Componentes de React Native Web: solo pintan lo que el hook les entrega. |
 | `**/*.styles.js` y `theme/**` | Hojas de estilo y tokens del diseño: no tienen lógica. |
 | `**/use*.js` | Hooks de React: estado y efectos. La lógica que contenían vive en los `*.logica.js`, que sí se miden. |
+| `screens/MisSalones/CampoUbicacion.js` | Componente del campo de ubicación: solo pinta. Su lógica (`ubicacion.logica.js` y `ubicacionApi.js`) sí se mide. |
 | `scripts/sw.base.js` | Cuerpo del service worker: corre en el navegador, con `caches` y `fetch`. Su estrategia (`scripts/swEstrategia.js`) sí se prueba. |
 | `scripts/cobertura.js` | Utilería de build: es el script que *genera* el reporte de cobertura; medirlo sería medirse a sí mismo. La lógica de build que sí se prueba está en `posexport.js` y `swEstrategia.js`. |
 
