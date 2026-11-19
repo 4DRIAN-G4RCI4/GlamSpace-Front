@@ -20,6 +20,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  Pressable,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -117,15 +118,19 @@ export default function LoginScreen({ navigation, route }) {
         </Text>
       </TouchableOpacity>
       {/* Botón secundario (no un enlace): mismo ancho que el principal, con borde vino. */}
-      <TouchableOpacity
+      {/* HU-28: con el puntero encima (o al presionarlo) se rellena de vino y el texto queda blanco. */}
+      <Pressable
         onPress={() => navigation && navigation.navigate("BusquedaSalones")}
         accessibilityRole="button"
         accessibilityLabel="Ver salones sin iniciar sesión"
-        style={estilos.botonSecundario}
-        activeOpacity={0.85}
+        style={({ hovered, pressed }) => [estilos.botonSecundario, (hovered || pressed) && estilos.botonSecundarioActivo]}
       >
-        <Text style={estilos.botonSecundarioTexto}>← Ver salones sin iniciar sesión</Text>
-      </TouchableOpacity>
+        {({ hovered, pressed }) => (
+          <Text style={[estilos.botonSecundarioTexto, (hovered || pressed) && estilos.botonSecundarioTextoActivo]}>
+            ← Ver salones sin iniciar sesión
+          </Text>
+        )}
+      </Pressable>
     </View>
   );
 
