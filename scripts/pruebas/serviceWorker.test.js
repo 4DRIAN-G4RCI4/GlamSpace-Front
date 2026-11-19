@@ -2,7 +2,7 @@
 const test = require("node:test");
 const assert = require("node:assert");
 const { estrategiaPara } = require("../swEstrategia");
-const { listarArchivos, listaDePrecache, versionDeCache, armarServiceWorker } = require("../posexport");
+const { listarArchivos, listaDePrecache, versionDeCache, armarServiceWorker, main } = require("../posexport");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
@@ -107,4 +107,27 @@ test("las APIs de ubicación nunca se cachean", () => {
   const nominatim = get("https://nominatim.openstreetmap.org/search?format=jsonv2&q=Tula", { destino: "" });
   assert.strictEqual(estrategiaPara(zippopotam, SITIO), null);
   assert.strictEqual(estrategiaPara(nominatim, SITIO), null);
+});
+
+test("main genera sw.js en la carpeta del build con la precaché y la versión", (t) => {
+  const dist = fs.mkdtempSync(path.join(os.tmpdir(), "gs-dist-"));
+  fs.writeFileSync(path.join(dist, "index.html"), "<html></html>");
+  fs.mkdirSync(path.join(dist, "_expo"));
+  fs.writeFileSync(path.join(dist, "_expo", "app-abc.js"), "1");
+  t.mock.method(console, "log", () => {});
+  main(dist);
+  const sw = fs.readFileSync(path.join(dist, "sw.js"), "utf8");
+  assert.match(sw, /var PRECACHE = \[\n {2}"\/",\n {2}"\/_expo\/app-abc\.js"\n\];/);
+  assert.match(sw, /var VERSION = "[0-9a-f]{12}";/);
+  fs.rmSync(dist, { recursive: true, force: true });
+});
+
+test("main sin dist/index.html avisa y termina con código 1", (t) => {
+  const dist = fs.mkdtempSync(path.join(os.tmpdir(), "gs-vacio-"));
+  const salida = t.mock.method(process, "exit", () => {});
+  t.mock.method(console, "error", () => {});
+  main(dist);
+  assert.deepStrictEqual(salida.mock.calls[0].arguments, [1]);
+  assert.strictEqual(fs.existsSync(path.join(dist, "sw.js")), false);
+  fs.rmSync(dist, { recursive: true, force: true });
 });

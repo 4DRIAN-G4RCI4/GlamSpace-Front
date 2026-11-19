@@ -4,14 +4,14 @@ Documentos fuente para generar los reportes de estas historias de usuario. Cada 
 ficha, objetivo, criterios de aceptación, entorno, qué se hizo, resultados, evidencia, defectos, pendientes y
 **datos clave para el reporte** (números listos para citar).
 
-| HU | Título | Estado | Archivo |
-|---|---|---|---|
-| HU-23 | Pruebas del flujo completo del cliente | Terminada · 36/36 | [HU-23.md](HU-23.md) |
-| HU-24 | Pruebas del flujo completo del administrador | Terminada · 32/32 | [HU-24.md](HU-24.md) |
-| HU-25 | Corrección de errores encontrados | Terminada | [HU-25.md](HU-25.md) |
-| HU-26 | Despliegue de la PWA en un ambiente accesible | Terminada | [HU-26.md](HU-26.md) |
-| HU-27 | Pruebas de instalación en dispositivo real | Pendiente (la corre el equipo con un teléfono) | [HU-27.md](HU-27.md) |
-| HU-28 | Ajustes finales de UX y rendimiento | Terminada · LCP 8.1 → 5.8 s | [HU-28.md](HU-28.md) |
+| HU | Título | Sprint | Responsable | Estado | Archivo |
+|---|---|---|---|---|---|
+| HU-23 | Pruebas del flujo completo del cliente | 8 | Erick Trejo Reséndiz | Terminada · 36/36 | [HU-23.md](HU-23.md) |
+| HU-24 | Pruebas del flujo completo del administrador | 8 | Adrian Adonai García Jiménez | Terminada · 32/32 | [HU-24.md](HU-24.md) |
+| HU-25 | Corrección de errores encontrados | 8 | Ángel Alexis Blas Castillo | Terminada | [HU-25.md](HU-25.md) |
+| HU-26 | Despliegue de la PWA en un ambiente accesible | 9 | Ángel Alexis Blas Castillo | Terminada | [HU-26.md](HU-26.md) |
+| HU-27 | Pruebas de instalación en dispositivo real | 9 | Adrian Adonai García Jiménez | Android probado en tablet real · 8/8 OK · iPhone pendiente | [HU-27.md](HU-27.md) |
+| HU-28 | Ajustes finales de UX y rendimiento | 9 | Erick Trejo Reséndiz | Terminada · LCP 8.1 → 5.8 s | [HU-28.md](HU-28.md) |
 
 Resumen técnico en un solo archivo: [Cierre-HU23-a-HU28.md](Cierre-HU23-a-HU28.md).
 
@@ -28,4 +28,4 @@ Resumen técnico en un solo archivo: [Cierre-HU23-a-HU28.md](Cierre-HU23-a-HU28.
   de SonarQube Cloud en verde. El deploy ocurre al llegar a `main`.
 - **Datos de producción al cierre:** 1,501 salones publicados (1,500 de la carga de demostración de la región y 1 real),
   con 4 o 5 fotos y de 1 a 3 paquetes cada uno.
-- **Fechas:** 18 y 19 de noviembre de 2026 (Sprint 8).
+- **Fechas:** 18 y 19 de noviembre de 2026 (Sprint 8: HU-23 a HU-25 · Sprint 9: HU-26 a HU-28).
