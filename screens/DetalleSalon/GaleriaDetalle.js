@@ -6,11 +6,12 @@
  * Sin fotos: el espacio de la maqueta con la inicial del salón.
  */
 
-import React, { useMemo, useState } from "react";
-import { View, Text, Pressable, PanResponder } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Pressable } from "react-native";
 import FotoSalon from "../../components/FotoSalon";
+import useDeslizarFotos from "../../components/useDeslizarFotos";
 import FotoPantallaCompleta from "./FotoPantallaCompleta";
-import { MINIATURAS_GALERIA, moverIndice, pasoPorDeslizamiento, resumenMiniaturas } from "../../components/carrusel.logica";
+import { MINIATURAS_GALERIA, moverIndice, resumenMiniaturas } from "../../components/carrusel.logica";
 import { estilos } from "./DetalleSalon.styles";
 
 function Flecha({ texto, etiqueta, onPress, lado }) {
@@ -32,21 +33,11 @@ export default function GaleriaDetalle({ fotos, activa, onElegir, nombre }) {
   const [completa, setCompleta] = useState(false);
 
   // Deslizar con el dedo sobre la foto grande cambia de foto (solo gestos horizontales).
-  const deslizar = useMemo(
-    () =>
-      PanResponder.create({
-        onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dx) > 12 && Math.abs(g.dx) > Math.abs(g.dy),
-        onPanResponderRelease: (_, g) => {
-          const paso = pasoPorDeslizamiento(g.dx);
-          if (paso) onElegir(moverIndice(activa, total, paso));
-        },
-      }),
-    [activa, total, onElegir],
-  );
+  const deslizar = useDeslizarFotos(activa, total, onElegir);
 
   return (
     <View>
-      <View style={estilos.galeriaPrincipal} {...(total > 1 ? deslizar.panHandlers : {})}>
+      <View style={estilos.galeriaPrincipal} {...deslizar}>
         <FotoSalon uri={fotos[activa]} nombre={nombre} style={estilos.fotoGrande} tamanoInicial={72} />
         {total > 0 ? (
           <Pressable

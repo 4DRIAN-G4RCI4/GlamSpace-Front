@@ -5,10 +5,11 @@
  * flechas, deslizando en móvil o con ← y → del teclado; Esc (o el botón atrás de Android) lo cierra.
  */
 
-import React, { useEffect, useMemo } from "react";
-import { Modal, View, Text, Pressable, PanResponder, Platform, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { Modal, View, Text, Pressable, Platform, StyleSheet } from "react-native";
 import FotoSalon from "../../components/FotoSalon";
-import { moverIndice, pasoPorDeslizamiento } from "../../components/carrusel.logica";
+import useDeslizarFotos from "../../components/useDeslizarFotos";
+import { moverIndice } from "../../components/carrusel.logica";
 
 function Boton({ texto, etiqueta, onPress, style }) {
   return (
@@ -40,21 +41,11 @@ export default function FotoPantallaCompleta({ visible, fotos, activa, onElegir,
     return () => window.removeEventListener("keydown", alTeclear);
   });
 
-  const deslizar = useMemo(
-    () =>
-      PanResponder.create({
-        onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dx) > 12 && Math.abs(g.dx) > Math.abs(g.dy),
-        onPanResponderRelease: (_, g) => {
-          const paso = pasoPorDeslizamiento(g.dx);
-          if (paso) onElegir(moverIndice(activa, total, paso));
-        },
-      }),
-    [activa, total, onElegir],
-  );
+  const deslizar = useDeslizarFotos(activa, total, onElegir);
 
   return (
     <Modal visible={visible} transparent={false} animationType="fade" onRequestClose={onCerrar} statusBarTranslucent>
-      <View style={estilos.fondo} {...(total > 1 ? deslizar.panHandlers : {})} accessibilityViewIsModal>
+      <View style={estilos.fondo} {...deslizar} accessibilityViewIsModal>
         <FotoSalon uri={fotos[activa]} nombre={nombre} style={estilos.foto} tamanoInicial={96} resizeMode="contain" />
         <Boton texto="✕" etiqueta="Cerrar pantalla completa" onPress={onCerrar} style={estilos.cerrar} />
         {total > 1 ? (
