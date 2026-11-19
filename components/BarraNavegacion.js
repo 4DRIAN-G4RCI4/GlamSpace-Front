@@ -112,11 +112,17 @@ export default function BarraNavegacion({ navigation, pantalla, migas = [], volv
   const iniciarSesion = () => ir("Login", volverA ? { volverA } : {});
   const esAdmin = !!sesion && sesion.tipo_cuenta === "administrador";
 
+  // HU-28: en las pantallas internas el círculo de "Regresar" va arriba, a la izquierda de la marca.
   const marca = (
-    <Pressable onPress={() => ir("BusquedaSalones")} accessibilityRole="link" accessibilityLabel="GlamSpaces, ir al inicio"
-      style={({ focused }) => [focused && estilos.foco]}>
-      <Marca compacta />
-    </Pressable>
+    <View style={estilos.marcaConRegreso}>
+      {llevaBotonRegresar(pantalla) ? (
+        <BotonRegresar navigation={navigation} respaldo={regresoDe(pantalla)} estilo={{ marginBottom: 0 }} />
+      ) : null}
+      <Pressable onPress={() => ir("BusquedaSalones")} accessibilityRole="link" accessibilityLabel="GlamSpaces, ir al inicio"
+        style={({ focused }) => [focused && estilos.foco]}>
+        <Marca compacta />
+      </Pressable>
+    </View>
   );
 
   let fila;
@@ -202,12 +208,6 @@ export default function BarraNavegacion({ navigation, pantalla, migas = [], volv
   return (
     <View ref={barra} style={estilos.barra} role="navigation" aria-label="Principal">
       {fila}
-      {/* Sprint 7: en las pantallas internas, un "← Regresar" bajo la barra. */}
-      {llevaBotonRegresar(pantalla) ? (
-        <View style={estilos.renglonRegresar}>
-          <BotonRegresar navigation={navigation} respaldo={regresoDe(pantalla)} estilo={{ marginBottom: 0 }} />
-        </View>
-      ) : null}
       {migas.length > 0 ? <View style={estilos.renglonMigas}><Migas migas={migas} /></View> : null}
       {telefono && menuAbierto ? (
         <View style={estilos.panel} nativeID="menu-principal">

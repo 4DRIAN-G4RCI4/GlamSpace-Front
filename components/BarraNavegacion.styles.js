@@ -82,8 +82,8 @@ export const estilos = StyleSheet.create(conFuentes({
   panelBotones: { flexDirection: "row", gap: ESPACIO.sm, paddingHorizontal: ESPACIO.xl, paddingVertical: ESPACIO.sm },
 
   // Migas de pan (detalle y reserva), en su propio renglón debajo
-  // Sprint 7: renglón del botón "← Regresar" de las pantallas internas.
-  renglonRegresar: { width: "100%", maxWidth: ANCHO_MAXIMO, paddingHorizontal: ESPACIO.lg, paddingBottom: ESPACIO.xs },
+  // HU-28: el círculo de "Regresar" va en la misma fila, a la izquierda de la marca.
+  marcaConRegreso: { flexDirection: "row", alignItems: "center", gap: ESPACIO.md },
   renglonMigas: { width: "100%", maxWidth: ANCHO_MAXIMO, paddingHorizontal: ESPACIO.lg, paddingBottom: ESPACIO.sm + 2 },
   migas: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", flexShrink: 1, minWidth: 0 },
   miga: { flexDirection: "row", alignItems: "center", flexShrink: 1, minWidth: 0 },
