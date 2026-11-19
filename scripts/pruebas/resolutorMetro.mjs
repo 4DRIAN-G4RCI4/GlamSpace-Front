@@ -8,7 +8,16 @@ import { fileURLToPath } from "node:url";
 
 const EXTENSIONES = [".js", ".mjs", ".json", "/index.js"];
 
+// Paquetes que Metro importa con su `default` y Node no: se cambian por un puente de prueba.
+const PUENTES = {
+  "@react-native-async-storage/async-storage": new URL("./asyncStorageWeb.mjs", import.meta.url).href,
+};
+
 export async function resolve(especificador, contexto, siguiente) {
+  const puente = PUENTES[especificador];
+  if (puente && !contexto.parentURL.endsWith("/asyncStorageWeb.mjs")) {
+    return { url: puente, shortCircuit: true, format: "module" };
+  }
   try {
     return await siguiente(especificador, contexto);
   } catch (error) {
