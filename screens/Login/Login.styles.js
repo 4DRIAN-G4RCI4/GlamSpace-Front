@@ -44,6 +44,8 @@ botonSecundario: {
   marginTop: 14,
 },
 botonSecundarioTexto: { fontSize: 14.5, fontWeight: "700", color: COLORES.morado },
+botonSecundarioActivo: { backgroundColor: COLORES.morado },
+botonSecundarioTextoActivo: { color: "#ffffff" },
     panelMarcaNombre: { fontSize: 20, fontWeight: "400", letterSpacing: 4, color: "#f3e4c8" },
     panelMarcaTexto: { fontSize: 13.5, lineHeight: 22, color: "#e8d6dc", textAlign: "center", maxWidth: 320 },
 
