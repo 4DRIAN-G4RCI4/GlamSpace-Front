@@ -50,18 +50,19 @@ function armarServiceWorker(version, precache, cuerpo) {
   ].join("\n");
 }
 
-function main() {
-  if (!fs.existsSync(path.join(DIST, "index.html"))) {
+// Lo llama "build:web" (package.json) con `node -e "require('./scripts/posexport').main()"`.
+// `dist` solo se cambia en las pruebas.
+function main(dist = DIST) {
+  if (!fs.existsSync(path.join(dist, "index.html"))) {
     console.error("posexport: no existe dist/index.html. Corre primero `npx expo export -p web`.");
     process.exit(1);
+    return;
   }
-  const precache = listaDePrecache(listarArchivos(DIST));
-  const version = versionDeCache(precache.map((u) => ({ ruta: u, contenido: fs.readFileSync(path.join(DIST, u === "/" ? "index.html" : u)) })));
+  const precache = listaDePrecache(listarArchivos(dist));
+  const version = versionDeCache(precache.map((u) => ({ ruta: u, contenido: fs.readFileSync(path.join(dist, u === "/" ? "index.html" : u)) })));
   const cuerpo = fs.readFileSync(path.join(__dirname, "sw.base.js"), "utf8");
-  fs.writeFileSync(path.join(DIST, "sw.js"), armarServiceWorker(version, precache, cuerpo));
+  fs.writeFileSync(path.join(dist, "sw.js"), armarServiceWorker(version, precache, cuerpo));
   console.log(`posexport: dist/sw.js · versión ${version} · ${precache.length} archivos en precaché`);
 }
 
-if (require.main === module) main();
-
-module.exports = { listarArchivos, listaDePrecache, versionDeCache, armarServiceWorker };
+module.exports = { listarArchivos, listaDePrecache, versionDeCache, armarServiceWorker, main };
