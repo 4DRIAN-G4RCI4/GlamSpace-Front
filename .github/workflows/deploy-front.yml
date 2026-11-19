@@ -23,13 +23,38 @@ jobs:
         env:
           EXPO_PUBLIC_API_URL: ${{ secrets.EXPO_PUBLIC_API_URL }}
 
+      # HU-28 · Rendimiento. Azure Storage no comprime ni pone caché por su cuenta: los textos se
+      # suben ya en gzip (el bundle baja de ~740 KB a ~205 KB) con Content-Encoding: gzip.
+      - name: Comprimir con gzip el bundle y los archivos de texto de la raíz
+        run: |
+          for f in $(find dist/_expo -type f \( -name '*.js' -o -name '*.css' \)) dist/index.html dist/sw.js dist/manifest.json dist/metadata.json; do
+            gzip -9 -n -c "$f" > "$f.gz" && mv "$f.gz" "$f"
+          done
+
+      # Caché: _expo/ y assets/ llevan hash en el nombre (si cambian, cambia el nombre) → 1 año e
+      # inmutables. icons/ → 7 días. index.html, sw.js y los .json → no-cache, para que cada deploy
+      # se vea al momento y el aviso de nueva versión (HU-21) siga funcionando. index.html va al final.
       - name: Deploy to Azure Storage static website
         uses: azure/CLI@9f7ce6f37c31b777ec6c6b6d1dfe7db79f497956 # v2
         with:
           inlineScript: |
-            az storage blob upload-batch \
-              --account-name glamspacesfrontsa \
-              --destination '$web' \
-              --source ./dist \
-              --overwrite \
-              --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}"
+            CONN="${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}"
+            az storage blob upload-batch --account-name glamspacesfrontsa --destination '$web' --source ./dist \
+              --pattern '_expo/*' --overwrite --connection-string "$CONN" \
+              --content-encoding gzip --content-cache-control 'public, max-age=31536000, immutable'
+            az storage blob upload-batch --account-name glamspacesfrontsa --destination '$web' --source ./dist \
+              --pattern 'assets/*' --overwrite --connection-string "$CONN" \
+              --content-cache-control 'public, max-age=31536000, immutable'
+            az storage blob upload-batch --account-name glamspacesfrontsa --destination '$web' --source ./dist \
+              --pattern 'icons/*' --overwrite --connection-string "$CONN" \
+              --content-cache-control 'public, max-age=604800'
+            for f in manifest.json metadata.json sw.js index.html; do
+              case "$f" in
+                *.json) tipo='application/json' ;;
+                *.js)   tipo='application/javascript' ;;
+                *)      tipo='text/html; charset=utf-8' ;;
+              esac
+              az storage blob upload --account-name glamspacesfrontsa --container-name '$web' --file "dist/$f" --name "$f" \
+                --overwrite --connection-string "$CONN" --content-type "$tipo" \
+                --content-encoding gzip --content-cache-control 'no-cache'
+            done

@@ -18,6 +18,14 @@
     <!-- iOS: la barra de estado deja ver el fondo vino de abajo (igual que theme-color en Android). -->
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
+    <!-- HU-28 · Rendimiento: abrir antes las conexiones que la primera pantalla siempre usa
+         (la API para la búsqueda y Google Fonts) y pedir las fuentes desde el HTML, sin esperar al JS.
+         El id es el mismo que usa theme/fuentesWeb.js, así que el hook ya no lo vuelve a agregar. -->
+    <link rel="preconnect" href="https://glamspaces-api-g8g9bzemfyh7g3en.mexicocentral-01.azurewebsites.net" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link id="glamspaces-fuentes-pwa" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" />
+
     <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
       /* These styles make the body full-height */
