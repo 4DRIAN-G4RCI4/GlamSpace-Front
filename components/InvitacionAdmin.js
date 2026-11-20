@@ -42,7 +42,7 @@ export default function InvitacionAdmin({ sesion, navigation, estilo }) {
 
 const estilos = StyleSheet.create(conFuentes({
   tarjeta: {
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     borderRadius: RADIO.lg,
     borderWidth: 1,
     borderColor: COLORES.borde,
@@ -65,8 +65,8 @@ const estilos = StyleSheet.create(conFuentes({
     alignItems: "center",
     justifyContent: "center",
   },
-  botonActivo: { backgroundColor: COLORES.moradoOscuro },
-  botonTexto: { fontSize: 14, fontWeight: "700", color: "#fff" },
+  botonActivo: { backgroundColor: COLORES.moradoActivo },
+  botonTexto: { fontSize: 14, fontWeight: "700", color: COLORES.sobreMorado },
   foco: {
     outlineWidth: 2,
     outlineColor: COLORES.dorado,

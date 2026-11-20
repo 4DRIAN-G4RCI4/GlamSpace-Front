@@ -57,7 +57,7 @@ const estilos = StyleSheet.create(conFuentes({
   },
   botonActivo: { backgroundColor: COLORES.morado },
   flecha: { fontSize: 20, lineHeight: 22, fontWeight: "700", color: COLORES.morado },
-  flechaActiva: { color: "#ffffff" },
+  flechaActiva: { color: COLORES.sobreMorado },
   foco: {
     outlineWidth: 2,
     outlineColor: COLORES.dorado,

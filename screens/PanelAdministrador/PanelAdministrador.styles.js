@@ -28,7 +28,7 @@ export const estilos = StyleSheet.create({
   // ---------- Barra lateral (escritorio) ----------
   barraLateral: {
     width: MEDIDA.barraLateral,
-    backgroundColor: PWA.oscuro,
+    backgroundColor: PWA.lateral,
     paddingHorizontal: 20,
     paddingVertical: 28,
   },
@@ -47,7 +47,7 @@ export const estilos = StyleSheet.create({
   navEnlaceActivo: { backgroundColor: PWA.vino },
   navEnlaceFoco: { backgroundColor: "rgba(255,255,255,0.06)" },
   navTexto: texto(14, "400", PWA.navInactivo),
-  navTextoActivo: texto(14, "600", PWA.fondo),
+  navTextoActivo: texto(14, "600", PWA.sobreVino),
   pieLateral: {
     flexDirection: "row",
     alignItems: "center",
@@ -64,23 +64,23 @@ export const estilos = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  avatarTexto: texto(13, "700", PWA.crema),
+  avatarTexto: texto(13, "700", PWA.inicialesSobreVino),
   pieCuenta: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12, minWidth: 0 },
   iconosCuenta: { flexDirection: "row", alignItems: "center", gap: 2 },
   iconoCuenta: { width: 40, height: 40, borderRadius: 10, alignItems: "center", justifyContent: "center" },
-  pieNombre: texto(13.5, "600", PWA.fondo),
+  pieNombre: texto(13.5, "600", PWA.sobreOscuro),
   pieRol: texto(11.5, "400", PWA.textoTenue),
 
   // ---------- Encabezado y pestañas (móvil) ----------
   encabezadoMovil: {
-    backgroundColor: PWA.oscuro,
+    backgroundColor: PWA.lateral,
     paddingHorizontal: 20,
     paddingVertical: 18,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  encabezadoNombre: texto(13.9, "600", PWA.fondo),
+  encabezadoNombre: texto(13.9, "600", PWA.sobreOscuro),
   encabezadoRol: texto(10.8, "400", PWA.navInactivo),
   avatarMovil: {
     width: 34,
@@ -90,7 +90,7 @@ export const estilos = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  avatarMovilTexto: texto(11.8, "700", PWA.crema),
+  avatarMovilTexto: texto(11.8, "700", PWA.inicialesSobreVino),
   pestanas: {
     flexDirection: "row",
     backgroundColor: PWA.superficie,
@@ -137,7 +137,7 @@ export const estilos = StyleSheet.create({
   chipSalonHover: { borderColor: PWA.vino },
   selectorSalonesEtiqueta: { ...texto(13, "600", PWA.textoSecundario), alignSelf: "center" },
   chipSalonTexto: texto(13, "600", PWA.textoSecundario),
-  chipSalonTextoActivo: texto(13, "600", PWA.fondo),
+  chipSalonTextoActivo: texto(13, "600", PWA.sobreVino),
 
   // Tarjetas de cifras (escritorio)
   cifras: { flexDirection: "row", gap: 20 },
@@ -201,7 +201,7 @@ export const estilos = StyleSheet.create({
   botonFoco: { opacity: 0.85 },
   botonDeshabilitado: { opacity: 0.5 },
   botonRechazarTexto: texto(13, "600", PWA.peligro),
-  botonAceptarTexto: texto(13, "600", PWA.fondo),
+  botonAceptarTexto: texto(13, "600", PWA.sobreVino),
   botonTextoMovil: { fontSize: 12.6 },
 
   confirmacion: {
@@ -351,14 +351,14 @@ export const estilos = StyleSheet.create({
     zIndex: 3,
     minWidth: 180,
     maxWidth: 260,
-    backgroundColor: PWA.oscuro,
+    backgroundColor: PWA.lateral,
     borderRadius: 8,
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
-  calendarioGloboTexto: texto(12, "600", PWA.fondo),
+  calendarioGloboTexto: texto(12, "600", PWA.sobreOscuro),
   calendarioDiaTexto: texto(14, "400", PWA.texto),
-  calendarioDiaReservado: texto(14, "400", PWA.superficie),
+  calendarioDiaReservado: texto(14, "400", PWA.sobreVino),
   calendarioDiaPendiente: texto(14, "700", PWA.texto),
   calendarioDiaPasado: texto(14, "400", PWA.textoTenue),
   leyenda: {

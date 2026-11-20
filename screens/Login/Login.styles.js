@@ -16,7 +16,7 @@ export const estilos = {
     // Panel de la marca (solo escritorio)
     panelMarca: {
       flex: 1,
-      backgroundColor: COLORES.morado,
+      backgroundColor: COLORES.panelMarca,
       alignItems: "center",
       justifyContent: "center",
       paddingHorizontal: 48,
@@ -45,7 +45,7 @@ botonSecundario: {
 },
 botonSecundarioTexto: { fontSize: 14.5, fontWeight: "700", color: COLORES.morado },
 botonSecundarioActivo: { backgroundColor: COLORES.morado },
-botonSecundarioTextoActivo: { color: "#ffffff" },
+botonSecundarioTextoActivo: { color: COLORES.sobreMorado },
     panelMarcaNombre: { fontSize: 20, fontWeight: "400", letterSpacing: 4, color: "#f3e4c8" },
     panelMarcaTexto: { fontSize: 13.5, lineHeight: 22, color: "#e8d6dc", textAlign: "center", maxWidth: 320 },
 

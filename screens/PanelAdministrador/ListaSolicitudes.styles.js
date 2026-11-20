@@ -27,7 +27,7 @@ export const estilos = StyleSheet.create({
   },
   chipActivo: { backgroundColor: PWA.vino, borderColor: PWA.vino },
   chipTexto: texto(13, "600", PWA.textoSecundario),
-  chipTextoActivo: texto(13, "600", PWA.fondo),
+  chipTextoActivo: texto(13, "600", PWA.sobreVino),
 
   rejilla: { flexDirection: "row", flexWrap: "wrap", gap: 14 },
   tarjeta: {
@@ -48,7 +48,7 @@ export const estilos = StyleSheet.create({
   verDetalle: { alignSelf: "flex-end", marginTop: 6, borderWidth: 1, borderColor: PWA.borde, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 },
   verDetalleActivo: { backgroundColor: PWA.vino, borderColor: PWA.vino },
   verDetalleTexto: texto(13, "700", PWA.vino),
-  verDetalleTextoActivo: { color: PWA.superficie },
+  verDetalleTextoActivo: { color: PWA.sobreVino },
 
   vacio: { backgroundColor: PWA.superficie, borderWidth: 1, borderColor: PWA.borde, borderRadius: MEDIDA.radioTarjeta, padding: 24, alignItems: "center", gap: 8 },
   vacioTitulo: { fontFamily: FUENTE.titulo, fontSize: 15, fontWeight: "700", color: PWA.texto },

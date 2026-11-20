@@ -9,7 +9,7 @@ export const estilos = StyleSheet.create(conFuentes({
   envoltura: { flex: 1 },
   tarjeta: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     borderRadius: 14,
     borderWidth: 1,
     borderColor: COLORES.borde,
@@ -32,7 +32,7 @@ export const estilos = StyleSheet.create(conFuentes({
   fotoPendiente: { backgroundColor: COLORES.esqueleto },
   puntos: { position: "absolute", bottom: 8, left: 0, right: 0, flexDirection: "row", justifyContent: "center", gap: 6 },
   punto: { width: 7, height: 7, borderRadius: 4, backgroundColor: "rgba(255,255,255,0.6)", borderWidth: 0.5, borderColor: PWA.sombra },
-  puntoActivo: { backgroundColor: PWA.superficie, width: 9, height: 9, borderRadius: 5, marginTop: -1 },
+  puntoActivo: { backgroundColor: "#ffffff", width: 9, height: 9, borderRadius: 5, marginTop: -1 },
   // Capa sobre la foto (misma proporción) con las flechas; no tapa la tarjeta (box-none).
   controles: {
     position: "absolute",

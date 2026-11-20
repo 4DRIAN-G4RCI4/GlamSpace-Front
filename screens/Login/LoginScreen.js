@@ -58,7 +58,7 @@ export default function LoginScreen({ navigation, route }) {
         activeOpacity={0.85}
         accessibilityRole="button"
       >
-        {f.enviando ? <ActivityIndicator color="#fff" /> : <Text style={estilos.botonTexto}>Iniciar sesión</Text>}
+        {f.enviando ? <ActivityIndicator color={COLORES.sobreMorado} /> : <Text style={estilos.botonTexto}>Iniciar sesión</Text>}
       </TouchableOpacity>
 
       {f.mensaje ? (
