@@ -5,7 +5,7 @@ import { ESPACIO, RADIO } from "../theme/espaciado";
 
 export const estilos = StyleSheet.create(conFuentes({
   tarjeta: {
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     borderRadius: RADIO.md,
     borderWidth: 1,
     borderColor: COLORES.borde,
@@ -45,5 +45,5 @@ export const estilos = StyleSheet.create(conFuentes({
   accionActiva: { backgroundColor: COLORES.morado, borderColor: COLORES.morado },
   accionFoco: { borderColor: COLORES.morado, outlineStyle: "solid", outlineWidth: 2, outlineColor: COLORES.dorado, outlineOffset: 2 },
   accionTexto: { fontSize: 13, fontWeight: "700", color: COLORES.morado },
-  accionTextoActivo: { color: "#fff" },
+  accionTextoActivo: { color: COLORES.sobreMorado },
 }, ["salon"]));

@@ -22,7 +22,7 @@ export const comunes = StyleSheet.create(conFuentes({
     alignItems: "center",
   },
   tarjeta: {
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     width: "90%",
     maxWidth: 720,
     borderRadius: 16,
@@ -77,7 +77,7 @@ export const comunes = StyleSheet.create(conFuentes({
     justifyContent: "center",
   },
   checkboxActivo: { backgroundColor: COLORES.morado },
-  checkboxMarca: { color: "#fff", fontSize: 13, fontWeight: "700" },
+  checkboxMarca: { color: COLORES.sobreMorado, fontSize: 13, fontWeight: "700" },
   textoCheckbox: { flex: 1, fontSize: 12.5, color: COLORES.texto },
 
   enlaceCambio: { textAlign: "center", fontSize: 12.5, color: COLORES.muted, marginTop: 20 },

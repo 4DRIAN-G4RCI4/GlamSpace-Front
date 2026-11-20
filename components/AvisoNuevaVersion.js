@@ -103,5 +103,5 @@ const estilos = StyleSheet.create({
   },
   botonFoco: { opacity: 0.85 },
   foco: { outlineStyle: "solid", outlineWidth: 2, outlineColor: PWA.oscuro, outlineOffset: 2 },
-  botonTexto: { fontFamily: FUENTE.texto, fontSize: 13.5, fontWeight: "600", color: PWA.fondo },
+  botonTexto: { fontFamily: FUENTE.texto, fontSize: 13.5, fontWeight: "600", color: PWA.sobreVino },
 });

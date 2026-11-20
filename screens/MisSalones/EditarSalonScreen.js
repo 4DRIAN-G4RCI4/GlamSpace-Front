@@ -55,7 +55,7 @@ function Boton({ texto, onPress, tipo = "secundario", deshabilitado, motivo, ocu
       ]}
     >
       {ocupado ? (
-        <ActivityIndicator color={tipo === "principal" ? "#fff" : COLORES.morado} size="small" />
+        <ActivityIndicator color={tipo === "principal" ? COLORES.sobreMorado : COLORES.morado} size="small" />
       ) : (
         <Text style={tipo === "principal" ? estilos.botonPrincipalTexto : estilos.botonSecundarioTexto}>{texto}</Text>
       )}

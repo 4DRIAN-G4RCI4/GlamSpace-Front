@@ -20,6 +20,7 @@ import React, { useCallback } from "react";
 import { ActivityIndicator, Modal, Pressable, Text, View } from "react-native";
 import useDialogoModal from "./useDialogoModal";
 import { estilos } from "./DialogoConfirmacion.styles";
+import { COLORES } from "../theme/colores";
 
 export default function DialogoConfirmacion({
   visible,
@@ -93,7 +94,7 @@ export default function DialogoConfirmacion({
               ]}
             >
               {ocupado ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color={COLORES.sobreMorado} size="small" />
               ) : (
                 <Text style={estilos.botonPrincipalTexto}>{textoConfirmar}</Text>
               )}

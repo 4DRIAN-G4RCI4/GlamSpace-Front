@@ -123,7 +123,7 @@ const estilos = StyleSheet.create(conFuentes({
     borderRadius: RADIO.sm,
     borderWidth: 1,
     borderColor: COLORES.borde,
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -133,7 +133,7 @@ const estilos = StyleSheet.create(conFuentes({
   botonActivo: { backgroundColor: COLORES.moradoClaro },
   inactivo: { opacity: 0.45 },
   textoBoton: { fontSize: 13.5, fontWeight: "600", color: COLORES.texto },
-  textoActual: { color: "#fff" },
+  textoActual: { color: COLORES.sobreMorado },
   puntos: { fontSize: 13.5, color: COLORES.muted, paddingHorizontal: ESPACIO.xs },
   foco: {
     outlineWidth: 2,
