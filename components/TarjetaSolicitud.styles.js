@@ -32,6 +32,8 @@ export const estilos = StyleSheet.create(conFuentes({
   accion: {
     alignSelf: "flex-start",
     marginTop: ESPACIO.md,
+    minHeight: 40,
+    justifyContent: "center",
     paddingVertical: ESPACIO.xs + 2,
     paddingHorizontal: ESPACIO.md,
     borderRadius: RADIO.pill,
@@ -40,9 +42,8 @@ export const estilos = StyleSheet.create(conFuentes({
     minWidth: 120,
     alignItems: "center",
   },
-  accionFoco: { borderColor: COLORES.morado },
-  // "Ver detalle →" (Figma Cliente 06): enlace en vino, 44 px de alto para el dedo.
-  verDetalle: { alignSelf: "flex-start", minHeight: 44, justifyContent: "center", borderWidth: 1, borderColor: "transparent", borderRadius: 8, paddingHorizontal: 4, marginTop: 4 },
-  verDetalleTexto: { fontSize: 13, fontWeight: "700", color: COLORES.morado },
+  accionActiva: { backgroundColor: COLORES.morado, borderColor: COLORES.morado },
+  accionFoco: { borderColor: COLORES.morado, outlineStyle: "solid", outlineWidth: 2, outlineColor: COLORES.dorado, outlineOffset: 2 },
   accionTexto: { fontSize: 13, fontWeight: "700", color: COLORES.morado },
+  accionTextoActivo: { color: "#fff" },
 }, ["salon"]));

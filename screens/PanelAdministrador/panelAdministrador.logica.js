@@ -47,6 +47,20 @@ export function fechasConPendientes(solicitudes) {
   return new Set(solicitudes.filter((s) => s.estado === "pendiente").map((s) => s.fechaEvento));
 }
 
+// Solicitudes de un día para el calendario (sin las rechazadas): la confirmada primero, luego las
+// pendientes. La primera es la que se abre al tocar el día.
+export function solicitudesDelDia(solicitudes, clave) {
+  const peso = { confirmada: 0, pendiente: 1 };
+  return solicitudes
+    .filter((s) => s.fechaEvento === clave && s.estado in peso)
+    .sort((a, b) => peso[a.estado] - peso[b.estado]);
+}
+
+// Texto del globo al pasar el puntero: "Ana López · Boda (confirmada)", una línea por solicitud.
+export function resumenDelDia(delDia) {
+  return delDia.map((s) => `${s.nombreCliente} · ${s.tipoEvento} (${s.estado})`).join("\n");
+}
+
 // Otras pendientes del mismo día que se rechazarán solas si se acepta esta (HU-17).
 export function pendientesEnConflicto(solicitudes, solicitud) {
   return solicitudes.filter(

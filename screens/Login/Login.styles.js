@@ -55,5 +55,14 @@ botonSecundarioTextoActivo: { color: "#ffffff" },
     tituloLogin: { fontSize: 24, fontWeight: "700", color: COLORES.texto, marginBottom: 4 },
     botonLogin: { marginTop: 8 },
     enlaceLogin: { marginTop: 14 },
+
+    // "Conviértete en administrador" (screens/ConvertirAdministrador)
+    verificada: { flexDirection: "row", alignItems: "center", gap: 8, alignSelf: "flex-start", backgroundColor: COLORES.confirmadaFondo, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6, marginBottom: 14 },
+    verificadaIcono: { fontSize: 15, fontWeight: "700", color: COLORES.confirmadaTexto },
+    verificadaTexto: { fontSize: 13.5, fontWeight: "700", color: COLORES.confirmadaTexto },
+    condiciones: { gap: 10, marginVertical: 12 },
+    condicion: { flexDirection: "row", gap: 8 },
+    condicionPunto: { fontSize: 14, lineHeight: 21, color: COLORES.morado, fontWeight: "700" },
+    condicionTexto: { flex: 1, fontSize: 14, lineHeight: 21, color: COLORES.texto },
   }, ["tituloLogin", "panelMarcaNombre"])),
 };

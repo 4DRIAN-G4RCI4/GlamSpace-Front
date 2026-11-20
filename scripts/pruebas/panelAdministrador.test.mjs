@@ -11,6 +11,8 @@ import {
   iniciales,
   pendientesEnConflicto,
   proximasConfirmadas,
+  resumenDelDia,
+  solicitudesDelDia,
   solicitudesPendientes,
 } from "../../screens/PanelAdministrador/panelAdministrador.logica.js";
 
@@ -159,4 +161,19 @@ test("las etiquetas y los órdenes están en español", () => {
     ORDENES.map((o) => o.clave),
     ["proximas", "recientes"],
   );
+});
+
+// ---------- Calendario: globo y clic en un día ----------
+
+test("solicitudesDelDia: sin rechazadas y la confirmada primero", () => {
+  const dia = [
+    { id: 1, estado: "pendiente", fechaEvento: "2026-12-05", nombreCliente: "Ana", tipoEvento: "Boda" },
+    { id: 2, estado: "rechazada", fechaEvento: "2026-12-05", nombreCliente: "Beto", tipoEvento: "XV años" },
+    { id: 3, estado: "confirmada", fechaEvento: "2026-12-05", nombreCliente: "Caro", tipoEvento: "Graduación" },
+    { id: 4, estado: "pendiente", fechaEvento: "2026-12-06", nombreCliente: "Dani", tipoEvento: "Boda" },
+  ];
+  const delDia = solicitudesDelDia(dia, "2026-12-05");
+  assert.deepStrictEqual(delDia.map((s) => s.id), [3, 1]);
+  assert.deepStrictEqual(solicitudesDelDia(dia, "2026-12-07"), []);
+  assert.strictEqual(resumenDelDia(delDia), "Caro · Graduación (confirmada)\nAna · Boda (pendiente)");
 });

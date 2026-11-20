@@ -50,6 +50,8 @@ function TarjetaSolicitud({ s, ancho, onAbrir }) {
         focused && estilos.foco,
       ]}
     >
+      {({ hovered, pressed }) => (
+      <>
       <View style={estilos.filaArriba}>
         <Text style={estilos.cliente}>{s.nombreCliente}</Text>
         <EtiquetaEstado estado={s.estado} />
@@ -59,7 +61,12 @@ function TarjetaSolicitud({ s, ancho, onAbrir }) {
         {s.tipoEvento} · {s.numeroInvitados} invitados · {s.nombrePaquete || "Sin paquete"}
       </Text>
       <Text style={estilos.salon}>{s.nombreSalon}</Text>
-      <Text style={estilos.verDetalle}>Ver detalle →</Text>
+      {/* Píldora con borde que se rellena de vino con el puntero sobre la tarjeta. */}
+      <View style={[estilos.verDetalle, (hovered || pressed) && estilos.verDetalleActivo]}>
+        <Text style={[estilos.verDetalleTexto, (hovered || pressed) && estilos.verDetalleTextoActivo]}>Ver detalle →</Text>
+      </View>
+      </>
+      )}
     </Pressable>
   );
 }

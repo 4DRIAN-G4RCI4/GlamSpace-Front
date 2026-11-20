@@ -4,6 +4,7 @@ import assert from "node:assert";
 import {
   CODIGOS_CONVERSION,
   TEXTOS_CONVERSION,
+  esLaMismaCuenta,
   mensajeDeErrorConversion,
   puedeConvertirse,
   validarConversion,
@@ -82,9 +83,21 @@ test("yaEraAdministrador reconoce el 1006", () => {
 
 // ---------- Textos ----------
 
-test("los textos explican qué se conserva al convertir", () => {
-  assert.match(TEXTOS_CONVERSION.explicacion, /correo/i);
-  assert.match(TEXTOS_CONVERSION.explicacion, /solicitudes/i);
+test("los textos piden verificar y explican qué cambia y qué se conserva", () => {
+  assert.match(TEXTOS_CONVERSION.explicacion, /inicia sesión/i);
+  const condiciones = TEXTOS_CONVERSION.condiciones.join(" ");
+  assert.match(condiciones, /público/i);
+  assert.match(condiciones, /correo/i);
+  assert.match(condiciones, /solicitudes/i);
   assert.ok(TEXTOS_CONVERSION.boton && TEXTOS_CONVERSION.boton !== "Aceptar");
   assert.match(TEXTOS_CONVERSION.exito, /administrador/i);
+});
+
+// ---------- Paso 1: verificar identidad ----------
+
+test("la verificación solo pasa con la misma cuenta que está en sesión", () => {
+  assert.strictEqual(esLaMismaCuenta({ id: 7 }, { id: 7 }), true);
+  assert.strictEqual(esLaMismaCuenta({ id: 7 }, { id: 8 }), false);
+  assert.strictEqual(esLaMismaCuenta(null, { id: 7 }), false);
+  assert.strictEqual(esLaMismaCuenta({ id: 7 }, null), false);
 });

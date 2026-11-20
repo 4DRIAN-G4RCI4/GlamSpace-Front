@@ -37,7 +37,7 @@ export default function DialogoConfirmacion({
     if (!ocupado && onCancelar) onCancelar();
   }, [ocupado, onCancelar]);
 
-  // Foco atrapado, Escape y regreso del foco (compartido con DialogoConvertirAdmin).
+  // Foco atrapado, Escape y regreso del foco.
   // El foco entra al botón principal, que es lo que se espera en una confirmación.
   const { tarjeta } = useDialogoModal({ visible, alCerrar: cancelar });
 
