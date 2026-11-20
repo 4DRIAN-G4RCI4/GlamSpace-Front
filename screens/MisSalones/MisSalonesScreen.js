@@ -163,7 +163,7 @@ export default function MisSalonesScreen({ navigation }) {
   };
 
   return (
-    <LayoutAdmin
+    <LayoutAdmin navigation={navigation}
       seccion="salon"
       onElegir={irASeccion}
       // Si la cuenta no guardó un nombre de salón de verdad, la barra dice "Mis salones"

@@ -193,10 +193,10 @@ export default function BarraNavegacion({ navigation, pantalla, migas = [], volv
             <Text style={estilos.menuUsuarioRol}>{esAdmin ? "Administrador" : "Cliente"}</Text>
             <View style={estilos.separador} />
             <Pressable onPress={() => ir("Perfil")} role="menuitem" aria-current={activa === "perfil" ? "page" : undefined}
-              style={({ hovered, focused }) => [estilos.opcion, activa === "perfil" && estilos.opcionActiva, hovered && estilos.hover, focused && estilos.foco]}>
+              style={({ hovered, focused }) => [estilos.opcion, activa === "perfil" && estilos.opcionActiva, (hovered || focused) && estilos.opcionHover]}>
               <Text style={activa === "perfil" ? estilos.opcionTextoActiva : estilos.opcionTexto}>Mi perfil</Text>
             </Pressable>
-            <Pressable onPress={salir} role="menuitem" style={({ hovered, focused }) => [estilos.opcion, hovered && estilos.hover, focused && estilos.foco]}>
+            <Pressable onPress={salir} role="menuitem" style={({ hovered, focused }) => [estilos.opcion, (hovered || focused) && estilos.opcionHover]}>
               <Text style={estilos.opcionSalir}>Cerrar sesión</Text>
             </Pressable>
           </View>
@@ -220,7 +220,7 @@ export default function BarraNavegacion({ navigation, pantalla, migas = [], volv
                 onPress={() => ir(a.destino, a.params)}
                 accessibilityRole="link"
                 aria-current={esActiva ? "page" : undefined}
-                style={({ hovered, focused }) => [estilos.opcion, esActiva && estilos.opcionActiva, hovered && estilos.hover, focused && estilos.foco]}
+                style={({ hovered, focused }) => [estilos.opcion, esActiva && estilos.opcionActiva, (hovered || focused) && estilos.opcionHover]}
               >
                 <Text style={esActiva ? estilos.opcionTextoActiva : estilos.opcionTexto}>{a.texto}</Text>
               </Pressable>
@@ -228,7 +228,7 @@ export default function BarraNavegacion({ navigation, pantalla, migas = [], volv
           })}
           <View style={estilos.separador} />
           {sesion ? (
-            <Pressable onPress={salir} accessibilityRole="button" style={({ hovered, focused }) => [estilos.opcion, hovered && estilos.hover, focused && estilos.foco]}>
+            <Pressable onPress={salir} accessibilityRole="button" style={({ hovered, focused }) => [estilos.opcion, (hovered || focused) && estilos.opcionHover]}>
               <Text style={estilos.opcionSalir}>Cerrar sesión</Text>
             </Pressable>
           ) : (

@@ -68,11 +68,28 @@ export function yaEraAdministrador(error) {
   return !!error && error.codigo === CODIGOS_CONVERSION.yaEsAdministrador;
 }
 
+/**
+ * Paso 1 (verificar identidad): el login tiene que regresar la MISMA cuenta que está en sesión.
+ * Con otra cuenta (otro correo que sí existe) no se sigue.
+ */
+export function esLaMismaCuenta(sesion, verificada) {
+  return !!sesion && !!verificada && sesion.id === verificada.id;
+}
+
 export const TEXTOS_CONVERSION = {
   titulo: "Conviértete en administrador",
-  explicacion:
-    "Tu cuenta pasa a ser de administrador y podrás publicar tus salones. Conservas tu correo, tu contraseña y tus solicitudes de cliente.",
-  etiquetaContrasena: "Confirma tu contraseña",
-  boton: "Convertir mi cuenta",
+  explicacion: "Primero confirma que eres tú: inicia sesión con tu correo y tu contraseña.",
+  botonVerificar: "Verificar mi identidad",
+  otraCuenta: "Esa no es la cuenta con la que entraste. Usa tu propio correo.",
+  credenciales: "Correo o contraseña incorrectos.",
+  verificada: "Verificación exitosa",
+  pregunta: "¿Estás conforme con convertir tu cuenta?",
+  condiciones: [
+    "Tu cuenta pasará de cliente a administrador de salón.",
+    "Podrás publicar tus salones, y lo que publiques será público: cualquier persona que busque salones lo verá.",
+    "Recibirás las solicitudes de reservación de tus salones y tendrás que aceptarlas o rechazarlas.",
+    "Conservas tu correo, tu contraseña y tus solicitudes de cliente.",
+  ],
+  boton: "Sí, convertir mi cuenta",
   exito: "¡Listo! Tu cuenta ya es de administrador. Publica tu primer salón.",
 };

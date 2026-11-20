@@ -75,6 +75,8 @@ export const estilos = StyleSheet.create(conFuentes({
   },
   opcion: { minHeight: 48, justifyContent: "center", paddingHorizontal: ESPACIO.xl, borderLeftWidth: 3, borderLeftColor: "transparent" },
   opcionActiva: { borderLeftColor: PWA.vino, backgroundColor: PWA.fondo },
+  // Opción del menú con el puntero o el foco encima: cambia el fondo (sin el rectángulo del contorno).
+  opcionHover: { backgroundColor: PWA.rechazadaFondo, outlineStyle: "none" },
   opcionTexto: { fontSize: 15, color: PWA.texto },
   opcionTextoActiva: { fontSize: 15, fontWeight: "700", color: PWA.vino },
   opcionSalir: { fontSize: 15, fontWeight: "600", color: PWA.peligro },

@@ -15,30 +15,15 @@
  */
 
 import React, { useEffect } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Pressable,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-  useWindowDimensions,
-} from "react-native";
-import Campo from "../../components/Campo";
-import Marca from "../../components/Marca";
+import { View, Text, TouchableOpacity, Pressable, ActivityIndicator } from "react-native";
+import CamposAcceso from "../../components/CamposAcceso";
+import LayoutAcceso from "../../components/LayoutAcceso";
 import { COLORES } from "../../theme/colores";
 import useLogin from "./useLogin";
 import { estilos } from "./Login.styles";
 
-const LOGO = require("../../assets/admin/logo-destello.svg");
-
 export default function LoginScreen({ navigation, route }) {
   const f = useLogin();
-  const { width } = useWindowDimensions();
-  const escritorio = width >= 900;
 
   // Si otra pantalla mandó aquí para iniciar sesión (ej. la solicitud de reservación),
   // al entrar se regresa a ella con sus mismos datos; si no, a su panel o a su perfil.
@@ -60,36 +45,11 @@ export default function LoginScreen({ navigation, route }) {
   }
 
   const formulario = (
-    <View style={estilos.formulario}>
-      {escritorio ? null : <Marca />}
+    <>
       <Text style={estilos.tituloLogin} accessibilityRole="header">Inicia sesión</Text>
       <Text style={estilos.subtitulo}>Entra con tu correo y contraseña, ya seas cliente o administrador.</Text>
 
-      <Campo
-        etiqueta="Correo electrónico"
-        autoComplete="email"
-        textContentType="emailAddress"
-        valor={f.correo}
-        onCambiar={f.setCorreo}
-        placeholder="tucorreo@ejemplo.com"
-        error={f.errores.correo}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-
-      <Campo
-        etiqueta="Contraseña"
-        autoComplete="current-password"
-        textContentType="password"
-        valor={f.password}
-        onCambiar={f.setPassword}
-        placeholder="Tu contraseña"
-        error={f.errores.password}
-        secureTextEntry={!f.mostrarPassword}
-        conToggle
-        mostrarPassword={f.mostrarPassword}
-        onToggle={f.alternarPassword}
-      />
+      <CamposAcceso f={f} />
 
       <TouchableOpacity
         style={[estilos.boton, estilos.botonLogin, f.enviando && estilos.botonDeshabilitado]}
@@ -109,7 +69,7 @@ export default function LoginScreen({ navigation, route }) {
 
       <TouchableOpacity onPress={() => navigation && navigation.navigate("RegistroCliente")}>
         <Text style={[estilos.enlaceCambio, estilos.enlaceLogin]}>
-          ¿No tienes cuenta? <Text style={estilos.enlaceResaltado}>Regístrate como cliente</Text>
+          ¿No tienes cuenta? <Text style={estilos.enlaceResaltado}>Regístrate</Text>
         </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation && navigation.navigate("RegistroAdministrador")}>
@@ -131,28 +91,14 @@ export default function LoginScreen({ navigation, route }) {
           </Text>
         )}
       </Pressable>
-    </View>
+    </>
   );
 
+  // Mismo diseño de dos paneles que los registros (components/LayoutAcceso), con el círculo de
+  // "Regresar" arriba: si no hay a dónde volver, va a la búsqueda de salones.
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <View style={estilos.division}>
-        {escritorio ? (
-          <View style={estilos.panelMarca}>
-            <View style={estilos.logoCirculo}>
-              <Image source={LOGO} style={{ width: 22, height: 22 }} accessibilityIgnoresInvertColors />
-            </View>
-            <Text style={estilos.panelMarcaNombre}>GLAMSPACES</Text>
-            <Text style={estilos.panelMarcaTexto}>
-              Encuentra y reserva el salón para tu evento, o gestiona las solicitudes, la disponibilidad y la
-              información de tu salón en un solo lugar.
-            </Text>
-          </View>
-        ) : null}
-        <ScrollView contentContainerStyle={estilos.ladoFormulario} keyboardShouldPersistTaps="handled">
-          {formulario}
-        </ScrollView>
-      </View>
-    </KeyboardAvoidingView>
+    <LayoutAcceso navigation={navigation} respaldoRegresar="BusquedaSalones">
+      {formulario}
+    </LayoutAcceso>
   );
 }

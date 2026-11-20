@@ -51,7 +51,7 @@ export const estilos = StyleSheet.create({
   pieLateral: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 6,
     paddingTop: 20,
     borderTopWidth: 0.8,
     borderTopColor: PWA.bordeOscuro,
@@ -65,6 +65,9 @@ export const estilos = StyleSheet.create({
     justifyContent: "center",
   },
   avatarTexto: texto(13, "700", PWA.crema),
+  pieCuenta: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12, minWidth: 0 },
+  iconosCuenta: { flexDirection: "row", alignItems: "center", gap: 2 },
+  iconoCuenta: { width: 40, height: 40, borderRadius: 10, alignItems: "center", justifyContent: "center" },
   pieNombre: texto(13.5, "600", PWA.fondo),
   pieRol: texto(11.5, "400", PWA.textoTenue),
 
@@ -120,8 +123,8 @@ export const estilos = StyleSheet.create({
   listaMovil: { gap: 16 },
 
   // Selector de salón (solo si el admin tiene más de uno)
-  selectorSalones: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  selectorSalonesMovil: { flexDirection: "row", gap: 8 },
+  selectorSalones: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 8 },
+  selectorSalonesMovil: { flexDirection: "row", alignItems: "center", gap: 8 },
   chipSalon: {
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -131,6 +134,8 @@ export const estilos = StyleSheet.create({
     backgroundColor: PWA.superficie,
   },
   chipSalonActivo: { backgroundColor: PWA.vino, borderColor: PWA.vino },
+  chipSalonHover: { borderColor: PWA.vino },
+  selectorSalonesEtiqueta: { ...texto(13, "600", PWA.textoSecundario), alignSelf: "center" },
   chipSalonTexto: texto(13, "600", PWA.textoSecundario),
   chipSalonTextoActivo: texto(13, "600", PWA.fondo),
 
@@ -336,6 +341,22 @@ export const estilos = StyleSheet.create({
   calendarioCeldaMovil: { paddingVertical: 10 },
   calendarioReservado: { backgroundColor: PWA.peligro, borderColor: PWA.peligro },
   calendarioPendiente: { borderColor: PWA.pendienteTexto },
+  // Día con solicitud: se puede tocar (abre la solicitud) y con el puntero muestra un globo.
+  calendarioCeldaConSolicitud: { cursor: "pointer" },
+  calendarioSemanaEncima: { zIndex: 2 },
+  calendarioGlobo: {
+    position: "absolute",
+    bottom: "100%",
+    marginBottom: 6,
+    zIndex: 3,
+    minWidth: 180,
+    maxWidth: 260,
+    backgroundColor: PWA.oscuro,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  calendarioGloboTexto: texto(12, "600", PWA.fondo),
   calendarioDiaTexto: texto(14, "400", PWA.texto),
   calendarioDiaReservado: texto(14, "400", PWA.superficie),
   calendarioDiaPendiente: texto(14, "700", PWA.texto),

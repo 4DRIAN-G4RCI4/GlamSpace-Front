@@ -99,6 +99,11 @@ export const estilos = StyleSheet.create({
   filaTexto: texto(14, "600", PWA.texto),
   filaFlecha: texto(16, "600", PWA.vino),
   filaDeshabilitada: { opacity: 0.55 },
+  // Interruptor del modo oscuro
+  interruptor: { width: 42, height: 24, borderRadius: 12, backgroundColor: PWA.borde, padding: 3, justifyContent: "center" },
+  interruptorActivo: { backgroundColor: PWA.vino },
+  interruptorBola: { width: 18, height: 18, borderRadius: 9, backgroundColor: PWA.superficie },
+  interruptorBolaActiva: { alignSelf: "flex-end" },
   proximamente: {
     backgroundColor: PWA.fondo,
     borderRadius: 9,

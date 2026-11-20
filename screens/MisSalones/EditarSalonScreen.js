@@ -128,7 +128,7 @@ export default function EditarSalonScreen({ navigation, route }) {
   };
 
   return (
-    <LayoutAdmin
+    <LayoutAdmin navigation={navigation}
       seccion="salon"
       onElegir={irASeccion}
       nombreSalon={f.formulario.nombre}
