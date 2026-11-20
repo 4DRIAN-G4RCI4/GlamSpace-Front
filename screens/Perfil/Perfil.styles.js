@@ -41,7 +41,7 @@ export const estilos = StyleSheet.create({
 
   // Tarjeta de la cuenta (oscura, como la barra lateral del panel)
   tarjetaCuenta: {
-    backgroundColor: PWA.oscuro,
+    backgroundColor: PWA.lateral,
     borderRadius: MEDIDA.radioTarjeta,
     paddingHorizontal: 22,
     paddingVertical: 26,
@@ -60,8 +60,8 @@ export const estilos = StyleSheet.create({
     borderColor: "rgba(243,228,200,0.35)", // crema translúcido
   },
   avatarImagen: { width: 76, height: 76, borderRadius: 38, marginBottom: 8 },
-  avatarTexto: texto(24, "700", PWA.crema),
-  nombre: { ...titulo(21, "700", PWA.fondo), textAlign: "center" },
+  avatarTexto: texto(24, "700", PWA.inicialesSobreVino),
+  nombre: { ...titulo(21, "700", PWA.sobreOscuro), textAlign: "center" },
   correo: { ...texto(12.5, "400", PWA.navInactivo), textAlign: "center" },
   rol: {
     marginTop: 10,
@@ -129,7 +129,7 @@ export const estilos = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 24,
   },
-  botonPrincipalTexto: texto(13.5, "600", PWA.fondo),
+  botonPrincipalTexto: texto(13.5, "600", PWA.sobreVino),
   botonFoco: { opacity: 0.85 },
 
   // Sin sesión

@@ -52,16 +52,13 @@
         padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         background-clip: content-box;
       }
-      /* Modo oscuro (theme/tema.js): se invierten los colores claros de toda la página y las fotos
-         se vuelven a invertir para verse normales. Aplicado a la raíz del documento, no rompe los elementos fijos. */
-      html[data-tema="oscuro"] {
-        background: #ffffff;
-        filter: invert(1) hue-rotate(180deg);
+      /* Modo oscuro (theme/tema.js): la app trae su propia paleta oscura; aquí solo el fondo de la
+         página y de las áreas seguras, para que no haya destello claro mientras carga. */
+      html[data-tema="oscuro"] body {
+        background: #0f0b0d;
       }
-      html[data-tema="oscuro"] img,
-      html[data-tema="oscuro"] video,
-      html[data-tema="oscuro"] [style*="background-image"] {
-        filter: invert(1) hue-rotate(180deg);
+      html[data-tema="oscuro"] #root {
+        background-color: #151012;
       }
     </style>
     <!-- Aplica el tema guardado antes del primer pintado (sin destello claro). -->

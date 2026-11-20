@@ -25,7 +25,7 @@ export const estilos = {
     barra: {
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: "#fff",
+      backgroundColor: COLORES.superficie,
       borderRadius: RADIO.md,
       borderWidth: 1,
       borderColor: COLORES.borde,
@@ -42,7 +42,7 @@ export const estilos = {
     chip: {
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: "#fff",
+      backgroundColor: COLORES.superficie,
       borderWidth: 1,
       borderColor: COLORES.borde,
       borderRadius: 9,
@@ -61,7 +61,7 @@ export const estilos = {
     chipQuitarTexto: { color: COLORES.morado, fontWeight: "700", fontSize: 12.5 },
 
     // Panel del filtro abierto
-    panel: { backgroundColor: "#fff", borderRadius: RADIO.md, borderWidth: 1, borderColor: COLORES.borde, padding: ESPACIO.lg, marginTop: ESPACIO.md },
+    panel: { backgroundColor: COLORES.superficie, borderRadius: RADIO.md, borderWidth: 1, borderColor: COLORES.borde, padding: ESPACIO.lg, marginTop: ESPACIO.md },
     panelPregunta: { fontSize: 14, fontWeight: "700", color: COLORES.moradoOscuro, marginBottom: ESPACIO.md },
     filaSugerencias: { flexDirection: "row", flexWrap: "wrap", gap: ESPACIO.sm, marginBottom: ESPACIO.md },
     sugerencia: {
@@ -88,7 +88,7 @@ export const estilos = {
     },
     panelInputInvalido: { borderColor: COLORES.error },
     panelAplicar: { backgroundColor: COLORES.morado, borderRadius: RADIO.sm, paddingHorizontal: ESPACIO.lg, paddingVertical: ESPACIO.sm + 3 },
-    panelAplicarTexto: { color: "#fff", fontWeight: "700", fontSize: 14 },
+    panelAplicarTexto: { color: COLORES.sobreMorado, fontWeight: "700", fontSize: 14 },
     panelCancelar: { alignSelf: "flex-end", marginTop: ESPACIO.sm, padding: ESPACIO.xs },
     panelCancelarTexto: { color: COLORES.muted, fontWeight: "600", fontSize: 13 },
 
@@ -103,7 +103,7 @@ export const estilos = {
     celda: { paddingHorizontal: ESPACIO.sm, marginBottom: ESPACIO.lg },
 
     estado: {
-      backgroundColor: "#fff",
+      backgroundColor: COLORES.superficie,
       borderRadius: RADIO.md,
       borderWidth: 1,
       borderColor: COLORES.borde,

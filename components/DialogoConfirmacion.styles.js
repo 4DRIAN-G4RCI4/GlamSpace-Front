@@ -16,7 +16,7 @@ export const estilos = StyleSheet.create(conFuentes({
   tarjeta: {
     width: "100%",
     maxWidth: 440,
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     borderRadius: RADIO.lg,
     padding: ESPACIO.xl,
     borderWidth: 1,
@@ -55,7 +55,7 @@ export const estilos = StyleSheet.create(conFuentes({
     justifyContent: "center",
   },
   botonCancelar: {
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     borderWidth: 1,
     borderColor: COLORES.borde,
   },
@@ -66,13 +66,13 @@ export const estilos = StyleSheet.create(conFuentes({
     color: COLORES.texto,
   },
   botonPrincipal: { backgroundColor: COLORES.morado },
-  botonPrincipalActivo: { backgroundColor: COLORES.moradoOscuro },
+  botonPrincipalActivo: { backgroundColor: COLORES.moradoActivo },
   botonPeligro: { backgroundColor: COLORES.error },
-  botonPeligroActivo: { backgroundColor: "#8c2b3a" }, // Stiletto oscurecido
+  botonPeligroActivo: { backgroundColor: COLORES.errorActivo }, // Stiletto oscurecido
   botonPrincipalTexto: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#fff",
+    color: COLORES.sobreMorado,
   },
   botonInactivo: { opacity: 0.6 },
   foco: {

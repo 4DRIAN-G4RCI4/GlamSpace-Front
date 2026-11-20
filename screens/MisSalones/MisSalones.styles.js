@@ -23,7 +23,7 @@ export const estilos = StyleSheet.create(conFuentes({
   // ---------- Rejilla de fichas ----------
   rejilla: { flexDirection: "row", flexWrap: "wrap", gap: ESPACIO.lg },
   ficha: {
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     borderRadius: RADIO.lg,
     borderWidth: 1,
     borderColor: COLORES.borde,
@@ -81,8 +81,8 @@ export const estilos = StyleSheet.create(conFuentes({
   },
   botonChico: { minHeight: 44, paddingHorizontal: ESPACIO.md, flexGrow: 1, flexBasis: 90 },
   botonPrincipal: { backgroundColor: COLORES.morado },
-  botonPrincipalTexto: { fontSize: 14, fontWeight: "700", color: "#fff" },
-  botonSecundario: { backgroundColor: "#fff", borderWidth: 1, borderColor: COLORES.borde },
+  botonPrincipalTexto: { fontSize: 14, fontWeight: "700", color: COLORES.sobreMorado },
+  botonSecundario: { backgroundColor: COLORES.superficie, borderWidth: 1, borderColor: COLORES.borde },
   botonSecundarioTexto: { fontSize: 13.5, fontWeight: "600", color: COLORES.texto },
   botonPeligroTexto: { fontSize: 13.5, fontWeight: "600", color: COLORES.error },
   botonInactivo: { opacity: 0.5 },
@@ -90,7 +90,7 @@ export const estilos = StyleSheet.create(conFuentes({
 
   // ---------- Estado vacío ----------
   vacio: {
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     borderRadius: RADIO.lg,
     borderWidth: 1,
     borderColor: COLORES.borde,
@@ -120,7 +120,7 @@ export const estilos = StyleSheet.create(conFuentes({
   columnaDatos: { flex: 1, minWidth: 0 },
   columnaPaquetes: { flexGrow: 0, flexShrink: 1, flexBasis: 360, minWidth: 280 },
   tarjeta: {
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     borderRadius: RADIO.lg,
     borderWidth: 1,
     borderColor: COLORES.borde,
@@ -181,7 +181,7 @@ export const estilos = StyleSheet.create(conFuentes({
     borderRadius: RADIO.sm,
     borderWidth: 1,
     borderColor: COLORES.error,
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "flex-start",
@@ -201,7 +201,7 @@ export const estilos = StyleSheet.create(conFuentes({
     borderWidth: 1,
     borderColor: COLORES.borde,
     borderRadius: RADIO.sm,
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     marginTop: -ESPACIO.sm,
     marginBottom: ESPACIO.md,
     overflow: "hidden",

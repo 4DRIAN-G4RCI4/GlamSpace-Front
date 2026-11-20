@@ -26,7 +26,7 @@ function Boton({ etiqueta, accesible, onPress, estilo, estiloTexto, deshabilitad
         deshabilitado && estilos.botonDeshabilitado,
       ]}
     >
-      {cargando ? <ActivityIndicator color={PWA.fondo} /> : <Text style={estiloTexto}>{etiqueta}</Text>}
+      {cargando ? <ActivityIndicator color={PWA.sobreVino} /> : <Text style={estiloTexto}>{etiqueta}</Text>}
     </Pressable>
   );
 }

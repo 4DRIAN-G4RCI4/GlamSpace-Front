@@ -32,12 +32,12 @@ export const estilos = StyleSheet.create(conFuentes({
   botonCuenta: { minHeight: 44, justifyContent: "center", borderWidth: 1, borderColor: PWA.vino, borderRadius: MEDIDA.radioBoton, paddingHorizontal: ESPACIO.lg },
   botonCuentaTexto: { color: PWA.vino, fontWeight: "600", fontSize: 13 },
   botonRegistro: { minHeight: 44, justifyContent: "center", backgroundColor: PWA.vino, borderRadius: MEDIDA.radioBoton, paddingHorizontal: ESPACIO.lg },
-  botonRegistroTexto: { color: PWA.fondo, fontWeight: "600", fontSize: 13 },
+  botonRegistroTexto: { color: PWA.sobreVino, fontWeight: "600", fontSize: 13 },
 
   // Avatar con iniciales (Figma Cliente 06) y su menú de usuario
   avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: PWA.crema, alignItems: "center", justifyContent: "center" },
   avatarActivo: { borderWidth: 2, borderColor: PWA.vino },
-  avatarTexto: { fontFamily: FUENTE.texto, fontSize: 13, fontWeight: "700", color: PWA.oscuro },
+  avatarTexto: { fontFamily: FUENTE.texto, fontSize: 13, fontWeight: "700", color: PWA.lateral },
   menuUsuario: {
     position: "absolute",
     top: ALTO_FILA - 6,

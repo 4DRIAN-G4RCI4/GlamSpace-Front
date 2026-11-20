@@ -11,6 +11,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import Campo from "./Campo";
 import LayoutAcceso from "./LayoutAcceso";
 import { comunes as estilos } from "../theme/estilosComunes";
+import { COLORES } from "../theme/colores";
 
 export default function FormularioRegistro({ navigation, f, textos, children }) {
   return (
@@ -84,7 +85,7 @@ export default function FormularioRegistro({ navigation, f, textos, children }) 
           disabled={f.enviando}
           activeOpacity={0.85}
         >
-          {f.enviando ? <ActivityIndicator color="#fff" /> : <Text style={estilos.botonTexto}>{textos.boton}</Text>}
+          {f.enviando ? <ActivityIndicator color={COLORES.sobreMorado} /> : <Text style={estilos.botonTexto}>{textos.boton}</Text>}
         </TouchableOpacity>
 
         {f.mensaje ? (

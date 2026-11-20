@@ -47,7 +47,7 @@ const estilos = StyleSheet.create({
   bloque: { backgroundColor: COLORES.esqueleto, borderRadius: RADIO.sm },
   tarjeta: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: COLORES.superficie,
     borderRadius: RADIO.md,
     borderWidth: 1,
     borderColor: COLORES.borde,
