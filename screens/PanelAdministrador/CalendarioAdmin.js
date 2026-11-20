@@ -6,11 +6,11 @@
  * Tras aceptar una solicitud, el panel sube `version` y el mes se vuelve a consultar (criterio 2).
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import { DIAS_SEMANA_DESDE_DOMINGO, MESES, claveFecha, formatearFechaCorta, semanasDelMes } from "../../utils/fechas";
 import useCalendarioAdmin from "./useCalendarioAdmin";
-import { fechasConPendientes, proximasConfirmadas } from "./panelAdministrador.logica";
+import { fechasConPendientes, proximasConfirmadas, resumenDelDia, solicitudesDelDia } from "./panelAdministrador.logica";
 import { estilos } from "./PanelAdministrador.styles";
 
 const FLECHA_ANTERIOR = require("../../assets/admin/flecha-anterior.svg");
@@ -76,8 +76,9 @@ function ProximasConfirmadas({ solicitudes, hoy, movil }) {
   );
 }
 
-export default function CalendarioAdmin({ adminId, salonId, solicitudes, version, movil }) {
+export default function CalendarioAdmin({ adminId, salonId, solicitudes, version, movil, onAbrir }) {
   const cal = useCalendarioAdmin(adminId, salonId, version);
+  const [diaEncima, setDiaEncima] = useState(null); // día con el puntero encima (muestra el globo)
   const pendientes = fechasConPendientes(solicitudes);
   const ocupadas = new Set(cal.ocupadas);
   const semanas = semanasDelMes(cal.mes.anio, cal.mes.mes, { desdeDomingo: true });
@@ -113,7 +114,14 @@ export default function CalendarioAdmin({ adminId, salonId, solicitudes, version
         </View>
       ) : (
         semanas.map((semana, i) => (
-          <View key={i} style={[estilos.calendarioSemana, movil && estilos.calendarioSemanaMovil]}>
+          <View
+            key={i}
+            style={[
+              estilos.calendarioSemana,
+              movil && estilos.calendarioSemanaMovil,
+              semana.some((d) => d && claveFecha(cal.mes.anio, cal.mes.mes, d) === diaEncima) && estilos.calendarioSemanaEncima,
+            ]}
+          >
             {semana.map((dia, j) => {
               if (!dia) return <View key={j} style={[estilos.calendarioCelda, movil && estilos.calendarioCeldaMovil]} />;
               const clave = claveFecha(cal.mes.anio, cal.mes.mes, dia);
@@ -121,15 +129,30 @@ export default function CalendarioAdmin({ adminId, salonId, solicitudes, version
               const pendiente = !reservado && pendientes.has(clave);
               const pasado = clave < cal.hoy;
               const estado = reservado ? "reservado" : pendiente ? "con solicitud pendiente" : pasado ? "pasado" : "disponible";
+              // Pasar el puntero muestra quién pidió ese día; tocarlo abre la solicitud.
+              const delDia = solicitudesDelDia(solicitudes, clave);
+              const conSolicitud = delDia.length > 0 && !!onAbrir;
+              const Celda = conSolicitud ? Pressable : View;
+              const interaccion = conSolicitud
+                ? {
+                    onPress: () => onAbrir(delDia[0].id),
+                    onHoverIn: () => setDiaEncima(clave),
+                    onHoverOut: () => setDiaEncima(null),
+                    accessibilityRole: "button",
+                    accessibilityHint: "Abre la solicitud de este día",
+                  }
+                : {};
               return (
-                <View
+                <Celda
                   key={j}
-                  accessibilityLabel={`${formatearFechaCorta(clave)}: ${estado}`}
+                  {...interaccion}
+                  accessibilityLabel={`${formatearFechaCorta(clave)}: ${estado}${conSolicitud ? `. ${resumenDelDia(delDia)}` : ""}`}
                   style={[
                     estilos.calendarioCelda,
                     movil && estilos.calendarioCeldaMovil,
                     reservado && estilos.calendarioReservado,
                     pendiente && estilos.calendarioPendiente,
+                    conSolicitud && estilos.calendarioCeldaConSolicitud,
                   ]}
                 >
                   <Text
@@ -145,7 +168,12 @@ export default function CalendarioAdmin({ adminId, salonId, solicitudes, version
                   >
                     {dia}
                   </Text>
-                </View>
+                  {diaEncima === clave && conSolicitud ? (
+                    <View style={estilos.calendarioGlobo} pointerEvents="none">
+                      <Text style={estilos.calendarioGloboTexto}>{resumenDelDia(delDia)}</Text>
+                    </View>
+                  ) : null}
+                </Celda>
               );
             })}
           </View>

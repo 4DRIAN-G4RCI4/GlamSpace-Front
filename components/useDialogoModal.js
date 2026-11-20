@@ -1,7 +1,7 @@
 /**
  * GlamSpaces · Comportamiento accesible compartido por los diálogos modales.
  *
- * Lo usan DialogoConfirmacion y DialogoConvertirAdmin:
+ * Lo usa DialogoConfirmacion:
  *   - Al abrir, el foco entra al diálogo; al cerrar, vuelve a donde estaba (quien lo abrió).
  *   - El foco queda atrapado: Tab y Shift+Tab giran entre los elementos del diálogo.
  *   - Escape cierra, igual que el botón de cancelar.

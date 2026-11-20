@@ -45,7 +45,10 @@ export const estilos = StyleSheet.create({
   fecha: texto(13.5, "600", PWA.texto),
   detalle: texto(13, "400", PWA.textoSecundario),
   salon: texto(12.5, "400", PWA.textoSecundario),
-  verDetalle: { ...texto(13, "600", PWA.vino), alignSelf: "flex-end", marginTop: 4 },
+  verDetalle: { alignSelf: "flex-end", marginTop: 6, borderWidth: 1, borderColor: PWA.borde, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 6 },
+  verDetalleActivo: { backgroundColor: PWA.vino, borderColor: PWA.vino },
+  verDetalleTexto: texto(13, "700", PWA.vino),
+  verDetalleTextoActivo: { color: PWA.superficie },
 
   vacio: { backgroundColor: PWA.superficie, borderWidth: 1, borderColor: PWA.borde, borderRadius: MEDIDA.radioTarjeta, padding: 24, alignItems: "center", gap: 8 },
   vacioTitulo: { fontFamily: FUENTE.titulo, fontSize: 15, fontWeight: "700", color: PWA.texto },

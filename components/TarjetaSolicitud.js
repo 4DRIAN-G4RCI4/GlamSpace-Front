@@ -2,7 +2,8 @@
  * Resumen de una solicitud de reservación con su estado (HU-16): salón, fecha,
  * tipo de evento, invitados y paquete. Lo usan la confirmación del envío y
  * "Mis solicitudes". Solo presentación; `accion` es un botón opcional al pie y `onVerDetalle`
- * agrega el enlace "Ver detalle →" (Figma Cliente 06).
+ * agrega el botón "Ver detalle →" (Figma Cliente 06). Los dos son píldoras con borde que se
+ * rellenan de vino con el puntero encima.
  */
 
 import React from "react";
@@ -57,9 +58,11 @@ export default function TarjetaSolicitud({ solicitud, accion, onVerDetalle }) {
           onPress={onVerDetalle}
           accessibilityRole="link"
           accessibilityLabel={`Ver detalle de la solicitud en ${solicitud.nombreSalon}`}
-          style={({ hovered, focused }) => [estilos.verDetalle, (hovered || focused) && estilos.accionFoco]}
+          style={({ hovered, focused, pressed }) => [estilos.accion, (hovered || pressed) && estilos.accionActiva, focused && estilos.accionFoco]}
         >
-          <Text style={estilos.verDetalleTexto}>Ver detalle →</Text>
+          {({ hovered, pressed }) => (
+            <Text style={[estilos.accionTexto, (hovered || pressed) && estilos.accionTextoActivo]}>Ver detalle →</Text>
+          )}
         </Pressable>
       ) : null}
       {accion ? (
@@ -68,13 +71,15 @@ export default function TarjetaSolicitud({ solicitud, accion, onVerDetalle }) {
           disabled={accion.cargando}
           accessibilityRole="button"
           accessibilityLabel={accion.etiqueta}
-          style={({ hovered, focused }) => [estilos.accion, (hovered || focused) && estilos.accionFoco]}
+          style={({ hovered, focused, pressed }) => [estilos.accion, (hovered || pressed) && estilos.accionActiva, focused && estilos.accionFoco]}
         >
-          {accion.cargando ? (
-            <ActivityIndicator color={COLORES.morado} size="small" />
-          ) : (
-            <Text style={estilos.accionTexto}>{accion.texto}</Text>
-          )}
+          {({ hovered, pressed }) =>
+            accion.cargando ? (
+              <ActivityIndicator color={COLORES.morado} size="small" />
+            ) : (
+              <Text style={[estilos.accionTexto, (hovered || pressed) && estilos.accionTextoActivo]}>{accion.texto}</Text>
+            )
+          }
         </Pressable>
       ) : null}
     </View>

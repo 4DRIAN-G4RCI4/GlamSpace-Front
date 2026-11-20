@@ -14,7 +14,7 @@
  *   - usePerfil.js     → sesión guardada y cerrar sesión
  */
 
-import React from "react";
+import React, { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
 import useFuentesWeb from "../../theme/fuentesWeb";
 import { MEDIDA, PWA } from "../../theme/disenoPwa";
@@ -23,6 +23,7 @@ import { esTelefono, inicialesDe } from "../../components/navegacion.logica";
 import { estilos } from "./Perfil.styles";
 import InvitacionAdmin from "../../components/InvitacionAdmin";
 import usePerfil from "./usePerfil";
+import { cambiarModoOscuro, esModoOscuro } from "../../theme/tema";
 
 const ICONOS = {
   buscar: require("../../assets/cliente/icono-buscar.svg"),
@@ -30,7 +31,7 @@ const ICONOS = {
   perfil: require("../../assets/cliente/icono-perfil.svg"),
 };
 
-function Fila({ etiqueta, valor, onPress, proximamente, primera }) {
+function Fila({ etiqueta, valor, onPress, proximamente, primera, interruptor }) {
   const contenido = (
     <>
       {valor !== undefined ? (
@@ -41,7 +42,11 @@ function Fila({ etiqueta, valor, onPress, proximamente, primera }) {
       ) : (
         <Text style={estilos.filaTexto}>{etiqueta}</Text>
       )}
-      {proximamente ? (
+      {interruptor !== undefined ? (
+        <View style={[estilos.interruptor, interruptor && estilos.interruptorActivo]}>
+          <View style={[estilos.interruptorBola, interruptor && estilos.interruptorBolaActiva]} />
+        </View>
+      ) : proximamente ? (
         <View style={estilos.proximamente}>
           <Text style={estilos.proximamenteTexto}>Próximamente</Text>
         </View>
@@ -64,7 +69,8 @@ function Fila({ etiqueta, valor, onPress, proximamente, primera }) {
   return (
     <Pressable
       onPress={onPress}
-      accessibilityRole="link"
+      accessibilityRole={interruptor !== undefined ? "switch" : "link"}
+      aria-checked={interruptor}
       style={({ hovered, focused, pressed }) => [estilos.fila, !primera && estilos.filaSeparador, (hovered || focused || pressed) && estilos.filaFoco]}
     >
       {contenido}
@@ -111,6 +117,11 @@ function BarraInferior({ esAdministrador, navigation }) {
 export default function PerfilScreen({ navigation }) {
   useFuentesWeb();
   const { usuario, cargando, cerrarSesion } = usePerfil();
+  const [oscuro, setOscuro] = useState(esModoOscuro);
+  const alternarOscuro = () => {
+    cambiarModoOscuro(!oscuro);
+    setOscuro(!oscuro);
+  };
   const { width } = useWindowDimensions();
   const telefono = esTelefono(width);
   const escritorio = width >= MEDIDA.corteEscritorio;
@@ -190,7 +201,7 @@ export default function PerfilScreen({ navigation }) {
           {esAdministrador ? <Fila etiqueta="Mis salones y fotos" onPress={() => ir("MisSalones")} /> : null}
           <Fila etiqueta="Editar perfil" proximamente />
           <Fila etiqueta="Cambiar contraseña" proximamente />
-          <Fila etiqueta="Preferencias" proximamente />
+          <Fila etiqueta="Modo oscuro" interruptor={oscuro} onPress={alternarOscuro} />
         </View>
       </View>
     );
