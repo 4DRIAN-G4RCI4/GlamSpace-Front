@@ -27,6 +27,11 @@ export const estilos = StyleSheet.create(conFuentes({
   enlaceActivo: { borderBottomColor: PWA.vino },
   enlaceTexto: { fontSize: 13.5, color: PWA.texto },
   enlaceTextoActivo: { fontSize: 13.5, fontWeight: "600", color: PWA.vino },
+  // Con el puntero o el foco encima: fondo suave y texto en el color de acento, sin el contorno.
+  enlaceHover: { backgroundColor: PWA.resalte, borderRadius: 8, outlineStyle: "none" },
+  enlaceTextoHover: { color: PWA.vino },
+  avatarHover: { borderWidth: 2, borderColor: PWA.vino, outlineStyle: "none" },
+  botonCuentaHover: { backgroundColor: PWA.resalte, outlineStyle: "none" },
   derecha: { flexDirection: "row", alignItems: "center", gap: ESPACIO.sm + 2 },
 
   botonCuenta: { minHeight: 44, justifyContent: "center", borderWidth: 1, borderColor: PWA.vino, borderRadius: MEDIDA.radioBoton, paddingHorizontal: ESPACIO.lg },
@@ -94,6 +99,5 @@ export const estilos = StyleSheet.create(conFuentes({
   migaSeparador: { fontSize: 12, color: PWA.textoTenue, marginHorizontal: ESPACIO.sm },
   migaFoco: { borderBottomWidth: 1, borderBottomColor: PWA.vino },
 
-  foco: { outlineStyle: "solid", outlineWidth: 2, outlineColor: PWA.vino, outlineOffset: 2 },
-  hover: { opacity: 0.85 },
+  hover: { opacity: 0.85, outlineStyle: "none" },
 }));
