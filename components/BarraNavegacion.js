@@ -119,7 +119,7 @@ export default function BarraNavegacion({ navigation, pantalla, migas = [], volv
         <BotonRegresar navigation={navigation} respaldo={regresoDe(pantalla)} estilo={{ marginBottom: 0 }} />
       ) : null}
       <Pressable onPress={() => ir("BusquedaSalones")} accessibilityRole="link" accessibilityLabel="GlamSpaces, ir al inicio"
-        style={({ focused }) => [focused && estilos.foco]}>
+        style={({ hovered, focused }) => [(hovered || focused) && estilos.hover]}>
         <Marca compacta />
       </Pressable>
     </View>
@@ -136,7 +136,7 @@ export default function BarraNavegacion({ navigation, pantalla, migas = [], volv
           accessibilityLabel={menuAbierto ? "Cerrar el menú" : "Abrir el menú"}
           aria-expanded={menuAbierto}
           aria-controls="menu-principal"
-          style={({ hovered, focused }) => [estilos.hamburguesa, hovered && estilos.hover, focused && estilos.foco]}
+          style={({ hovered, focused }) => [estilos.hamburguesa, (hovered || focused) && estilos.enlaceHover]}
         >
           <View style={estilos.raya} />
           <View style={estilos.raya} />
@@ -157,9 +157,11 @@ export default function BarraNavegacion({ navigation, pantalla, migas = [], volv
                 onPress={() => ir(a.destino, a.params)}
                 accessibilityRole="link"
                 aria-current={esActiva ? "page" : undefined}
-                style={({ hovered, focused }) => [estilos.enlace, esActiva && estilos.enlaceActivo, hovered && estilos.hover, focused && estilos.foco]}
+                style={({ hovered, focused }) => [estilos.enlace, esActiva && estilos.enlaceActivo, (hovered || focused) && estilos.enlaceHover]}
               >
-                <Text style={esActiva ? estilos.enlaceTextoActivo : estilos.enlaceTexto}>{a.texto}</Text>
+                {({ hovered, focused }) => (
+                  <Text style={[esActiva ? estilos.enlaceTextoActivo : estilos.enlaceTexto, (hovered || focused) && estilos.enlaceTextoHover]}>{a.texto}</Text>
+                )}
               </Pressable>
             );
           })}
@@ -172,16 +174,16 @@ export default function BarraNavegacion({ navigation, pantalla, migas = [], volv
               accessibilityLabel={`Menú de ${sesion.nombre}`}
               aria-expanded={menuUsuario}
               aria-controls="menu-usuario"
-              style={({ hovered, focused }) => [estilos.avatar, activa === "perfil" && estilos.avatarActivo, hovered && estilos.hover, focused && estilos.foco]}
+              style={({ hovered, focused }) => [estilos.avatar, activa === "perfil" && estilos.avatarActivo, (hovered || focused) && estilos.avatarHover]}
             >
               <Text style={estilos.avatarTexto}>{inicialesDe(sesion.nombre)}</Text>
             </Pressable>
           ) : (
             <>
-              <Pressable onPress={iniciarSesion} accessibilityRole="button" style={({ hovered, focused }) => [estilos.botonCuenta, hovered && estilos.hover, focused && estilos.foco]}>
+              <Pressable onPress={iniciarSesion} accessibilityRole="button" style={({ hovered, focused }) => [estilos.botonCuenta, (hovered || focused) && estilos.botonCuentaHover]}>
                 <Text style={estilos.botonCuentaTexto}>Iniciar sesión</Text>
               </Pressable>
-              <Pressable onPress={() => ir("RegistroAdministrador")} accessibilityRole="button" style={({ hovered, focused }) => [estilos.botonRegistro, hovered && estilos.hover, focused && estilos.foco]}>
+              <Pressable onPress={() => ir("RegistroAdministrador")} accessibilityRole="button" style={({ hovered, focused }) => [estilos.botonRegistro, (hovered || focused) && estilos.hover]}>
                 <Text style={estilos.botonRegistroTexto}>Registra tu salón</Text>
               </Pressable>
             </>
@@ -233,10 +235,10 @@ export default function BarraNavegacion({ navigation, pantalla, migas = [], volv
             </Pressable>
           ) : (
             <View style={estilos.panelBotones}>
-              <Pressable onPress={iniciarSesion} accessibilityRole="button" style={({ focused }) => [estilos.botonCuenta, { flex: 1, alignItems: "center" }, focused && estilos.foco]}>
+              <Pressable onPress={iniciarSesion} accessibilityRole="button" style={({ hovered, focused }) => [estilos.botonCuenta, { flex: 1, alignItems: "center" }, (hovered || focused) && estilos.botonCuentaHover]}>
                 <Text style={estilos.botonCuentaTexto}>Iniciar sesión</Text>
               </Pressable>
-              <Pressable onPress={() => ir("RegistroAdministrador")} accessibilityRole="button" style={({ focused }) => [estilos.botonRegistro, { flex: 1, alignItems: "center" }, focused && estilos.foco]}>
+              <Pressable onPress={() => ir("RegistroAdministrador")} accessibilityRole="button" style={({ hovered, focused }) => [estilos.botonRegistro, { flex: 1, alignItems: "center" }, (hovered || focused) && estilos.hover]}>
                 <Text style={estilos.botonRegistroTexto}>Registra tu salón</Text>
               </Pressable>
             </View>

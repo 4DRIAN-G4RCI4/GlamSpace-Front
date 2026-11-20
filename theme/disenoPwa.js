@@ -36,6 +36,7 @@ const PALETA = {
   sobreVino: ["#fbf7f2", "#151012"], // texto sobre un relleno de acento
   inicialesSobreVino: ["#f3e4c8", "#151012"], // iniciales del avatar sobre el acento
   chip: ["#f3e4c8", "#3a3024"], // fondo de chips y del espacio de las fotos
+  resalte: ["rgba(107,41,66,0.08)", "rgba(212,176,106,0.14)"], // fondo de un enlace con el puntero o el foco encima
 };
 
 export const PWA = elegirTema(PALETA);
