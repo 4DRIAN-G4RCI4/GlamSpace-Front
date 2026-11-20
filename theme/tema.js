@@ -25,6 +25,11 @@ function leerPreferencia() {
 /** Tema con el que arrancó la app (no cambia sin recargar). */
 export const MODO_OSCURO = leerPreferencia();
 
+/** De una paleta { nombre: [claro, oscuro] } regresa { nombre: color } del tema actual. */
+export function elegirTema(paleta) {
+  return Object.fromEntries(Object.entries(paleta).map(([nombre, [claro, oscuro]]) => [nombre, MODO_OSCURO ? oscuro : claro]));
+}
+
 /** ¿Está activo el modo oscuro? */
 export function esModoOscuro() {
   return MODO_OSCURO;
