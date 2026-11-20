@@ -66,13 +66,13 @@ export const estilos = {
       paddingHorizontal: ESPACIO.sm + 2,
       paddingVertical: ESPACIO.xs,
     },
-    galeriaContadorTexto: { color: PWA.superficie, fontSize: 12, fontWeight: "600" },
+    galeriaContadorTexto: { color: "#ffffff", fontSize: 12, fontWeight: "600" },
 
     miniaturas: { flexDirection: "row", gap: ESPACIO.md + 4, marginTop: ESPACIO.lg + 4 },
     miniatura: { flex: 1, borderRadius: RADIO.md, borderWidth: 2, borderColor: "transparent", overflow: "hidden" },
     miniaturaHueco: { flex: 1 },
     miniaturaActiva: { borderColor: PWA.vino },
-    miniaturaFoto: { width: "100%", aspectRatio: 125 / 70, backgroundColor: PWA.crema },
+    miniaturaFoto: { width: "100%", aspectRatio: 125 / 70, backgroundColor: PWA.chip },
     miniaturaMas: {
       position: "absolute",
       top: 0,
@@ -83,13 +83,13 @@ export const estilos = {
       alignItems: "center",
       justifyContent: "center",
     },
-    miniaturaMasTexto: { color: PWA.superficie, fontSize: 18, fontWeight: "700" },
+    miniaturaMasTexto: { color: "#ffffff", fontSize: 18, fontWeight: "700" },
 
     // ---------- Encabezado del salón ----------
     nombre: { fontSize: 30, fontWeight: "700", color: PWA.texto, marginTop: ESPACIO.xl + 4 },
     ubicacion: { fontSize: 13.5, color: PWA.textoSecundario, marginTop: ESPACIO.sm },
     chips: { flexDirection: "row", flexWrap: "wrap", gap: ESPACIO.sm, marginTop: ESPACIO.md },
-    chip: { backgroundColor: PWA.crema, borderRadius: RADIO.pill, paddingHorizontal: ESPACIO.md, paddingVertical: ESPACIO.xs + 2 },
+    chip: { backgroundColor: PWA.chip, borderRadius: RADIO.pill, paddingHorizontal: ESPACIO.md, paddingVertical: ESPACIO.xs + 2 },
     chipTexto: { fontSize: 12, fontWeight: "600", color: PWA.texto },
 
     pestanas: { flexDirection: "row", gap: ESPACIO.xl, borderBottomWidth: 1, borderBottomColor: PWA.borde, marginTop: ESPACIO.xl },
@@ -161,7 +161,7 @@ export const estilos = {
     },
     botonReservarMovil: { marginTop: 0, flexShrink: 1 },
     botonReservarFoco: { opacity: 0.88, outlineStyle: "solid", outlineWidth: 2, outlineColor: PWA.oscuro, outlineOffset: 2 },
-    botonReservarTexto: { color: PWA.fondo, fontSize: 14, fontWeight: "600" },
+    botonReservarTexto: { color: PWA.sobreVino, fontSize: 14, fontWeight: "600" },
     notaReserva: { fontSize: 11.5, color: PWA.textoSecundario, textAlign: "center", marginTop: ESPACIO.md, lineHeight: 16 },
 
     // Barra fija abajo en móvil y tablet
@@ -204,9 +204,9 @@ export const estilos = {
     diaFoco: { backgroundColor: COLORES.moradoClaro, borderWidth: 1, borderColor: PWA.vino },
     diaTexto: { fontSize: 13.5, fontWeight: "500" },
     diaTexto_disponible: { color: PWA.texto },
-    diaTexto_ocupado: { color: PWA.superficie, textDecorationLine: "line-through" },
+    diaTexto_ocupado: { color: PWA.sobreVino, textDecorationLine: "line-through" },
     diaTexto_pasado: { color: PWA.textoTenue },
-    diaTexto_elegido: { color: PWA.superficie, fontWeight: "700" },
+    diaTexto_elegido: { color: PWA.sobreVino, fontWeight: "700" },
 
     leyenda: { flexDirection: "row", flexWrap: "wrap", gap: ESPACIO.lg, marginTop: ESPACIO.md, justifyContent: "center" },
     leyendaItem: { flexDirection: "row", alignItems: "center" },

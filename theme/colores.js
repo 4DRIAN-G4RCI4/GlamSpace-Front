@@ -5,7 +5,9 @@
  * (morado, dorado, …) se conservan para no tocar cada pantalla; el valor de cada uno es el de Figma.
  */
 
-export const COLORES = {
+import { MODO_OSCURO } from "./tema";
+
+const CLARO = {
   morado: "#6b2942", // Tawny Port · acción principal
   moradoOscuro: "#2b1f24", // Thunder · títulos y fondos oscuros
   moradoClaro: "#fbf7f2", // White Linen · fondo de página
@@ -28,4 +30,44 @@ export const COLORES = {
   confirmadaTexto: "#446e53", // Como oscurecido para contraste AA en texto chico (4.8:1 sobre confirmadaFondo)
   rechazadaFondo: "#f6dadd", // We Peep
   rechazadaTexto: "#a63446", // Stiletto
+  // Papeles que antes compartían valor con otro color (ver theme/tema.js): en claro valen lo mismo
+  // que en el Figma; en oscuro cada uno toma el suyo.
+  superficie: "#ffffff", // tarjetas, paneles y botones con fondo blanco
+  sobreMorado: "#ffffff", // texto e íconos sobre un botón relleno de acento
+  moradoActivo: "#2b1f24", // botón relleno de acento con el puntero encima
+  errorActivo: "#8c2b3a", // botón de peligro con el puntero encima
+  panelMarca: "#6b2942", // panel de la marca en login y registros
 };
+
+// Modo oscuro: fondo carbón, tarjetas un tono arriba y dorado champaña como acento (el vino
+// sobre negro pierde contraste). El texto sobre el acento es oscuro.
+const OSCURO = {
+  morado: "#d4b06a",
+  moradoOscuro: "#f1e9e4", // títulos
+  moradoClaro: "#151012", // fondo de página
+  dorado: "#d4b06a",
+  doradoTexto: "#e3c27a",
+  texto: "#f1e9e4",
+  muted: "#b5a7ab",
+  error: "#f08a9b",
+  ok: "#8fc9a3",
+  borde: "#3a3034",
+  fondoInput: "#241d21",
+  placeholder: "#857479",
+  esqueleto: "#3a3034",
+  ocupadoFondo: "#3d2026",
+  ocupadoTexto: "#f08a9b",
+  pendienteFondo: "#3d3220",
+  pendienteTexto: "#e3c27a",
+  confirmadaFondo: "#1f3327",
+  confirmadaTexto: "#8fc9a3",
+  rechazadaFondo: "#3d2026",
+  rechazadaTexto: "#f08a9b",
+  superficie: "#1f191c",
+  sobreMorado: "#151012",
+  moradoActivo: "#e6c88c",
+  errorActivo: "#f4a5b2",
+  panelMarca: "#0f0b0d",
+};
+
+export const COLORES = MODO_OSCURO ? OSCURO : CLARO;

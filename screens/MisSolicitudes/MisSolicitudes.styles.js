@@ -35,7 +35,7 @@ export const estilos = {
     contenido: { width: "100%", maxWidth: ANCHO_LISTA, paddingHorizontal: ESPACIO.lg, marginTop: ESPACIO.lg },
 
     aviso: {
-      backgroundColor: "#fff",
+      backgroundColor: COLORES.superficie,
       borderRadius: RADIO.md,
       borderWidth: 1,
       borderColor: COLORES.borde,
@@ -57,12 +57,12 @@ export const estilos = {
       borderRadius: RADIO.pill,
       borderWidth: 1,
       borderColor: COLORES.borde,
-      backgroundColor: "#fff",
+      backgroundColor: COLORES.superficie,
     },
     chipActivo: { backgroundColor: COLORES.morado, borderColor: COLORES.morado },
     chipHover: { backgroundColor: COLORES.moradoClaro },
     chipTexto: { fontSize: 13, fontWeight: "600", color: COLORES.texto },
-    chipTextoActivo: { color: "#fff" },
+    chipTextoActivo: { color: COLORES.sobreMorado },
 
     rejilla: { flexDirection: "row", flexWrap: "wrap", gap: ESPACIO.lg, alignItems: "flex-start" },
     tarjetaFoto: { borderRadius: RADIO.lg, overflow: "hidden" },

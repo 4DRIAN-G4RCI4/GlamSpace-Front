@@ -76,7 +76,7 @@ export const estilos = {
     sugerenciaActiva: { backgroundColor: PWA.vino, borderColor: PWA.vino },
     sugerenciaFoco: { borderColor: PWA.vino },
     sugerenciaTexto: { fontSize: 12.5, color: PWA.texto, fontWeight: "500" },
-    sugerenciaTextoActiva: { color: PWA.fondo },
+    sugerenciaTextoActiva: { color: PWA.sobreVino },
 
     filaCampos: {},
     filaCamposDos: { flexDirection: "row", gap: ESPACIO.md },
@@ -105,7 +105,7 @@ export const estilos = {
       marginTop: ESPACIO.md,
     },
     botonPrincipalFoco: { opacity: 0.88, outlineStyle: "solid", outlineWidth: 2, outlineColor: PWA.oscuro, outlineOffset: 2 },
-    botonPrincipalTexto: { color: PWA.fondo, fontSize: 14, fontWeight: "600" },
+    botonPrincipalTexto: { color: PWA.sobreVino, fontSize: 14, fontWeight: "600" },
     botonSecundarioPaso: {
       minHeight: 44,
       alignItems: "center",

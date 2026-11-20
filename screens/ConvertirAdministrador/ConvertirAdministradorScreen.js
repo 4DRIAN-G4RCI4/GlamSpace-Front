@@ -26,11 +26,11 @@ function BotonPrincipal({ texto, onPress, enviando }) {
       style={({ hovered, pressed }) => [
         estilos.boton,
         estilos.botonLogin,
-        (hovered || pressed) && { backgroundColor: COLORES.moradoOscuro },
+        (hovered || pressed) && { backgroundColor: COLORES.moradoActivo },
         enviando && estilos.botonDeshabilitado,
       ]}
     >
-      {enviando ? <ActivityIndicator color="#fff" /> : <Text style={estilos.botonTexto}>{texto}</Text>}
+      {enviando ? <ActivityIndicator color={COLORES.sobreMorado} /> : <Text style={estilos.botonTexto}>{texto}</Text>}
     </Pressable>
   );
 }
