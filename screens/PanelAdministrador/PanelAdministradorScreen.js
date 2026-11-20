@@ -34,7 +34,8 @@ import BannerSinConexion from "./BannerSinConexion";
 import { estadisticas } from "./panelAdministrador.logica";
 import { estilos } from "./PanelAdministrador.styles";
 
-// Solo aparece si el administrador tiene más de un salón. En móvil es una fila con scroll horizontal.
+// Filtro por salón: las solicitudes y el calendario son del salón elegido. Solo aparece si el
+// administrador tiene más de un salón. En móvil es una fila con scroll horizontal.
 function SelectorSalones({ salones, salonId, onElegir, movil }) {
   if (salones.length < 2) return null;
   const Contenedor = movil ? ScrollView : View;
@@ -42,7 +43,8 @@ function SelectorSalones({ salones, salonId, onElegir, movil }) {
     ? { horizontal: true, showsHorizontalScrollIndicator: false, contentContainerStyle: estilos.selectorSalonesMovil }
     : { style: estilos.selectorSalones };
   return (
-    <Contenedor {...props} accessibilityLabel="Elige el salón">
+    <Contenedor {...props} accessibilityLabel="Filtrar por salón">
+      <Text style={estilos.selectorSalonesEtiqueta}>Filtrar por salón:</Text>
       {salones.map((s) => {
         const activo = s.id === salonId;
         return (
@@ -51,7 +53,7 @@ function SelectorSalones({ salones, salonId, onElegir, movil }) {
             onPress={() => onElegir(s.id)}
             accessibilityRole="button"
             accessibilityState={{ selected: activo }}
-            style={[estilos.chipSalon, activo && estilos.chipSalonActivo]}
+            style={({ hovered }) => [estilos.chipSalon, activo && estilos.chipSalonActivo, !activo && hovered && estilos.chipSalonHover]}
           >
             <Text style={activo ? estilos.chipSalonTextoActivo : estilos.chipSalonTexto}>{s.nombre}</Text>
           </Pressable>
@@ -226,6 +228,7 @@ export default function PanelAdministradorScreen({ navigation, route }) {
         solicitudes={panel.solicitudes}
         version={panel.versionCalendario}
         movil={movil}
+        onAbrir={abrirSolicitud}
       />
     );
   } else {
@@ -247,7 +250,7 @@ export default function PanelAdministradorScreen({ navigation, route }) {
   );
 
   return (
-    <LayoutAdmin seccion={panel.pestana} onElegir={elegirSeccion} nombreSalon={nombreSalon} nombreAdmin={panel.sesion ? panel.sesion.nombre : ""} onCuenta={irACuenta}>
+    <LayoutAdmin navigation={navigation} seccion={panel.pestana} onElegir={elegirSeccion} nombreSalon={nombreSalon} nombreAdmin={panel.sesion ? panel.sesion.nombre : ""} onCuenta={irACuenta}>
       {contenido}
     </LayoutAdmin>
   );

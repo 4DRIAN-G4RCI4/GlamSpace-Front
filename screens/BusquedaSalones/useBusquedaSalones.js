@@ -2,7 +2,7 @@
  * GlamSpaces · HU-10 · Lógica de la pantalla de búsqueda de salones.
  *
  *  - Al abrir, busca con la zona por defecto (criterio 1).
- *  - La barra de búsqueda filtra por zona. Los chips (zona, capacidad, precio) se
+ *  - La barra de búsqueda filtra por zona mientras se escribe (y también con Enter / "Buscar"). Los chips (zona, capacidad, precio) se
  *    editan y se confirman con "Aplicar" (criterio 2); los activos se ven rellenos.
  *  - Cada cambio de filtros vuelve a consultar POST /api/salones/buscar (HU-09).
  *  - Lista vacía → la pantalla muestra el mensaje de "sin resultados" (criterio 3).
@@ -20,6 +20,9 @@ import { validarCapacidad, validarPrecio } from "./busquedaSalones.validaciones"
 // Zona con la que abre la pantalla. Vacía = todos los salones publicados.
 // Si el equipo define una zona por defecto (ej. "Tula"), se cambia solo aquí.
 export const ZONA_POR_DEFECTO = "";
+
+// Pausa tras la última tecla antes de buscar (búsqueda en vivo).
+export const ESPERA_AL_ESCRIBIR_MS = 300;
 
 // 3 columnas x 6 filas = 18 por pagina (ver services/paginacion.logica.js).
 const TAMANO_PAGINA = POR_PAGINA_SALONES;
@@ -115,6 +118,14 @@ export default function useBusquedaSalones() {
   }, [filtros]);
 
   // ---- Barra de búsqueda (zona) ----
+
+  // Filtra mientras se escribe: "t" trae las zonas con "t", "tu" las reduce, etc. Espera a que
+  // se deje de teclear un momento para no mandar una búsqueda por cada letra.
+  useEffect(() => {
+    const espera = setTimeout(confirmarBusqueda, ESPERA_AL_ESCRIBIR_MS);
+    return () => clearTimeout(espera);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [textoBusqueda]);
 
   function confirmarBusqueda() {
     const zona = textoBusqueda.trim();

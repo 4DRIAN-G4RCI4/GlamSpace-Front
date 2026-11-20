@@ -18,6 +18,7 @@
  *   RegistroAdministrador  HU-03 (Sprint 1)
  *   MisSalones             Mejora de HU-07/HU-08 · gestión de los salones del admin
  *   EditarSalon            Mejora de HU-07/HU-08 · editar o crear un salón
+ *   ConvertirAdministrador Sprint 7 · verificar identidad y convertir la cuenta de cliente
  *
  * En web, cada cambio de pantalla se registra en el historial del navegador
  * (history.pushState), así los botones Atrás / Adelante del navegador se mueven
@@ -38,6 +39,7 @@ import SolicitudReservacionScreen from "./screens/SolicitudReservacion/Solicitud
 import MisSolicitudesScreen from "./screens/MisSolicitudes/MisSolicitudesScreen";
 import PanelAdministradorScreen from "./screens/PanelAdministrador/PanelAdministradorScreen";
 import PerfilScreen from "./screens/Perfil/PerfilScreen";
+import ConvertirAdministradorScreen from "./screens/ConvertirAdministrador/ConvertirAdministradorScreen";
 import { regresoDe } from "./components/navegacion.logica";
 import useFuentesWeb from "./theme/fuentesWeb";
 import AvisoNuevaVersion from "./components/AvisoNuevaVersion"; // HU-21 · service worker
@@ -54,6 +56,7 @@ const PANTALLAS = {
   MisSalones: MisSalonesScreen,
   EditarSalon: EditarSalonScreen,
   Perfil: PerfilScreen,
+  ConvertirAdministrador: ConvertirAdministradorScreen,
 };
 
 const INICIO = { nombre: "BusquedaSalones", params: {} };
