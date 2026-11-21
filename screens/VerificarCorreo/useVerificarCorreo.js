@@ -1,33 +1,24 @@
 /**
  * GlamSpaces · Sprint 10 · Verificar el correo de una cuenta nueva (estado y acciones).
  *   POST /api/usuarios/verificarCorreo { correo, codigo } → la sesión: se guarda y entra.
- *   POST /api/usuarios/reenviarCodigo  { correo, proposito: "verificacion" }
+ *   "Reenviar código", avisos y errores: ../../components/useCodigoCorreo.js
  */
 
 import { useState } from "react";
-import { reenviarCodigo, verificarCorreo } from "../../services/usuariosApi";
+import { verificarCorreo } from "../../services/usuariosApi";
 import { guardarSesion } from "../../services/sesionStorage";
-import { ESPERA_REENVIO_SEGUNDOS, TEXTOS_CORREO, mensajeDeErrorCodigo, validarCodigo } from "../../services/correo.logica";
-import useCuentaRegresiva from "../../components/useCuentaRegresiva";
+import { validarCodigo } from "../../services/correo.logica";
+import useCodigoCorreo from "../../components/useCodigoCorreo";
 
 export default function useVerificarCorreo(correo, alEntrar) {
   const [codigo, setCodigo] = useState("");
-  const [errores, setErrores] = useState({});
-  const [mensaje, setMensaje] = useState(null); // { tipo: "ok" | "fail", texto }
   const [enviando, setEnviando] = useState(false);
-  const [reenviando, setReenviando] = useState(false);
-  const cuenta = useCuentaRegresiva(ESPERA_REENVIO_SEGUNDOS);
-
-  function mostrarError(e) {
-    const { texto, campo } = mensajeDeErrorCodigo(e);
-    if (campo) setErrores({ [campo]: texto });
-    else setMensaje({ tipo: "fail", texto });
-  }
+  const c = useCodigoCorreo(correo, "verificacion");
 
   async function verificar() {
-    setMensaje(null);
+    c.setMensaje(null);
     const erroresForm = validarCodigo(codigo);
-    setErrores(erroresForm);
+    c.setErrores(erroresForm);
     if (Object.keys(erroresForm).length > 0) return;
 
     setEnviando(true);
@@ -36,26 +27,21 @@ export default function useVerificarCorreo(correo, alEntrar) {
       await guardarSesion(sesion);
       alEntrar(sesion);
     } catch (e) {
-      mostrarError(e);
+      c.mostrarError(e);
     } finally {
       setEnviando(false);
     }
   }
 
-  async function reenviar() {
-    setMensaje(null);
-    setErrores({});
-    setReenviando(true);
-    try {
-      await reenviarCodigo(correo, "verificacion");
-      setMensaje({ tipo: "ok", texto: TEXTOS_CORREO.reenviado });
-      cuenta.reiniciar();
-    } catch (e) {
-      mostrarError(e);
-    } finally {
-      setReenviando(false);
-    }
-  }
-
-  return { codigo, setCodigo, errores, mensaje, enviando, reenviando, restantes: cuenta.restantes, verificar, reenviar };
+  return {
+    codigo,
+    setCodigo,
+    errores: c.errores,
+    mensaje: c.mensaje,
+    enviando,
+    reenviando: c.reenviando,
+    restantes: c.restantes,
+    verificar,
+    reenviar: c.reenviar,
+  };
 }

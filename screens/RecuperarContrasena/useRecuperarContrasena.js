@@ -8,10 +8,10 @@
  */
 
 import { useState } from "react";
-import { reenviarCodigo, restablecerContrasena, solicitarRecuperacion } from "../../services/usuariosApi";
+import { restablecerContrasena, solicitarRecuperacion } from "../../services/usuariosApi";
 import { esCorreoValido } from "../../utils/validadores";
-import { ESPERA_REENVIO_SEGUNDOS, TEXTOS_CORREO, mensajeDeErrorCodigo, validarRestablecer } from "../../services/correo.logica";
-import useCuentaRegresiva from "../../components/useCuentaRegresiva";
+import { validarRestablecer } from "../../services/correo.logica";
+import useCodigoCorreo from "../../components/useCodigoCorreo";
 
 export default function useRecuperarContrasena(correoInicial = "") {
   const [paso, setPaso] = useState("correo");
@@ -20,17 +20,10 @@ export default function useRecuperarContrasena(correoInicial = "") {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [mostrarPassword, setMostrarPassword] = useState(false);
-  const [errores, setErrores] = useState({});
-  const [mensaje, setMensaje] = useState(null); // { tipo: "ok" | "fail", texto }
   const [enviando, setEnviando] = useState(false);
-  const [reenviando, setReenviando] = useState(false);
-  const cuenta = useCuentaRegresiva(ESPERA_REENVIO_SEGUNDOS);
-
-  function mostrarError(e) {
-    const { texto, campo } = mensajeDeErrorCodigo(e);
-    if (campo) setErrores({ [campo]: texto });
-    else setMensaje({ tipo: "fail", texto });
-  }
+  // Avisos, errores y "Reenviar código": ../../components/useCodigoCorreo.js
+  const c = useCodigoCorreo(correo, "recuperacion");
+  const { setErrores, setMensaje } = c;
 
   // Envuelve una llamada a la API: limpia avisos, marca "enviando" y muestra el error si falla.
   async function conEnvio(accion) {
@@ -39,7 +32,7 @@ export default function useRecuperarContrasena(correoInicial = "") {
     try {
       await accion();
     } catch (e) {
-      mostrarError(e);
+      c.mostrarError(e);
     } finally {
       setEnviando(false);
     }
@@ -53,7 +46,7 @@ export default function useRecuperarContrasena(correoInicial = "") {
     return conEnvio(async () => {
       await solicitarRecuperacion(limpio);
       setPaso("restablecer");
-      cuenta.reiniciar();
+      c.reiniciarCuenta();
     });
   }
 
@@ -69,21 +62,6 @@ export default function useRecuperarContrasena(correoInicial = "") {
     });
   }
 
-  async function reenviar() {
-    setMensaje(null);
-    setErrores({});
-    setReenviando(true);
-    try {
-      await reenviarCodigo(correo, "recuperacion");
-      setMensaje({ tipo: "ok", texto: TEXTOS_CORREO.reenviado });
-      cuenta.reiniciar();
-    } catch (e) {
-      mostrarError(e);
-    } finally {
-      setReenviando(false);
-    }
-  }
-
   return {
     paso,
     correo,
@@ -96,14 +74,14 @@ export default function useRecuperarContrasena(correoInicial = "") {
     setPassword2,
     mostrarPassword,
     alternarPassword: () => setMostrarPassword((v) => !v),
-    errores,
-    mensaje,
+    errores: c.errores,
+    mensaje: c.mensaje,
     enviando,
-    reenviando,
-    restantes: cuenta.restantes,
+    reenviando: c.reenviando,
+    restantes: c.restantes,
     pedirCodigo,
     restablecer,
-    reenviar,
+    reenviar: c.reenviar,
     cambiarCorreo: () => {
       setPaso("correo");
       setCodigo("");
