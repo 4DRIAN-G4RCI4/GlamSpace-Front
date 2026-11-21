@@ -24,6 +24,7 @@ import useSolicitudReservacion from "./useSolicitudReservacion";
 import PasoElegir from "./PasoElegir";
 import PasoConfirmar from "./PasoConfirmar";
 import { estilos } from "./SolicitudReservacion.styles";
+import { AVISO_SOLO_CONSULTA, puedeReservar } from "../../components/navegacion.logica";
 
 function Boton({ texto, onPress, secundario }) {
   return (
@@ -76,6 +77,16 @@ export default function SolicitudReservacionScreen({ navigation, route }) {
   let contenido;
   if (f.cargando) {
     contenido = <ActivityIndicator color={COLORES.morado} size="large" style={estilos.cargando} accessibilityLabel="Cargando" />;
+  } else if (!puedeReservar(f.sesion)) {
+    // Sprint 10: un administrador que llega aquí (por la URL) no puede rentar.
+    contenido = (
+      <View style={estilos.confirmacion}>
+        <Text style={[estilos.tituloPaso, estilos.centrado]}>{AVISO_SOLO_CONSULTA.titulo}</Text>
+        <Text style={[estilos.textoSecundario, estilos.centrado]}>{AVISO_SOLO_CONSULTA.texto}</Text>
+        <Boton texto={AVISO_SOLO_CONSULTA.boton} onPress={() => ir("RegistroCliente")} />
+        <Boton texto="Volver al salón" onPress={() => ir("DetalleSalon", { salonId: f.salonId })} secundario />
+      </View>
+    );
   } else if (f.paso === "enviada" && f.enviada) {
     contenido = <Confirmacion solicitud={f.enviada} ir={ir} />;
   } else if (f.errorSalon || !f.salon) {

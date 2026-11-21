@@ -163,6 +163,9 @@ export const estilos = {
     botonReservarFoco: { opacity: 0.88, outlineStyle: "solid", outlineWidth: 2, outlineColor: PWA.oscuro, outlineOffset: 2 },
     botonReservarTexto: { color: PWA.sobreVino, fontSize: 14, fontWeight: "600" },
     notaReserva: { fontSize: 11.5, color: PWA.textoSecundario, textAlign: "center", marginTop: ESPACIO.md, lineHeight: 16 },
+    // Sprint 10 · aviso del administrador (solo consulta) en lugar de "Solicitar reservación"
+    avisoSoloConsultaTitulo: { fontSize: 14, fontWeight: "700", color: PWA.texto, textAlign: "center", marginTop: ESPACIO.lg },
+    avisoSoloConsultaCorto: { flexShrink: 1, fontSize: 12.5, fontWeight: "600", color: PWA.textoSecundario, textAlign: "right" },
 
     // Barra fija abajo en móvil y tablet
     barraMovil: {
