@@ -19,6 +19,8 @@
  *   MisSalones             Mejora de HU-07/HU-08 · gestión de los salones del admin
  *   EditarSalon            Mejora de HU-07/HU-08 · editar o crear un salón
  *   ConvertirAdministrador Sprint 7 · verificar identidad y convertir la cuenta de cliente
+ *   VerificarCorreo        Sprint 10 · código de 6 dígitos para activar una cuenta nueva
+ *   RecuperarContrasena    Sprint 10 · código por correo para cambiar la contraseña
  *
  * En web, cada cambio de pantalla se registra en el historial del navegador
  * (history.pushState), así los botones Atrás / Adelante del navegador se mueven
@@ -40,6 +42,8 @@ import MisSolicitudesScreen from "./screens/MisSolicitudes/MisSolicitudesScreen"
 import PanelAdministradorScreen from "./screens/PanelAdministrador/PanelAdministradorScreen";
 import PerfilScreen from "./screens/Perfil/PerfilScreen";
 import ConvertirAdministradorScreen from "./screens/ConvertirAdministrador/ConvertirAdministradorScreen";
+import VerificarCorreoScreen from "./screens/VerificarCorreo/VerificarCorreoScreen";
+import RecuperarContrasenaScreen from "./screens/RecuperarContrasena/RecuperarContrasenaScreen";
 import { regresoDe } from "./components/navegacion.logica";
 import useFuentesWeb from "./theme/fuentesWeb";
 import AvisoNuevaVersion from "./components/AvisoNuevaVersion"; // HU-21 · service worker
@@ -57,6 +61,8 @@ const PANTALLAS = {
   EditarSalon: EditarSalonScreen,
   Perfil: PerfilScreen,
   ConvertirAdministrador: ConvertirAdministradorScreen,
+  VerificarCorreo: VerificarCorreoScreen,
+  RecuperarContrasena: RecuperarContrasenaScreen,
 };
 
 const INICIO = { nombre: "BusquedaSalones", params: {} };
