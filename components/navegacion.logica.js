@@ -96,3 +96,21 @@ export function regresoDe(pantalla) {
 export function llevaBotonRegresar(pantalla) {
   return pantalla !== "BusquedaSalones" && !!REGRESO_POR_PANTALLA[pantalla];
 }
+
+// ---------- El administrador solo consulta salones (Sprint 10) ----------
+
+/**
+ * ¿Se le ofrece "Solicitar reservación"? Un administrador puede ver cualquier salón y sus paquetes,
+ * pero no rentar (la API también lo rechaza: 4003 · Solo los clientes pueden enviar solicitudes).
+ * Sin sesión sí se ofrece: al pulsarlo se le pide iniciar sesión.
+ */
+export function puedeReservar(sesion) {
+  return !sesion || sesion.tipo_cuenta !== "administrador";
+}
+
+export const AVISO_SOLO_CONSULTA = {
+  titulo: "Vista de administrador",
+  texto: "Como administrador puedes ver la información y los paquetes de este salón, pero no rentarlo. Si quieres rentar un salón, crea una cuenta de cliente.",
+  corto: "Solo consulta · para rentar crea una cuenta de cliente",
+  boton: "Crear cuenta de cliente",
+};

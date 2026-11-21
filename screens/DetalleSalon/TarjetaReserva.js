@@ -10,6 +10,7 @@ import { formatearPrecio } from "../../utils/formato";
 import { formatearFechaCorta } from "../../utils/fechas";
 import { COLORES } from "../../theme/colores";
 import { estilos } from "./DetalleSalon.styles";
+import { AVISO_SOLO_CONSULTA } from "../../components/navegacion.logica";
 
 // Caja con etiqueta chica en mayúsculas (FECHA, PAQUETE, INVITADOS). Con onPress lleva a la sección.
 function Caja({ etiqueta, valor, vacio, onPress, accesible }) {
@@ -105,6 +106,34 @@ export function BarraReservaMovil({ d, onSolicitar }) {
         style={({ hovered, focused }) => [estilos.botonReservar, estilos.botonReservarMovil, (hovered || focused) && estilos.botonReservarFoco]}
       >
         <Text style={estilos.botonReservarTexto}>Solicitar reservación</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+// Sprint 10 · El administrador solo consulta: en lugar de reservar ve el precio y un aviso.
+// `movil`: barra fija abajo (mismo lugar que BarraReservaMovil).
+// `onCrearCuenta` lleva al registro de cliente.
+export function AvisoSoloConsulta({ d, movil, onCrearCuenta }) {
+  if (movil) {
+    return (
+      <View style={estilos.barraMovil}>
+        <PrecioDesde precio={d.precioDesde} compacto />
+        <Text style={estilos.avisoSoloConsultaCorto}>{AVISO_SOLO_CONSULTA.corto}</Text>
+      </View>
+    );
+  }
+  return (
+    <View style={estilos.tarjetaReserva} role="note">
+      <PrecioDesde precio={d.precioDesde} />
+      <Text style={estilos.avisoSoloConsultaTitulo}>{AVISO_SOLO_CONSULTA.titulo}</Text>
+      <Text style={estilos.notaReserva}>{AVISO_SOLO_CONSULTA.texto}</Text>
+      <Pressable
+        onPress={onCrearCuenta}
+        accessibilityRole="button"
+        style={({ hovered, focused }) => [estilos.botonReservar, (hovered || focused) && estilos.botonReservarFoco]}
+      >
+        <Text style={estilos.botonReservarTexto}>{AVISO_SOLO_CONSULTA.boton}</Text>
       </Pressable>
     </View>
   );

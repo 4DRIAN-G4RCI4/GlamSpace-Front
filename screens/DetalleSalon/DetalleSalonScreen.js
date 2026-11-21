@@ -27,7 +27,9 @@ import { MEDIDA } from "../../theme/disenoPwa";
 import { ESPACIO } from "../../theme/espaciado";
 import useDetalleSalon from "./useDetalleSalon";
 import GaleriaDetalle from "./GaleriaDetalle";
-import TarjetaReserva, { BarraReservaMovil } from "./TarjetaReserva";
+import TarjetaReserva, { AvisoSoloConsulta, BarraReservaMovil } from "./TarjetaReserva";
+import useSesion from "../../components/useSesion";
+import { puedeReservar } from "../../components/navegacion.logica";
 import CalendarioDisponibilidad from "./CalendarioDisponibilidad";
 import { estilos } from "./DetalleSalon.styles";
 
@@ -96,6 +98,7 @@ function TarjetaPaquete({ paquete, elegido, onPress, ancho }) {
 export default function DetalleSalonScreen({ navigation, route }) {
   const salonId = route && route.params ? route.params.salonId : null;
   const d = useDetalleSalon(salonId);
+  const { sesion } = useSesion();
   const { width } = useWindowDimensions();
   const escritorio = width >= MEDIDA.corteEscritorio;
   const scroll = useRef(null);
@@ -189,6 +192,8 @@ export default function DetalleSalonScreen({ navigation, route }) {
   }
 
   const listo = !d.cargando && !d.error && !!d.salon;
+  // Sprint 10: el administrador ve el salón y sus paquetes, pero no la tarjeta para reservar.
+  const reserva = puedeReservar(sesion);
 
   return (
     <View style={estilos.raiz}>
@@ -204,13 +209,13 @@ export default function DetalleSalonScreen({ navigation, route }) {
           {escritorio && listo ? (
             <View style={estilos.columnaDerecha}>
               <View style={estilos.fija}>
-                <TarjetaReserva d={d} onIrA={irASeccion} onSolicitar={solicitar} />
+                {reserva ? <TarjetaReserva d={d} onIrA={irASeccion} onSolicitar={solicitar} /> : <AvisoSoloConsulta d={d} onCrearCuenta={() => ir("RegistroCliente")} />}
               </View>
             </View>
           ) : null}
         </View>
       </ScrollView>
-      {!escritorio && listo ? <BarraReservaMovil d={d} onSolicitar={solicitar} /> : null}
+      {!escritorio && listo ? (reserva ? <BarraReservaMovil d={d} onSolicitar={solicitar} /> : <AvisoSoloConsulta d={d} movil />) : null}
     </View>
   );
 }

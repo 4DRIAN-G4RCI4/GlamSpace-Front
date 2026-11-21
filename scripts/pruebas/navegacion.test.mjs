@@ -1,7 +1,7 @@
 // Ajuste de usabilidad (HU-19 / navegación): accesos por rol, acceso activo y lista de solicitudes (node --test).
 import test from "node:test";
 import assert from "node:assert";
-import { CORTE_TELEFONO, accesosPara, claveActiva, esTelefono, inicialesDe } from "../../components/navegacion.logica.js";
+import { AVISO_SOLO_CONSULTA, CORTE_TELEFONO, accesosPara, claveActiva, esTelefono, inicialesDe, puedeReservar } from "../../components/navegacion.logica.js";
 import {
   FILTROS_ESTADO,
   contarPorEstado,
@@ -113,4 +113,14 @@ test("fecha de creación: la API la manda en UTC (con o sin Z) y se muestra en h
   // Una "Z" en medio no cuenta como zona
   assert.strictEqual(fechaDeCreacion(""), "");
   assert.strictEqual(fechaDeCreacion("no es fecha"), "");
+});
+
+// ---------- Sprint 10 · El administrador solo consulta ----------
+
+test("puedeReservar: el administrador no ve 'Solicitar reservación'; cliente y visitante sí", () => {
+  assert.strictEqual(puedeReservar({ id: 1, tipo_cuenta: "administrador" }), false);
+  assert.strictEqual(puedeReservar({ id: 2, tipo_cuenta: "cliente" }), true);
+  assert.strictEqual(puedeReservar(null), true); // sin sesión: al pulsar se le pide iniciar sesión
+  assert.match(AVISO_SOLO_CONSULTA.texto, /no rentarlo/);
+  assert.match(AVISO_SOLO_CONSULTA.texto, /crea una cuenta de cliente/);
 });
