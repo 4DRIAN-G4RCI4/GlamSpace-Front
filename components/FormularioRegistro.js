@@ -6,7 +6,7 @@
  * pide (el nombre del salón en el registro de administrador), que van después del correo.
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import Campo from "./Campo";
 import LayoutAcceso from "./LayoutAcceso";
@@ -14,6 +14,12 @@ import { comunes as estilos } from "../theme/estilosComunes";
 import { COLORES } from "../theme/colores";
 
 export default function FormularioRegistro({ navigation, f, textos, children }) {
+  // Sprint 10: la API mandó el código de verificación → a la pantalla para escribirlo.
+  useEffect(() => {
+    if (f.porVerificar && navigation) navigation.navigate("VerificarCorreo", { correo: f.porVerificar });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [f.porVerificar]);
+
   return (
     <LayoutAcceso navigation={navigation} respaldoRegresar="Login" textoMarca={textos.marca}>
       <View>

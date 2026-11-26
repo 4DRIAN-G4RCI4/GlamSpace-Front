@@ -16,6 +16,7 @@ import {
   cerrarSesion,
 } from "../../services/sesionStorage";
 import { validarLogin } from "./login.validaciones";
+import { faltaVerificarCorreo } from "../../services/correo.logica";
 
 const INTENTOS_PARA_ADVERTENCIA = 3;
 
@@ -33,6 +34,7 @@ export default function useLogin() {
   const [enviando, setEnviando] = useState(false);
   const [mensaje, setMensaje] = useState(null); // { tipo: "ok" | "fail", texto }
   const [intentosFallidos, setIntentosFallidos] = useState(0);
+  const [porVerificar, setPorVerificar] = useState(null); // correo de una cuenta sin verificar (Sprint 10)
 
   const [sesion, setSesion] = useState(null);
   const [cargandoSesion, setCargandoSesion] = useState(true);
@@ -65,7 +67,10 @@ export default function useLogin() {
       setPassword("");
       setMensaje(null);
     } catch (error) {
-      if (esErrorDeCredenciales(error)) {
+      if (faltaVerificarCorreo(error)) {
+        // La cuenta existe pero no ha verificado su correo: la API ya le reenvió el código.
+        setPorVerificar(correo.trim());
+      } else if (esErrorDeCredenciales(error)) {
         const nuevosIntentos = intentosFallidos + 1;
         setIntentosFallidos(nuevosIntentos);
 
@@ -106,6 +111,7 @@ export default function useLogin() {
     mensaje,
     sesion,
     cargandoSesion,
+    porVerificar,
     manejarLogin,
     manejarCerrarSesion,
   };

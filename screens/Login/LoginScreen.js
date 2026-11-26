@@ -17,6 +17,7 @@
 import React, { useEffect } from "react";
 import { View, Text, TouchableOpacity, Pressable, ActivityIndicator } from "react-native";
 import CamposAcceso from "../../components/CamposAcceso";
+import { TEXTOS_CORREO } from "../../services/correo.logica";
 import LayoutAcceso from "../../components/LayoutAcceso";
 import { COLORES } from "../../theme/colores";
 import useLogin from "./useLogin";
@@ -36,6 +37,12 @@ export default function LoginScreen({ navigation, route }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [f.sesion]);
 
+  // Sprint 10: cuenta sin verificar → a escribir el código que le llegó por correo.
+  useEffect(() => {
+    if (f.porVerificar && navigation) navigation.navigate("VerificarCorreo", { correo: f.porVerificar });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [f.porVerificar]);
+
   if (f.cargandoSesion || f.sesion) {
     return (
       <View style={estilos.cargandoContenedor}>
@@ -50,6 +57,13 @@ export default function LoginScreen({ navigation, route }) {
       <Text style={estilos.subtitulo}>Entra con tu correo y contraseña, ya seas cliente o administrador.</Text>
 
       <CamposAcceso f={f} />
+      <Pressable
+        onPress={() => navigation && navigation.navigate("RecuperarContrasena", { correo: f.correo.trim() })}
+        accessibilityRole="link"
+        style={{ alignSelf: "flex-end", minHeight: 32, justifyContent: "center" }}
+      >
+        <Text style={estilos.enlaceResaltado}>{TEXTOS_CORREO.olvidaste}</Text>
+      </Pressable>
 
       <TouchableOpacity
         style={[estilos.boton, estilos.botonLogin, f.enviando && estilos.botonDeshabilitado]}

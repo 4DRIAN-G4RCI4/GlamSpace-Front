@@ -10,6 +10,7 @@
 import { useState } from "react";
 import { registrarUsuario } from "../services/usuariosApi";
 import { textoDeErrorApi } from "../services/api";
+import { requiereVerificacion } from "../services/correo.logica";
 
 export default function useFormularioRegistro({ tipoCuenta, validar, pideSalon = false, textoExito }) {
   const [nombre, setNombre] = useState("");
@@ -23,6 +24,7 @@ export default function useFormularioRegistro({ tipoCuenta, validar, pideSalon =
   const [errores, setErrores] = useState({});
   const [enviando, setEnviando] = useState(false);
   const [mensaje, setMensaje] = useState(null); // { tipo: "ok" | "fail", texto }
+  const [porVerificar, setPorVerificar] = useState(null); // Sprint 10: correo al que se mandó el código
 
   async function manejarRegistro() {
     setMensaje(null);
@@ -39,13 +41,15 @@ export default function useFormularioRegistro({ tipoCuenta, validar, pideSalon =
 
     setEnviando(true);
     try {
-      await registrarUsuario({
+      const usuario = await registrarUsuario({
         nombre: limpios.nombre,
         correo: correo.trim(),
         password,
         tipoCuenta,
         nombreSalon: pideSalon ? limpios.nombreSalon : null,
       });
+      // Sprint 10: con la API nueva la cuenta queda sin verificar y se va a escribir el código.
+      if (requiereVerificacion(usuario)) setPorVerificar(correo.trim());
       setMensaje({ tipo: "ok", texto: textoExito(limpios) });
       setNombre("");
       setCorreo("");
@@ -84,6 +88,7 @@ export default function useFormularioRegistro({ tipoCuenta, validar, pideSalon =
     errores,
     enviando,
     mensaje,
+    porVerificar,
     manejarRegistro,
   };
 }
