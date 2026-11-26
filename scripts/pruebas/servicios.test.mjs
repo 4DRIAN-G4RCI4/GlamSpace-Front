@@ -280,6 +280,28 @@ test("login y convertir a administrador regresan la sesión con los nombres de l
   assert.deepEqual(ultima().cuerpo, { usuarioId: 4, contrasena: "p" });
 });
 
+test("Sprint 10 · verificar correo, reenviar código, recuperar y restablecer mandan lo que espera la API", async () => {
+  responder(ok({ exito: true, datos: USUARIO }));
+  const s = await usuarios.verificarCorreo(" ana@x.com ", "123456");
+  assert.equal(s.nombre, "Ana");
+  assert.equal(ultima().url.endsWith("/usuarios/verificarCorreo"), true);
+  assert.deepEqual(ultima().cuerpo, { correo: "ana@x.com", codigo: "123456" });
+
+  responder(ok({ exito: true, datos: null }));
+  await usuarios.reenviarCodigo(" ana@x.com", "recuperacion");
+  assert.deepEqual(ultima().cuerpo, { correo: "ana@x.com", proposito: "recuperacion" });
+
+  responder(ok({ exito: true, datos: null }));
+  await usuarios.solicitarRecuperacion("ana@x.com ");
+  assert.equal(ultima().url.endsWith("/usuarios/recuperar"), true);
+  assert.deepEqual(ultima().cuerpo, { correo: "ana@x.com" });
+
+  responder(ok({ exito: true, datos: null }));
+  await usuarios.restablecerContrasena("ana@x.com", "654321", "nueva1234");
+  assert.equal(ultima().url.endsWith("/usuarios/restablecer"), true);
+  assert.deepEqual(ultima().cuerpo, { correo: "ana@x.com", codigo: "654321", nuevaContrasena: "nueva1234" });
+});
+
 // ================= services/sesionStorage.js =================
 
 test("la sesión se guarda, se lee y al cerrar se borra junto con la caché", async () => {

@@ -12,28 +12,11 @@ import React from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import CamposAcceso from "../../components/CamposAcceso";
 import LayoutAcceso from "../../components/LayoutAcceso";
+import BotonAcceso from "../../components/BotonAcceso";
 import { COLORES } from "../../theme/colores";
 import { TEXTOS_CONVERSION, puedeConvertirse } from "../../services/convertirAdmin.logica";
 import { estilos } from "../Login/Login.styles";
 import useConvertirAdministrador from "./useConvertirAdministrador";
-
-function BotonPrincipal({ texto, onPress, enviando }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={enviando}
-      accessibilityRole="button"
-      style={({ hovered, pressed }) => [
-        estilos.boton,
-        estilos.botonLogin,
-        (hovered || pressed) && { backgroundColor: COLORES.moradoActivo },
-        enviando && estilos.botonDeshabilitado,
-      ]}
-    >
-      {enviando ? <ActivityIndicator color={COLORES.sobreMorado} /> : <Text style={estilos.botonTexto}>{texto}</Text>}
-    </Pressable>
-  );
-}
 
 function Cancelar({ navigation }) {
   return (
@@ -69,7 +52,7 @@ export default function ConvertirAdministradorScreen({ navigation }) {
         <Text style={estilos.subtitulo}>
           {f.sesion ? "Tu cuenta ya es de administrador." : "Inicia sesión con tu cuenta de cliente para continuar."}
         </Text>
-        <BotonPrincipal
+        <BotonAcceso
           texto={f.sesion ? "Ir a mis salones" : "Iniciar sesión"}
           onPress={() => ir && ir(f.sesion ? "MisSalones" : "Login", f.sesion ? {} : { volverA: { nombre: "ConvertirAdministrador", params: {} } })}
         />
@@ -81,7 +64,7 @@ export default function ConvertirAdministradorScreen({ navigation }) {
         <Text style={estilos.tituloLogin} accessibilityRole="header">{TEXTOS_CONVERSION.titulo}</Text>
         <Text style={estilos.subtitulo}>{TEXTOS_CONVERSION.explicacion}</Text>
         <CamposAcceso f={f} />
-        <BotonPrincipal texto={TEXTOS_CONVERSION.botonVerificar} onPress={f.verificar} enviando={f.enviando} />
+        <BotonAcceso texto={TEXTOS_CONVERSION.botonVerificar} onPress={f.verificar} enviando={f.enviando} />
         {f.mensaje ? <Text style={[estilos.mensajeGeneral, estilos.mensajeFail]} role="status">{f.mensaje}</Text> : null}
         <Cancelar navigation={navigation} />
       </>
@@ -102,7 +85,7 @@ export default function ConvertirAdministradorScreen({ navigation }) {
             </View>
           ))}
         </View>
-        <BotonPrincipal texto={TEXTOS_CONVERSION.boton} onPress={f.convertir} enviando={f.enviando} />
+        <BotonAcceso texto={TEXTOS_CONVERSION.boton} onPress={f.convertir} enviando={f.enviando} />
         {f.mensaje ? <Text style={[estilos.mensajeGeneral, estilos.mensajeFail]} role="status">{f.mensaje}</Text> : null}
         <Cancelar navigation={navigation} />
       </>

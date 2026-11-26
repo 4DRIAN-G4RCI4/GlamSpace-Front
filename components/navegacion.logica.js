@@ -85,6 +85,8 @@ const REGRESO_POR_PANTALLA = {
   RegistroAdministrador: "Login",
   Login: "BusquedaSalones",
   ConvertirAdministrador: "Perfil",
+  VerificarCorreo: "Login",
+  RecuperarContrasena: "Login",
 };
 
 /** Pantalla a la que regresa `pantalla` si no se puede usar el historial del navegador. */
