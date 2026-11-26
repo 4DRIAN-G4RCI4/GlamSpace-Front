@@ -40,3 +40,26 @@ export async function iniciarSesion(correo, password) {
 export async function convertirAAdministrador(usuarioId, contrasena) {
   return aSesion(await postJson("/usuarios/convertirAAdministrador", { usuarioId, contrasena }));
 }
+
+// ---------- Sprint 10 · Verificación del correo y recuperación de la cuenta ----------
+// Contrato y códigos de error en services/correo.logica.js.
+
+// POST /api/usuarios/verificarCorreo { correo, codigo } → la sesión (la cuenta queda activa y entra).
+export async function verificarCorreo(correo, codigo) {
+  return aSesion(await postJson("/usuarios/verificarCorreo", { correo: correo.trim(), codigo }));
+}
+
+// POST /api/usuarios/reenviarCodigo { correo, proposito: "verificacion" | "recuperacion" }
+export function reenviarCodigo(correo, proposito) {
+  return postJson("/usuarios/reenviarCodigo", { correo: correo.trim(), proposito });
+}
+
+// POST /api/usuarios/recuperar { correo } → siempre el mismo mensaje, exista o no la cuenta.
+export function solicitarRecuperacion(correo) {
+  return postJson("/usuarios/recuperar", { correo: correo.trim() });
+}
+
+// POST /api/usuarios/restablecer { correo, codigo, nuevaContrasena }
+export function restablecerContrasena(correo, codigo, nuevaContrasena) {
+  return postJson("/usuarios/restablecer", { correo: correo.trim(), codigo, nuevaContrasena });
+}
