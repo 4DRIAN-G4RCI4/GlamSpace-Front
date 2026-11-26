@@ -32,13 +32,20 @@ export async function iniciarSesion(correo, password) {
   return aSesion(await postJson("/usuarios/login", { correo: correo.trim(), password }));
 }
 
-// POST /api/usuarios/convertirAAdministrador  { usuarioId, contrasena }
+// POST /api/usuarios/codigoConversion  { usuarioId, contrasena }
+// Sprint 10: comprueba la contraseña y manda al correo el código para convertir la cuenta.
+// Errores: 1003 contraseña · 1005 no existe · 1006 ya es administrador · 1011 espera 60 s.
+export async function pedirCodigoConversion(usuarioId, contrasena) {
+  return postJson("/usuarios/codigoConversion", { usuarioId, contrasena });
+}
+
+// POST /api/usuarios/convertirAAdministrador  { usuarioId, contrasena, codigo }
 // Convierte una cuenta de cliente en administrador: mismo correo, contraseña e historial.
-// Pide la contraseña porque todavía no hay JWT (la cuenta la confirma quien la está usando).
+// Pide la contraseña (todavía no hay JWT) y el código que le llegó al correo.
 // → la sesión ya con tipo_cuenta "administrador".
-// Errores: 1005 la cuenta no existe · 1003 contraseña incorrecta · 1006 ya es administrador.
-export async function convertirAAdministrador(usuarioId, contrasena) {
-  return aSesion(await postJson("/usuarios/convertirAAdministrador", { usuarioId, contrasena }));
+// Errores: 1008/1009/1010 código · 1005 la cuenta no existe · 1003 contraseña incorrecta · 1006 ya es administrador.
+export async function convertirAAdministrador(usuarioId, contrasena, codigo) {
+  return aSesion(await postJson("/usuarios/convertirAAdministrador", { usuarioId, contrasena, codigo }));
 }
 
 // ---------- Sprint 10 · Verificación del correo y recuperación de la cuenta ----------

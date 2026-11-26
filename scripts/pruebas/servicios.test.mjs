@@ -274,9 +274,14 @@ test("login y convertir a administrador regresan la sesión con los nombres de l
   assert.deepEqual(ultima().cuerpo, { correo: "ana@x.com", password: "p" });
 
   responder(ok({ exito: true, datos: { ...USUARIO, tipoCuenta: "administrador", nombreSalon: "Mi salón" } }));
-  const s = await usuarios.convertirAAdministrador(4, "p");
+  const s = await usuarios.convertirAAdministrador(4, "p", "123456");
   assert.equal(s.tipo_cuenta, "administrador");
   assert.equal(s.nombre_salon, "Mi salón");
+  assert.deepEqual(ultima().cuerpo, { usuarioId: 4, contrasena: "p", codigo: "123456" });
+
+  responder(ok({ exito: true, datos: null }));
+  await usuarios.pedirCodigoConversion(4, "p");
+  assert.equal(ultima().url.endsWith("/usuarios/codigoConversion"), true);
   assert.deepEqual(ultima().cuerpo, { usuarioId: 4, contrasena: "p" });
 });
 
