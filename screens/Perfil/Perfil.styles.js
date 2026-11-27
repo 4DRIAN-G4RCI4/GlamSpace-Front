@@ -104,6 +104,13 @@ export const estilos = StyleSheet.create({
   interruptorActivo: { backgroundColor: PWA.vino },
   interruptorBola: { width: 18, height: 18, borderRadius: 9, backgroundColor: PWA.superficie },
   interruptorBolaActiva: { alignSelf: "flex-end" },
+  // Opciones de Personalizar (tamaño de letra y zoom)
+  filaOpciones: { flexWrap: "wrap", rowGap: 10 },
+  opciones: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
+  opcion: { minHeight: 36, minWidth: 48, paddingHorizontal: 12, borderRadius: 18, borderWidth: 1, borderColor: PWA.borde, alignItems: "center", justifyContent: "center" },
+  opcionActiva: { backgroundColor: PWA.vino, borderColor: PWA.vino },
+  opcionTexto: texto(12.5, "600", PWA.textoSecundario),
+  opcionTextoActiva: texto(12.5, "600", PWA.sobreVino),
   proximamente: {
     backgroundColor: PWA.fondo,
     borderRadius: 9,

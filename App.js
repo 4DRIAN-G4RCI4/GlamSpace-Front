@@ -28,6 +28,8 @@
  * conserva la pantalla actual.
  */
 
+// Primero: escala la letra elegida en el Perfil antes de que se creen los estilos.
+import "./theme/escalaTexto";
 import React, { useEffect, useRef, useState } from "react";
 import { Platform, SafeAreaView, StyleSheet } from "react-native";
 import BusquedaSalonesScreen from "./screens/BusquedaSalones/BusquedaSalonesScreen";
