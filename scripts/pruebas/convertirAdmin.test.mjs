@@ -4,6 +4,7 @@ import assert from "node:assert";
 import {
   CODIGOS_CONVERSION,
   TEXTOS_CONVERSION,
+  esErrorDeCodigo,
   esLaMismaCuenta,
   mensajeDeErrorConversion,
   puedeConvertirse,
@@ -100,4 +101,10 @@ test("la verificación solo pasa con la misma cuenta que está en sesión", () =
   assert.strictEqual(esLaMismaCuenta({ id: 7 }, { id: 8 }), false);
   assert.strictEqual(esLaMismaCuenta(null, { id: 7 }), false);
   assert.strictEqual(esLaMismaCuenta({ id: 7 }, null), false);
+});
+
+test("Sprint 10 · los errores del código regresan al paso del código; los demás no", () => {
+  for (const codigo of [1008, 1009, 1010, 1011]) assert.equal(esErrorDeCodigo({ codigo }), true);
+  for (const e of [{ codigo: 1003 }, { codigo: 1006 }, { codigo: 1007 }, { tipo: "red" }, null]) assert.equal(esErrorDeCodigo(e), false);
+  assert.match(TEXTOS_CONVERSION.explicacionCodigo("an•••@x.com"), /an•••@x\.com/);
 });

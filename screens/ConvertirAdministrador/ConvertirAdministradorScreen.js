@@ -2,7 +2,7 @@
  * GlamSpaces · "Conviértete en administrador" (antes un diálogo; ahora una pantalla como el login).
  *
  *   - ConvertirAdministradorScreen.js → pantalla (JSX)   [este archivo]
- *   - useConvertirAdministrador.js    → los dos pasos: verificar identidad y confirmar
+ *   - useConvertirAdministrador.js    → los tres pasos: verificar identidad, código del correo y confirmar
  *   - ../../services/convertirAdmin.logica.js → textos y reglas (probadas)
  *
  * Mismo diseño de dos paneles que el login (components/LayoutAcceso, estilos de Login.styles).
@@ -11,10 +11,12 @@
 import React from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import CamposAcceso from "../../components/CamposAcceso";
+import CampoCodigo from "../../components/CampoCodigo";
 import LayoutAcceso from "../../components/LayoutAcceso";
 import BotonAcceso from "../../components/BotonAcceso";
 import { COLORES } from "../../theme/colores";
 import { TEXTOS_CONVERSION, puedeConvertirse } from "../../services/convertirAdmin.logica";
+import { ocultarCorreo } from "../../services/correo.logica";
 import { estilos } from "../Login/Login.styles";
 import useConvertirAdministrador from "./useConvertirAdministrador";
 
@@ -65,6 +67,25 @@ export default function ConvertirAdministradorScreen({ navigation }) {
         <Text style={estilos.subtitulo}>{TEXTOS_CONVERSION.explicacion}</Text>
         <CamposAcceso f={f} />
         <BotonAcceso texto={TEXTOS_CONVERSION.botonVerificar} onPress={f.verificar} enviando={f.enviando} />
+        {f.mensaje ? <Text style={[estilos.mensajeGeneral, estilos.mensajeFail]} role="status">{f.mensaje}</Text> : null}
+        <Cancelar navigation={navigation} />
+      </>
+    );
+  } else if (f.paso === "codigo") {
+    contenido = (
+      <>
+        <Text style={estilos.tituloLogin} accessibilityRole="header">{TEXTOS_CONVERSION.tituloCodigo}</Text>
+        <Text style={estilos.subtitulo}>{TEXTOS_CONVERSION.explicacionCodigo(ocultarCorreo(f.sesion.correo))}</Text>
+        <CampoCodigo
+          valor={f.codigo}
+          onCambiar={f.setCodigo}
+          error={f.errores.codigo}
+          restantes={f.restantes}
+          reenviando={f.enviando}
+          onReenviar={f.reenviar}
+        />
+        <BotonAcceso texto={TEXTOS_CONVERSION.botonCodigo} onPress={f.continuar} />
+        {f.aviso ? <Text style={[estilos.mensajeGeneral, estilos.mensajeOk]} role="status">{f.aviso}</Text> : null}
         {f.mensaje ? <Text style={[estilos.mensajeGeneral, estilos.mensajeFail]} role="status">{f.mensaje}</Text> : null}
         <Cancelar navigation={navigation} />
       </>
