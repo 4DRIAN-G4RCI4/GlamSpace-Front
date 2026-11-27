@@ -5,12 +5,21 @@
  * contraseña y su historial de solicitudes se conserva. Se pide la contraseña porque todavía
  * no hay JWT, así que es la forma de comprobar que la cuenta la usa su dueño.
  *
- * POST /api/usuarios/convertirAAdministrador { usuarioId, contrasena }
+ * Sprint 10: además de la contraseña, un código que llega al correo.
+ *   1. verificar → login con correo y contraseña (la misma cuenta) y se pide el código
+ *                  (POST /api/usuarios/codigoConversion { usuarioId, contrasena }).
+ *   2. codigo    → escribe los 6 dígitos que le llegaron.
+ *   3. confirmar → "Verificación exitosa" y lo que cambia.
+ *
+ * POST /api/usuarios/convertirAAdministrador { usuarioId, contrasena, codigo }
+ *   1008 / 1009 / 1010 código incorrecto, vencido o demasiados intentos (se regresa al paso 2)
  *   0    éxito, regresa el usuario ya como administrador
  *   1003 contraseña incorrecta
  *   1005 la cuenta no existe
  *   1006 la cuenta ya es administrador
  */
+
+import { CODIGOS_CORREO } from "./correo.logica";
 
 // Códigos que contesta este endpoint (ver CodigosError.cs del back).
 export const CODIGOS_CONVERSION = {
@@ -63,6 +72,12 @@ export function mensajeDeErrorConversion(error) {
   }
 }
 
+/** ¿El error es del código (incorrecto, vencido, intentos o espera)? Entonces se muestra en el paso del código. */
+export function esErrorDeCodigo(error) {
+  const { codigoIncorrecto, codigoVencido, demasiadosIntentos, esperaParaReenviar } = CODIGOS_CORREO;
+  return !!error && [codigoIncorrecto, codigoVencido, demasiadosIntentos, esperaParaReenviar].includes(error.codigo);
+}
+
 /** Con 1006 la cuenta ya era administrador: no es un fallo, solo hay que recargar la sesión. */
 export function yaEraAdministrador(error) {
   return !!error && error.codigo === CODIGOS_CONVERSION.yaEsAdministrador;
@@ -78,7 +93,10 @@ export function esLaMismaCuenta(sesion, verificada) {
 
 export const TEXTOS_CONVERSION = {
   titulo: "Conviértete en administrador",
-  explicacion: "Primero confirma que eres tú: inicia sesión con tu correo y tu contraseña.",
+  explicacion: "Primero confirma que eres tú: inicia sesión con tu correo y tu contraseña. Después te mandamos un código a tu correo.",
+  tituloCodigo: "Revisa tu correo",
+  explicacionCodigo: (correo) => `Te mandamos un código de 6 dígitos a ${correo}. Escríbelo para continuar.`,
+  botonCodigo: "Continuar",
   botonVerificar: "Verificar mi identidad",
   otraCuenta: "Esa no es la cuenta con la que entraste. Usa tu propio correo.",
   credenciales: "Correo o contraseña incorrectos.",
