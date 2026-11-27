@@ -23,7 +23,7 @@ import { esTelefono, inicialesDe } from "../../components/navegacion.logica";
 import { estilos } from "./Perfil.styles";
 import InvitacionAdmin from "../../components/InvitacionAdmin";
 import usePerfil from "./usePerfil";
-import { cambiarModoOscuro, esModoOscuro } from "../../theme/tema";
+import { ESCALA_TEXTO, OPCIONES_TEXTO, OPCIONES_ZOOM, ZOOM, cambiarEscalaTexto, cambiarModoOscuro, cambiarZoom, esModoOscuro } from "../../theme/tema";
 
 const ICONOS = {
   buscar: require("../../assets/cliente/icono-buscar.svg"),
@@ -75,6 +75,31 @@ function Fila({ etiqueta, valor, onPress, proximamente, primera, interruptor }) 
     >
       {contenido}
     </Pressable>
+  );
+}
+
+// Fila con opciones de un toque (tamaño de letra, zoom). Elegir una guarda y recarga la app.
+function FilaOpciones({ etiqueta, opciones, valor, onCambiar }) {
+  return (
+    <View style={[estilos.fila, estilos.filaSeparador, estilos.filaOpciones]}>
+      <Text style={estilos.filaTexto}>{etiqueta}</Text>
+      <View style={estilos.opciones} role="radiogroup" aria-label={etiqueta}>
+        {opciones.map((o) => {
+          const activa = o.valor === valor;
+          return (
+            <Pressable
+              key={o.valor}
+              onPress={() => !activa && onCambiar(o.valor)}
+              accessibilityRole="radio"
+              aria-checked={activa}
+              style={({ hovered, focused }) => [estilos.opcion, activa && estilos.opcionActiva, !activa && (hovered || focused) && estilos.filaFoco]}
+            >
+              <Text style={activa ? estilos.opcionTextoActiva : estilos.opcionTexto}>{o.etiqueta}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
   );
 }
 
@@ -201,12 +226,27 @@ export default function PerfilScreen({ navigation }) {
           {esAdministrador ? <Fila etiqueta="Mis salones y fotos" onPress={() => ir("MisSalones")} /> : null}
           <Fila etiqueta="Editar perfil" proximamente />
           <Fila etiqueta="Cambiar contraseña" proximamente />
-          <Fila etiqueta="Modo oscuro" interruptor={oscuro} onPress={alternarOscuro} />
         </View>
       </View>
     );
 
-    const secciones = <View style={telefono ? estilos.rejillaSecciones : estilos.rejillaDos}>{miCuenta}{accesos}</View>;
+    const personalizar = (
+      <View style={estilos.seccion}>
+        <Text style={estilos.tituloSeccion} accessibilityRole="header" aria-level={2}>Personalizar</Text>
+        <View style={estilos.lista}>
+          <Fila primera etiqueta="Modo oscuro" interruptor={oscuro} onPress={alternarOscuro} />
+          <FilaOpciones etiqueta="Tamaño de letra" opciones={OPCIONES_TEXTO} valor={ESCALA_TEXTO} onCambiar={cambiarEscalaTexto} />
+          <FilaOpciones etiqueta="Zoom de pantalla" opciones={OPCIONES_ZOOM} valor={ZOOM} onCambiar={cambiarZoom} />
+        </View>
+      </View>
+    );
+
+    const secciones = (
+      <View style={estilos.rejillaSecciones}>
+        <View style={telefono ? estilos.rejillaSecciones : estilos.rejillaDos}>{miCuenta}{accesos}</View>
+        {personalizar}
+      </View>
+    );
 
     cuerpo = escritorio ? (
       <>
